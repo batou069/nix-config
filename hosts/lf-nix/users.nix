@@ -33,16 +33,23 @@
   environment.shells = with pkgs; [ zsh ];
   environment.systemPackages = with pkgs; [ lsd bat fd fzf ]; 
     
-  programs = {
-  # Zsh configuration
-    zsh = {
-    	enable = true;
-	enableCompletion = true;
-        ohMyZsh.enable = false;
-      
-        autosuggestions.enable = false;
-        syntaxHighlighting.enable = false;
-        promptInit = "";
-      };
-   };
+
+
+  systemd.user.services.create-nvim-symlinks = {
+    description = "Create Neovim config symlinks";
+    wantedBy = [ "default.target" ];
+    script = ''
+      # Create the target directories first to be safe
+      mkdir -p /home/${username}/.config/nvim/lazyvim
+      mkdir -p /home/${username}/.config/nvim/ksnvim
+
+      # Create the symlinks if they don't already exist
+      ln -sfn /home/${username}/.config/nvim/lazyvim /home/${username}/.config/lazyvim
+      ln -sfn /home/${username}/.config/nvim/ksnvim /home/${username}/.config/ksnvim
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+  };
 }
