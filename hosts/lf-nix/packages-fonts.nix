@@ -29,22 +29,34 @@
     ];
   };
 
+
   zen-browser = pkgs.stdenv.mkDerivation rec {
     pname = "zen-browser";
     version = "1.13.2b";
 
     src = pkgs.fetchurl {
       url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
-      # This is the hash for the tar.xz file you found on the releases page.
       sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
     };
 
-    # This tells Nix how to "install" the downloaded binary.
+    # autoPatchelfHook is essential for patching the bundled libraries.
+    nativeBuildInputs = [ pkgs.autoPatchelfHook ];
+
+    # These are the system libraries the browser will need.
+    buildInputs = with pkgs; [
+            alsa-lib gtk3 cairo gdk-pixbuf glib dbus openssl librsvg
+    ];
+
+    # A safeguard against breaking the pre-compiled binary.
+    dontStrip = true;
+
+    # This install script now perfectly matches the tarball's structure.
     installPhase = ''
-      # The tarball unpacks into a directory named "zen".
-      # We move this entire directory into our output path.
-      mkdir -p $out/lib
-      mv zen $out/lib/zen-browser
+      # Create a directory in the output path to hold the browser files.
+      mkdir -p $out/lib/zen-browser
+
+      # Move the *contents* of the unpacked 'zen' directory into our new directory.
+      mv * $out/lib/zen-browser/
 
       # Create a symlink in $out/bin so you can run `zen-browser` from your terminal.
       mkdir -p $out/bin
@@ -53,7 +65,12 @@
   };
 
 
-  in {
+
+
+
+  in 
+
+  {
 
   nixpkgs.config.allowUnfree = true;
   
