@@ -1,10 +1,3 @@
-# 💫 https://github.com/JaKooLit 💫 #
-# Main default config
-
-
-# NOTE!!! : Packages and Fonts are configured in packages-&-fonts.nix
-
-
 { config, pkgs, host, username, options, lib, inputs, system, ...}: let
   
   inherit (import ./variables.nix) keyboardLayout;
@@ -297,8 +290,6 @@
      logitech.wireless.enableGraphical = true;
   }; 
 
-  services.pulseaudio.enable = false; # stable branch
-
   # Set system-wide default applications for MIME types and URI schemes
   xdg.mime.defaultApplications = {
     # Web Browser
@@ -316,6 +307,7 @@
     "image/bmp" = "loupe.desktop";
     "image/svg+xml" = "loupe.desktop";
   };
+
 
   # Bluetooth
   hardware = {
@@ -410,6 +402,7 @@
       };
    };
 
+  environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
