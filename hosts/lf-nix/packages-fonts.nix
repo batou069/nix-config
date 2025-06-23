@@ -29,41 +29,26 @@
     ];
   };
 
-  zen-browser = pkgs.rustPlatform.buildRustPackage rec {
+  zen-browser = pkgs.stdenv.mkDerivation rec {
     pname = "zen-browser";
     version = "1.13.2b";
 
-    src = pkgs.fetchFromGitHub {
-      owner = "zen-browser";
-      repo = "desktop";
-      rev = "v${version}";
-      # This is the real source hash you already correctly found.
-      sha256 = "sha256-LGoGq49lShsaBkZyTuBOauP3t3Syd4Wu5NUBACcsucw=";
+    src = pkgs.fetchurl {
+      url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
+      # This is the hash for the tar.xz file you found on the releases page.
+      sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
     };
 
-  # This is the key. It tells Nix to use the lock file from the source.
-  # We no longer need cargoHash or cargoSha256 at all.
-  cargoLock.lockFile = "${src}/Cargo.lock";
-    # Dependencies needed to build Tauri apps
-    nativeBuildInputs = with pkgs; [ pkg-config ];
-    buildInputs = with pkgs; [
-      webkitgtk
-      gtk3
-      cairo
-      gdk-pixbuf
-      glib
-      dbus
-      openssl
-      librsvg
-    ];
+    # This tells Nix how to "install" the downloaded binary.
+    installPhase = ''
+      # The tarball unpacks into a directory named "zen".
+      # We move this entire directory into our output path.
+      mkdir -p $out/lib
+      mv zen $out/lib/zen-browser
 
-    # Fix for running in NixOS
-    postInstall = ''
-      install -Dm644 $src/zen-browser/icons/icon.png $out/share/icons/hicolor/128x128/apps/zen-browser.png
-      install -Dm644 $src/zen-browser/zen.desktop $out/share/applications/zen-browser.desktop
-
-      substituteInPlace $out/share/applications/zen-browser.desktop \
-        --replace 'Exec=zen' 'Exec=${placeholder "out"}/bin/zen'
+      # Create a symlink in $out/bin so you can run `zen-browser` from your terminal.
+      mkdir -p $out/bin
+      ln -s $out/lib/zen-browser/zen-bin $out/bin/zen-browser
     '';
   };
 
@@ -238,7 +223,7 @@ fonts = {
 
         # Automatically switch to GitLab user for specific directory
         "includeIf \"gitdir:~/git/\"" = {
-          path = ./gitconfig-gitlab; 
+          path = toString ./gitconfig-gitlab; 
         };
       };
     };
