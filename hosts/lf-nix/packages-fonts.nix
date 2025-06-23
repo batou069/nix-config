@@ -20,6 +20,7 @@
         python-dotenv
         regex
         tabulate
+        ipykernel
         ]
     );
 
@@ -52,31 +53,45 @@
       '';
     };
   in
+    # This is the final package that gets installed. It's a wrapper script.
+    pkgs.symlinkJoin {
+      name = "zen-browser";
+      paths = [ real_zen ]; # Include the real binary package
 
-      mkdir -p $out/bin
-      ln -s $out/lib/zen-browser/zen-bin $out/bin/zen-browser
+      # Create the wrapper script that points to the real binary
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/zen-browser \
+          --set PROFILE_DIR "$HOME/.config/zen-browser-profile" \
+          --run "mkdir -p \"\$PROFILE_DIR\"" \
+          --add-flags "--profile \"\$PROFILE_DIR\""
+        
+        # Recreate the executable symlink to point to our new wrapper
+        ln -sf $out/bin/zen-browser $out/bin/zen-bin
+      '';
 
-      mkdir -p $out/share/applications
-      cat > $out/share/applications/zen-browser.desktop <<EOF
-      [Desktop Entry]
-      Name=Zen Browser
-      Exec=zen-browser
-      Icon=zen-browser
-      Type=Application
-      Categories=Network;WebBrowser;
-      EOF
+      # Create the .desktop file
+      passthru.updateScript = pkgs.writeShellScript "update-zen-browser" ''
+        mkdir -p $out/share/applications
+        cat > $out/share/applications/zen-browser.desktop <<EOF
+        [Desktop Entry]
+        Name=Zen Browser
+        Exec=zen-browser
+        Icon=zen-browser
+        Type=Application
+        Categories=Network;WebBrowser;
+        EOF
 
-      mkdir -p $out/share/icons/hicolor/128x128/apps
-      # The tarball contains a 'browser' directory with the icon
-      cp $out/lib/zen-browser/browser/chrome/icons/default/default128.png $out/share/icons/hicolor/128x128/apps/zen-browser.png
+        mkdir -p $out/share/icons/hicolor/128x128/apps
+        cp ${real_zen}/lib/zen-browser/browser/chrome/icons/default/default128.png $out/share/icons/hicolor/128x128/apps/zen-browser.png
+      '';
+    };
 
-    '';
-  };
-
-  # Definition for normcap-wrapped (as a peer to zen-browser)
   normcap-wrapped = pkgs.writeShellScriptBin "normcap" ''
     #!${pkgs.stdenv.shell}
     export QT_QPA_PLATFORM=wayland
+    # ADDED: Force the platform theme to be qt5ct
+    export QT_QPA_PLATFORMTHEME=qt5ct
     export XDG_CURRENT_DESKTOP=Hyprland
     exec ${pkgs.normcap}/bin/normcap "$@"
   '';
@@ -183,7 +198,7 @@
     neovide
     rstudioWrapper
     hyprls
-    vscode
+    vscode-fhs
     zen-browser
     lazygit
     lazycli
