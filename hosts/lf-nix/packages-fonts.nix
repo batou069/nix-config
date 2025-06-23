@@ -37,10 +37,10 @@
       owner = "zen-browser";
       repo = "zen";
       rev = "v${version}"; # Pinned to a specific release tag
-      sha256 = "sha256-2b8h+hGvJg1iYlq+t/G+e/Lg1iYlq+t/G+e/Lg1iYlq+t="; # This is a placeholder!
+      sha256 = ""; # This is a placeholder!
     };
 
-    cargoSha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # This is a placeholder!
+    cargoSha256 = ""; # This is a placeholder!
 
     # Dependencies needed to build Tauri apps
     nativeBuildInputs = with pkgs; [ pkg-config ];
