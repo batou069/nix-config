@@ -1,6 +1,3 @@
-# 💫 https://github.com/JaKooLit 💫 #
-# Packages and Fonts config including the "programs" options
-
 { pkgs, inputs, ...}: let
 
   python-packages = pkgs.python312.withPackages (
@@ -31,47 +28,33 @@
   };
 
 
-  zen-browser = let
-    real_zen + pkgs.stdenv.mkDerivation rec {
-      pname = "zen-browser";
-      version = "1.13.2b";
-      src = pkgs.fetchurl {
-        url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
-        sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
-      };
-      # autoPatchelfHook is essential for patching the bundled libraries.
-      nativeBuildInputs = [ pkgs.autoPatchelfHook ];
-      # These are the system libraries the browser will need.
-      buildInputs = with pkgs; [
-        alsa-lib gtk3 cairo gdk-pixbuf glib dbus openssl librsvg
-      ];
-      # A safeguard against breaking the pre-compiled binary.
-      dontStrip = true;
-      installPhase = ''
-        mkdir -p $out/lib/zen-browser
-        mv * $out/lib/zen-browser/
-      '';
+  zen-browser = pkgs.stdenv.mkDerivation rec {
+    pname = "zen-browser";
+    version = "1.13.2b";
+    src = pkgs.fetchurl {
+      url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
+      sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
     };
-  in
-    # This is the final package that gets installed. It's a wrapper script.
-    pkgs.symlinkJoin {
-      name = "zen-browser";
-      paths = [ real_zen ]; # Include the real binary package
+    nativeBuildInputs = [ pkgs.autoPatchelfHook ];
 
-      # Create the wrapper script that points to the real binary
-      nativeBuildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/zen-browser \
-          --set PROFILE_DIR "$HOME/.config/zen-browser-profile" \
-          --run "mkdir -p \"\$PROFILE_DIR\"" \
-          --add-flags "--profile \"\$PROFILE_DIR\""
+    buildInputs = with pkgs; [
+      alsa-lib gtk3 cairo gdk-pixbuf glib dbus openssl librsvg
+    ];
+
+    dontStrip = true;
+
+    installPhase = ''
+      # 1. Install the browser's core files into a lib directory
+      mkdir -p $out/lib/zen-browser
+      mv * $out/lib/zen-browser/
+
+      # 2. Create the executable wrapper script in $out/bin
+      # This script will set up the profile and then run the real binary.
+      makeWrapper $out/lib/zen-browser/zen-bin $out/bin/zen-browser \
+        --set-default PROFILE_DIR "$HOME/.config/zen-browser-profile" \
+        --run "mkdir -p \"\$PROFILE_DIR\"" \
+        --add-flags "--profile \"\$PROFILE_DIR\""   
         
-        # Recreate the executable symlink to point to our new wrapper
-        ln -sf $out/bin/zen-browser $out/bin/zen-bin
-      '';
-
-      # Create the .desktop file
-      passthru.updateScript = pkgs.writeShellScript "update-zen-browser" ''
         mkdir -p $out/share/applications
         cat > $out/share/applications/zen-browser.desktop <<EOF
         [Desktop Entry]
@@ -79,9 +62,9 @@
         Exec=zen-browser
         Icon=zen-browser
         Type=Application
-        Categories=Network;WebBrowser;
+        Categories=Network;WebBrowser;Internet
         EOF
-
+        # 4. Installing Icon
         mkdir -p $out/share/icons/hicolor/128x128/apps
         cp ${real_zen}/lib/zen-browser/browser/chrome/icons/default/default128.png $out/share/icons/hicolor/128x128/apps/zen-browser.png
       '';
