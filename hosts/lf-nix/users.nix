@@ -3,16 +3,13 @@
 
 { pkgs, username, ... }:
 
-let
-  inherit (import ./variables.nix) gitUsername;
-in
 {
   users = { 
     mutableUsers = true;
     users."${username}" = {
       homeMode = "755";
       isNormalUser = true;
-      description = "${gitUsername}";
+      description = "Laurent Flaster";
       extraGroups = [
         "networkmanager"
         "wheel"
@@ -34,7 +31,7 @@ in
   }; 
   
   environment.shells = with pkgs; [ zsh ];
-  environment.systemPackages = with pkgs; [ lsd bat fd ]; 
+  environment.systemPackages = with pkgs; [ lsd bat fd fzf ]; 
     
   programs = {
   # Zsh configuration
