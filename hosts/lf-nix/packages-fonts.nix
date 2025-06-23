@@ -165,7 +165,11 @@
     vscode
     # The custom zen-browser package
     zen-browser
- 
+    lazygit
+    lazycli
+    lazydocker
+    lazyjournal
+    bitwarden-menu
   ]) ++ [
       python-packages # Add the python environment
       r-with-packages # Add the R environment
@@ -216,6 +220,7 @@ fonts = {
 
     git = {
       enable = true;
+      package = pkgs.gitFull;
       config = {
         # Default user (GitHub)
         user = {
