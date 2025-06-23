@@ -34,7 +34,7 @@
     src = pkgs.fetchFromGitHub {
       owner = "zen-browser";
       repo = "zen";
-      rev = "v${version}; # Pinned to a specific release tag
+      rev = "v${version}"; # Pinned to a specific release tag
       sha256 = "sha256-2b8h+hGvJg1iYlq+t/G+e/Lg1iYlq+t/G+e/Lg1iYlq+t="; # This is a placeholder!
     };
 
@@ -162,7 +162,7 @@
     neovide
     rstudioWrapper
     hyprls
-
+    vscode
     # The custom zen-browser package
     zen-browser
  
@@ -235,24 +235,9 @@ fonts = {
       };
     };
 
-    fzf = {
-      enable = true; # Ensures fzf is installed
-      keybindings = true; # Enables Ctrl+T and Ctrl+R
-      fuzzyCompletion = true; # Enables **<Tab>
-    };
-
-
-    # ADDED: Nixy way to manage vscode
-    vscode = {
-      enable = true;
-      # If you need extensions that don't work well, you can use this instead:
-      # package = pkgs.vscode.fhs;
-    };
-
     waybar.enable = true;
     hyprlock.enable = true;
     firefox.enable = true;
-    git.enable = true;
     nm-applet.indicator = true;
     neovim.enable = true;
 
