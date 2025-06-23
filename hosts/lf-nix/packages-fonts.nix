@@ -23,9 +23,11 @@
         ]
     );
 
-  r-with-packages = pkgs.R.withPackages (ps: with ps; [
-    IRkernel
-  ]);
+  r-with-packages = pkgs.rWrapper.override {
+    packages = with pkgs.rPackages; [
+      IRkernel
+    ];
+  };
 
   zen-browser = pkgs.rustPlatform.buildRustPackage rec {
     pname = "zen-browser";
@@ -140,7 +142,6 @@
 
     # --- MY PACKAGES ---
     # Your requested packages
-    git-credential-libsecret
     yq-go # Note: The package is named yq-go
     figlet
     bitwarden-cli
