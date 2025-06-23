@@ -220,19 +220,21 @@
   };
 
 
-  # ADDED: Systemd services for initial setup tasks
+
   systemd.services = {
     # Service to clone your private GitLab repository
     initial-clone-gitlab = {
       description = "Initial clone of private GitLab repository";
-      wantedBy = [ "multi-user.target" ];
-      # Fix for the network warning
       wants = [ "network-online.target" ];
       after = [ "network-online.target" ];
+      # ADD THIS BLOCK: Make commands available to the script
+      path = [
+        pkgs.gitFull      # Provides 'git'
+        pkgs.util-linux   # Provides 'runuser'
+      ];
       script = ''
         if [ ! -d "/home/${username}/git/laurent.flaster" ]; then
           mkdir -p /home/${username}/git
-          # CORRECTED: Only set the user, not the group
           chown ${username} /home/${username}/git
           runuser -u ${username} -- git clone https://git.infinitylabs.co.il/ilrd/ramat-gan/ai3/laurent.flaster.git /home/${username}/git/laurent.flaster
         fi
@@ -247,14 +249,16 @@
     # Service to clone your Obsidian Brain repository
     initial-clone-brain = {
       description = "Initial clone of Obsidian Brain repository";
-      wantedBy = [ "multi-user.target" ];
-      # Fix for the network warning
       wants = [ "network-online.target" ];
       after = [ "network-online.target" ];
+      # ADD THIS BLOCK: Make commands available to the script
+      path = [
+        pkgs.gitFull      # Provides 'git'
+        pkgs.util-linux   # Provides 'runuser'
+      ];
       script = ''
         if [ ! -d "/home/${username}/Obsidian/brain" ]; then
           mkdir -p /home/${username}/Obsidian
-          # CORRECTED: Only set the user, not the group
           chown ${username} /home/${username}/Obsidian
           runuser -u ${username} -- git clone https://github.com/batou069/brain.git /home/${username}/Obsidian/brain
         fi
