@@ -299,6 +299,17 @@
 
   services.pulseaudio.enable = false; # stable branch
 
+  # Set system-wide default applications for MIME types and URI schemes
+  xdg.mime.defaultApplications = {
+    # Set Zen as the default for web links
+    "text/html" = "zen-browser.desktop";
+    "x-scheme-handler/http" = "zen-browser.desktop";
+    "x-scheme-handler/https" = "zen-browser.desktop";
+
+    # Tell the system that VSCode handles vscode:// links
+    "x-scheme-handler/vscode" = "vscode.desktop";
+  };
+
   # Bluetooth
   hardware = {
   	bluetooth = {
@@ -378,6 +389,20 @@
 
   # For Electron apps to use wayland
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
+  programs = {
+  # Zsh configuration
+    zsh = {
+    	enable = true;
+	enableCompletion = true;
+        ohMyZsh.enable = false;
+      
+        autosuggestions.enable = false;
+        syntaxHighlighting.enable = false;
+        promptInit = "";
+      };
+   };
+
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

@@ -30,43 +30,56 @@
   };
 
 
-  zen-browser = pkgs.stdenv.mkDerivation rec {
-    pname = "zen-browser";
-    version = "1.13.2b";
-
-    src = pkgs.fetchurl {
-      url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
-      sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
+  zen-browser = let
+    real_zen + pkgs.stdenv.mkDerivation rec {
+      pname = "zen-browser";
+      version = "1.13.2b";
+      src = pkgs.fetchurl {
+        url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
+        sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
+      };
+      # autoPatchelfHook is essential for patching the bundled libraries.
+      nativeBuildInputs = [ pkgs.autoPatchelfHook ];
+      # These are the system libraries the browser will need.
+      buildInputs = with pkgs; [
+        alsa-lib gtk3 cairo gdk-pixbuf glib dbus openssl librsvg
+      ];
+      # A safeguard against breaking the pre-compiled binary.
+      dontStrip = true;
+      installPhase = ''
+        mkdir -p $out/lib/zen-browser
+        mv * $out/lib/zen-browser/
+      '';
     };
+  in
 
-    # autoPatchelfHook is essential for patching the bundled libraries.
-    nativeBuildInputs = [ pkgs.autoPatchelfHook ];
-
-    # These are the system libraries the browser will need.
-    buildInputs = with pkgs; [
-            alsa-lib gtk3 cairo gdk-pixbuf glib dbus openssl librsvg
-    ];
-
-    # A safeguard against breaking the pre-compiled binary.
-    dontStrip = true;
-
-    # This install script now perfectly matches the tarball's structure.
-    installPhase = ''
-      # Create a directory in the output path to hold the browser files.
-      mkdir -p $out/lib/zen-browser
-
-      # Move the *contents* of the unpacked 'zen' directory into our new directory.
-      mv * $out/lib/zen-browser/
-
-      # Create a symlink in $out/bin so you can run `zen-browser` from your terminal.
       mkdir -p $out/bin
       ln -s $out/lib/zen-browser/zen-bin $out/bin/zen-browser
+
+      mkdir -p $out/share/applications
+      cat > $out/share/applications/zen-browser.desktop <<EOF
+      [Desktop Entry]
+      Name=Zen Browser
+      Exec=zen-browser
+      Icon=zen-browser
+      Type=Application
+      Categories=Network;WebBrowser;
+      EOF
+
+      mkdir -p $out/share/icons/hicolor/128x128/apps
+      # The tarball contains a 'browser' directory with the icon
+      cp $out/lib/zen-browser/browser/chrome/icons/default/default128.png $out/share/icons/hicolor/128x128/apps/zen-browser.png
+
     '';
   };
 
-
-
-
+  # Definition for normcap-wrapped (as a peer to zen-browser)
+  normcap-wrapped = pkgs.writeShellScriptBin "normcap" ''
+    #!${pkgs.stdenv.shell}
+    export QT_QPA_PLATFORM=wayland
+    export XDG_CURRENT_DESKTOP=Hyprland
+    exec ${pkgs.normcap}/bin/normcap "$@"
+  '';
 
   in 
 
@@ -146,6 +159,9 @@
 
     # --- MY PACKAGES ---
     # Your requested packages
+    zoxide
+    starship    
+    fx
     yq-go # Note: The package is named yq-go
     figlet
     bitwarden-cli
@@ -155,7 +171,7 @@
     tmux
     zellij
     gedit
-    normcap
+    normcap-wrapped
     bitwarden-desktop
     twingate
     vlc
@@ -168,7 +184,6 @@
     rstudioWrapper
     hyprls
     vscode
-    # The custom zen-browser package
     zen-browser
     lazygit
     lazycli
@@ -208,8 +223,7 @@ fonts = {
       terminus_font
       victor-mono
       nerd-fonts.fantasque-sans-mono
-      zoxide
-      starship
+
     ];
   };
   
