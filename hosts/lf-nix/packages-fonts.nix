@@ -40,7 +40,7 @@
       sha256 = ""; # This is a placeholder!
     };
 
-    cargoSha256 = ""; # This is a placeholder!
+    cargoSha256 = "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="; # This is a placeholder!
 
     # Dependencies needed to build Tauri apps
     nativeBuildInputs = with pkgs; [ pkg-config ];
