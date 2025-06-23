@@ -301,13 +301,20 @@
 
   # Set system-wide default applications for MIME types and URI schemes
   xdg.mime.defaultApplications = {
-    # Set Zen as the default for web links
+    # Web Browser
     "text/html" = "zen-browser.desktop";
     "x-scheme-handler/http" = "zen-browser.desktop";
     "x-scheme-handler/https" = "zen-browser.desktop";
 
-    # Tell the system that VSCode handles vscode:// links
+    # VSCode Auth
     "x-scheme-handler/vscode" = "vscode.desktop";
+
+    # ADDED: Image Viewer Defaults
+    "image/jpeg" = "loupe.desktop";
+    "image/png" = "loupe.desktop";
+    "image/gif" = "loupe.desktop";
+    "image/bmp" = "loupe.desktop";
+    "image/svg+xml" = "loupe.desktop";
   };
 
   # Bluetooth
