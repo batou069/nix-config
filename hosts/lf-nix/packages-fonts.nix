@@ -31,17 +31,19 @@
 
   zen-browser = pkgs.rustPlatform.buildRustPackage rec {
     pname = "zen-browser";
-    version = "1.13.2b"; # You can update this
+    version = "1.13.2b";
 
     src = pkgs.fetchFromGitHub {
       owner = "zen-browser";
       repo = "desktop";
-      rev = "v${version}"; # Pinned to a specific release tag
-      sha256 = "sha256-LGoGq49lShsaBkZyTuBOauP3t3Syd4Wu5NUBACcsucw="; # This is a placeholder!
+      rev = "v${version}";
+      # This is the real source hash you already correctly found.
+      sha256 = "sha256-LGoGq49lShsaBkZyTuBOauP3t3Syd4Wu5NUBACcsucw=";
     };
 
-    cargoSha256 = "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="; # This is a placeholder!
-
+  # This is the key. It tells Nix to use the lock file from the source.
+  # We no longer need cargoHash or cargoSha256 at all.
+  cargoLock.lockFile = "${src}/Cargo.lock";
     # Dependencies needed to build Tauri apps
     nativeBuildInputs = with pkgs; [ pkg-config ];
     buildInputs = with pkgs; [
