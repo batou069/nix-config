@@ -27,42 +27,42 @@
     ];
   };
 
-  zen-browser = let
-    real-zen = pkgs.stdenv.mkDerivation rec {
-      pname = "zen-browser";
-      version = "1.13.2b";
-      src = pkgs.fetchurl {
-        url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
-        sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
-      };
-      nativeBuildInputs = [ pkgs.autoPatchelfHook ];
-      buildInputs = with pkgs; [ alsa-lib gtk3 cairo gdk-pixbuf glib dbus openssl librsvg ];
-      dontStrip = true;
 
-      installPhase = ''
-        mkdir -p $out/lib/zen-browser
-        mv * $out/lib/zen-browser/
-      '';
-    };
 
-  # Now, outside the 'real_zen' definition but still inside the 'let' block,
-  # we define the final package that will be installed on the system.
-  in pkgs.stdenv.mkDerivation {
+
+  zen-browser = pkgs.stdenv.mkDerivation rec {
     pname = "zen-browser";
     version = "1.13.2b";
 
-    # This derivation has no source; it just uses other packages.
-    nativeBuildInputs = [ pkgs.makeWrapper ];
+    src = pkgs.fetchurl {
+        url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
+        sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
+    };
 
-    # This is the install script for the *final* package.
+    # All the tools we need for the build and install process
+    nativeBuildInputs = [ pkgs.autoPatchelfHook pkgs.makeWrapper ];
+
+    # All the libraries the binary needs to be patched against
+    buildInputs = with pkgs; [
+      alsa-lib gtk3 cairo gdk-pixbuf glib dbus openssl librsvg
+    ];
+
+    dontStrip = true;
+
+    # A single, sequential install script that does everything
     installPhase = ''
-      # Create the wrapper script in $out/bin
-      makeWrapper ${real_zen}/lib/zen-browser/zen-bin $out/bin/zen-browser \
+      # 1. Install the browser's core files into a lib directory
+      mkdir -p $out/lib/zen-browser
+      mv * $out/lib/zen-browser/
+
+      # 2. Create the executable wrapper script in $out/bin
+      #    This script sets up the persistent profile and runs the real binary.
+      makeWrapper $out/lib/zen-browser/zen-bin $out/bin/zen-browser \
         --set-default PROFILE_DIR "$HOME/.config/zen-browser-profile" \
         --run "mkdir -p \"\$PROFILE_DIR\"" \
         --add-flags "--profile \"\$PROFILE_DIR\""
 
-      # Create the .desktop file
+      # 3. Create the .desktop file for the application menu
       mkdir -p $out/share/applications
       cat > $out/share/applications/zen-browser.desktop <<EOF
       [Desktop Entry]
@@ -73,9 +73,9 @@
       Categories=Network;WebBrowser;
       EOF
 
-      # Install the icon by copying it from the 'real_zen' package
+      # 4. Install the icon
       mkdir -p $out/share/icons/hicolor/128x128/apps
-      cp ${real_zen}/lib/zen-browser/browser/chrome/icons/default/default128.png $out/share/icons/hicolor/128x128/apps/zen-browser.png
+      cp $out/lib/zen-browser/browser/chrome/icons/default/default128.png $out/share/icons/hicolor/128x128/apps/zen-browser.png
     '';
   };
 
