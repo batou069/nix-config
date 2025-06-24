@@ -29,10 +29,7 @@
 	    inherit host;
 	  };
 	  modules = [ 
-            ./hosts/${host}/hardware.nix
-	    ./hosts/${host}/users.nix
-	    ./hosts/${host}/packages-fonts.nix
-            ./hosts/${host}/config.nix
+            ./hosts/lf-nix/config.nix
 	  ];
 	};
       };

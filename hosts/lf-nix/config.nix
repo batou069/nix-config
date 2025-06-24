@@ -3,13 +3,17 @@
   inherit (import ./variables.nix) keyboardLayout;
     
   in {
-#  imports = [
-#    ./hardware.nix
-#    ./users.nix
-##    ./packages-fonts.nix
-#    ../../modules/vm-guest-services.nix
-#    ../../modules/local-hardware-clock.nix
-#  ];
+  imports = [
+    ./hardware.nix
+    ./users.nix
+    ./packages-fonts.nix
+    ../../modules/amd-drivers.nix
+    ../../modules/nvidia-drivers.nix
+    ../../modules/nvidia-prime-drivers.nix
+    ../../modules/intel-drivers.nix
+    ../../modules/vm-guest-services.nix
+    ../../modules/local-hardware-clock.nix
+  ];
 
   # BOOT related stuff
   boot = {
@@ -45,10 +49,6 @@
 
     loader.timeout = 5;    
   			
-    # Bootloader GRUB theme, configure below
-
-    ## -end of BOOTLOADERS----- ##
-  
     # Make /tmp a tmpfs
     tmp = {
       useTmpfs = false;
@@ -68,8 +68,8 @@
     plymouth.enable = true;
   };
 
-#  vm.guest-services.enable = false;
-#  local.hardware-clock.enable = false;
+    vm.guest-services.enable = false;
+    local.hardware-clock.enable = false;
 
   # networking
   networking = {
@@ -79,10 +79,10 @@
   }; 
 
   # Set your time zone.
-  services.automatic-timezoned.enable = true; #based on IP location
+  # services.automatic-timezoned.enable = true; #based on IP location
   
   #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-  #time.timeZone = "Asia/Seoul"; # Set local timezone
+  time.timeZone = "Asia/Jerusalem"; # Set local timezone
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -96,7 +96,7 @@
     LC_NUMERIC = "he_IL.UTF-8";
     LC_PAPER = "he_IL.UTF-8";
     LC_TELEPHONE = "he_IL.UTF-8";
-    LC_TIME = "he_IL.UTF-8";
+    LC_TIME = "en_IL.UTF-8";
   };
 
 
@@ -137,17 +137,17 @@
         pulse.enable = true;
         wireplumber.enable = true;
 
-        # extraConfig = {
-        #   pipewire = {
-        #     "context.properties" = {
-        #       "default.clock.rate"          = 48000;
-        #       "default.clock.allowed-rates" = [ 44100 48000 96000 192000 ];
-        #       "default.clock.quantum"       = 1024;
-        #       "default.clock.min-quantum"   = 1024;
-        #       "default.clock.max-quantum"   = 1024;
-        #     };
-        #   };
-        # };
+         extraConfig = {
+           pipewire = {
+             "context.properties" = {
+               "default.clock.rate"          = 48000;
+               "default.clock.allowed-rates" = [ 44100 48000 96000 192000 ];
+               "default.clock.quantum"       = 1024;
+               "default.clock.min-quantum"   = 1024;
+               "default.clock.max-quantum"   = 1024;
+             };
+           };
+         };
       };
 	
 
@@ -173,8 +173,8 @@
 	
     blueman.enable = true;
   	
-  	#hardware.openrgb.enable = true;
-  	#hardware.openrgb.motherboard = "amd";
+    #hardware.openrgb.enable = true;
+    #hardware.openrgb.motherboard = "amd";
 
     fwupd.enable = true;
 
@@ -203,7 +203,6 @@
       dataDir = "/home/${username}";
       configDir = "/home/${username}/.config/syncthing";
     };
-
   };
   
   systemd.services.flatpak-repo = {
@@ -216,29 +215,29 @@
 
 
   systemd.services = {
-    # Service to clone your private GitLab repository
-    initial-clone-gitlab = {
-      description = "Initial clone of private GitLab repository";
-      wants = [ "network-online.target" ];
-      after = [ "network-online.target" ];
-      # ADD THIS BLOCK: Make commands available to the script
-      path = [
-        pkgs.gitFull      # Provides 'git'
-        pkgs.util-linux   # Provides 'runuser'
-      ];
-      script = ''
-        if [ ! -d "/home/${username}/git/laurent.flaster" ]; then
-          mkdir -p /home/${username}/git
-          chown ${username} /home/${username}/git
-          runuser -u ${username} -- git clone https://git.infinitylabs.co.il/ilrd/ramat-gan/ai3/laurent.flaster.git /home/${username}/git/laurent.flaster
-        fi
-      '';
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        User = "root";
-      };
-    };
+#    # Service to clone your private GitLab repository
+#    initial-clone-gitlab = {
+#      description = "Initial clone of private GitLab repository";
+#      wants = [ "network-online.target" ];
+#      after = [ "network-online.target" ];
+#      # ADD THIS BLOCK: Make commands available to the script
+#      path = [
+#        pkgs.gitFull      # Provides 'git'
+#        pkgs.util-linux   # Provides 'runuser'
+#      ];
+#      script = ''
+#        if [ ! -d "/home/${username}/git/laurent.flaster" ]; then
+#          mkdir -p /home/${username}/git
+#          chown ${username} /home/${username}/git
+#          runuser -u ${username} -- git clone https://git.infinitylabs.co.il/ilrd/ramat-gan/ai3/laurent.flaster.git /home/${username}/git/laurent.flaster
+#        fi
+#      '';
+#      serviceConfig = {
+#        Type = "oneshot";
+#        RemainAfterExit = true;
+#        User = "root";
+#      };
+#    };
 
     # Service to clone your Obsidian Brain repository
     initial-clone-brain = {
@@ -263,8 +262,7 @@
         User = "root";
       };
     };
-  };
-
+};
   # zram
   zramSwap = {
 	  enable = true;
@@ -291,10 +289,14 @@
      logitech.wireless.enableGraphical = true;
   }; 
 
-  hardware.graphics = {
+#  hardware.graphics = {
+#    enable = true;
+#  };
+
+   hardware.graphics = {
     enable = true;
     enable32Bit = true;
-  };
+   };
 
   # Set system-wide default applications for MIME types and URI schemes
   xdg.mime.defaultApplications = {
@@ -405,11 +407,6 @@
 
   environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
 
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-  };
-
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
@@ -422,5 +419,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 }

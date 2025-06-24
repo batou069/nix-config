@@ -3,7 +3,7 @@
 {
   users = { 
     mutableUsers = true;
-    users."lf" = {
+    users."${username}" = {
       homeMode = "755";
       isNormalUser = true;
       description = "Laurent Flaster";
@@ -22,8 +22,17 @@
     defaultUserShell = pkgs.zsh;
   }; 
   
-  environment.shells = with pkgs; [ zsh ];
-  environment.systemPackages = with pkgs; [ lsd bat fd fzf ]; 
+#  environment.shells = with pkgs; [ zsh ];
+  environment.systemPackages = with pkgs; [ 
+         lsd
+	 bat
+	 fd
+	 fzf
+	 ripgrep
+#	 grip-grab
+	 repgrep 
+	 ripgrep-all
+     ]; 
 
   systemd.user.services.create-nvim-symlinks = {
     description = "Create Neovim config symlinks";
