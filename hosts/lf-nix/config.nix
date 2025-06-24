@@ -3,17 +3,13 @@
   inherit (import ./variables.nix) keyboardLayout;
     
   in {
-  imports = [
-    ./hardware.nix
-    ./users.nix
-    ./packages-fonts.nix
-    ../../modules/amd-drivers.nix
-    ../../modules/nvidia-drivers.nix
-    ../../modules/nvidia-prime-drivers.nix
-    ../../modules/intel-drivers.nix
-    ../../modules/vm-guest-services.nix
-    ../../modules/local-hardware-clock.nix
-  ];
+#  imports = [
+#    ./hardware.nix
+#    ./users.nix
+##    ./packages-fonts.nix
+#    ../../modules/vm-guest-services.nix
+#    ../../modules/local-hardware-clock.nix
+#  ];
 
   # BOOT related stuff
   boot = {
@@ -72,19 +68,8 @@
     plymouth.enable = true;
   };
 
-  # Extra Module Options
-  drivers = {
-    amdgpu.enable = true;
-    intel.enable = true;
-    nvidia.enable = false;
-    nvidia-prime = {
-       enable = false;
-         intelBusID = "";
-         nvidiaBusID = "";
-    };
-  };
-  vm.guest-services.enable = false;
-  local.hardware-clock.enable = false;
+#  vm.guest-services.enable = false;
+#  local.hardware-clock.enable = false;
 
   # networking
   networking = {
@@ -121,20 +106,21 @@
       enable = false;
       xkb = {
         layout = "${keyboardLayout}";
-        variant = "";
+         variant = "";
       };
     };
     
     greetd = {
       enable = true;
-      vt = 3;
+      vt = 1;
       settings = {
         default_session = {
           user = username;
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland"; # start Hyprland with a TUI login manager
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
         };
       };
     };
+
     
     smartd = {
       enable = false;
@@ -144,14 +130,29 @@
     gvfs.enable = true;
     tumbler.enable = true;
 
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      wireplumber.enable = true;
-  	  };
+      pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+        wireplumber.enable = true;
+
+        # extraConfig = {
+        #   pipewire = {
+        #     "context.properties" = {
+        #       "default.clock.rate"          = 48000;
+        #       "default.clock.allowed-rates" = [ 44100 48000 96000 192000 ];
+        #       "default.clock.quantum"       = 1024;
+        #       "default.clock.min-quantum"   = 1024;
+        #       "default.clock.max-quantum"   = 1024;
+        #     };
+        #   };
+        # };
+      };
 	
+
+
+
     #pulseaudio.enable = false; #unstable
     udev.enable = true;
     envfs.enable = true;
@@ -290,6 +291,11 @@
      logitech.wireless.enableGraphical = true;
   }; 
 
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
   # Set system-wide default applications for MIME types and URI schemes
   xdg.mime.defaultApplications = {
     # Web Browser
@@ -311,14 +317,14 @@
 
   # Bluetooth
   hardware = {
-  	bluetooth = {
-	    enable = true;
-	    powerOnBoot = true;
-	    settings = {
-		    General = {
-		      Enable = "Source,Sink,Media,Socket";
-		      Experimental = true;
-		    };
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+      settings = {
+        General = {
+	  Enable = "Source,Sink,Media,Socket";
+	  Experimental = true;
+	};
       };
     };
   };
@@ -379,11 +385,6 @@
   virtualisation.docker.enable = true;
 
 
-  # OpenGL
-  hardware.graphics = {
-    enable = true;
-  };
-
   console.keyMap = "${keyboardLayout}";
 
   # For Electron apps to use wayland
@@ -404,6 +405,11 @@
 
   environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
 
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+  };
+
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
@@ -416,5 +422,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.05"; # Did you read the comment?
 }

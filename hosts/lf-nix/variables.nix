@@ -1,6 +1,3 @@
-# 💫 https://github.com/JaKooLit 💫 #
-# Variables
-
 {
   # Hyprland Settings
   extraMonitorSettings = "";
