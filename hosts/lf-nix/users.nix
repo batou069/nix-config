@@ -1,9 +1,9 @@
 { pkgs, username, ... }:
-
+# users.nix
 {
   users = { 
     mutableUsers = true;
-    users."${username}" = {
+    users."lf" = {
       homeMode = "755";
       isNormalUser = true;
       description = "Laurent Flaster";
@@ -16,21 +16,14 @@
         "video" 
         "input" 
         "audio"
-	"docker"
-      ];
-
-    # define user packages here
-    packages = with pkgs; [
+        "docker"
       ];
     };
-    
     defaultUserShell = pkgs.zsh;
   }; 
   
   environment.shells = with pkgs; [ zsh ];
   environment.systemPackages = with pkgs; [ lsd bat fd fzf ]; 
-    
-
 
   systemd.user.services.create-nvim-symlinks = {
     description = "Create Neovim config symlinks";

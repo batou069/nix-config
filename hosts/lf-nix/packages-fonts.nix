@@ -45,6 +45,8 @@
     # All the libraries the binary needs to be patched against
     buildInputs = with pkgs; [
       alsa-lib gtk3 cairo gdk-pixbuf glib dbus openssl librsvg
+      xdg-desktop-portal-gtk      # Add the GTK portal
+      xdg-desktop-portal-hyprland # Add the Hyprland portal
     ];
 
     dontStrip = true;
@@ -102,7 +104,7 @@
     clang
     curl
     cpufrequtils
-    duf
+    duf                                # Utility For Viewing Disk Usage In Terminal
     findutils
     ffmpeg   
     glib #for gsettings to work
@@ -117,7 +119,7 @@
     wget
     xdg-user-dirs
     xdg-utils
-
+    sof-firmware # added due to sound issues, missing microphone
     fastfetch
     (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
     #ranger
@@ -197,6 +199,16 @@
     lazydocker
     lazyjournal
     bitwarden-menu
+
+    # FROM ZaneyOS
+    appimage-run # Needed For AppImage Support
+    eza # Beautiful ls Replacement
+    hyprpicker # Color Picker
+    lm_sensors # Used For Getting Hardware Temps        
+    lshw # Detailed Hardware Information
+    ncdu # Disk Usage Analyzer With Ncurses Interface
+    picard # For Changing Music Metadata & Getting Cover Art
+    usbutils # Good Tools For USB Devices    
   ]) ++ [
       python-packages # Add the python environment
       r-with-packages # Add the R environment
@@ -235,15 +247,6 @@ fonts = {
   };
   
   programs = {
-	  hyprland = {
-      enable = true;
-     	  #package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland; #hyprland-git
-		    #portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland; #xdph-git
-     	  
-        portalPackage = pkgs.xdg-desktop-portal-hyprland; # xdph none git
-  	  xwayland.enable = true;
-    };
-
     git = {
       enable = true;
       package = pkgs.gitFull;
@@ -270,7 +273,10 @@ fonts = {
     hyprlock.enable = true;
     firefox.enable = true;
     nm-applet.indicator = true;
-    neovim.enable = true;
+    neovim = {
+      enable = true;
+      # defaultEditor = true;
+    };
 
     thunar.enable = true;
     thunar.plugins = with pkgs.xfce; [
@@ -287,12 +293,9 @@ fonts = {
     
     steam = {
       enable = true;
-      gamescopeSession.enable = true;
-     # remotePlay.openFirewall = true;
-      #dedicatedServer.openFirewall = true;
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = false;
     };
-    
-    xwayland.enable = true;
 
     dconf.enable = true;
     seahorse.enable = true;
