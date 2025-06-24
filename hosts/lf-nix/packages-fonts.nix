@@ -18,7 +18,7 @@
         regex
         tabulate
         ipykernel
-        ]
+      ]
     );
 
   r-with-packages = pkgs.rWrapper.override {
@@ -44,7 +44,14 @@
 
     # All the libraries the binary needs to be patched against
     buildInputs = with pkgs; [
-      alsa-lib gtk3 cairo gdk-pixbuf glib dbus openssl librsvg
+      alsa-lib
+      gtk3
+      cairo
+      gdk-pixbuf
+      glib
+      dbus
+      openssl
+      librsvg
       xdg-desktop-portal-gtk      # Add the GTK portal
       xdg-desktop-portal-hyprland # Add the Hyprland portal
     ];
@@ -197,7 +204,7 @@
     lazygit
     lazycli
     lazydocker
-    lazyjournal
+   # lazyjournal
     bitwarden-menu
 
     # FROM ZaneyOS
@@ -226,10 +233,10 @@ fonts = {
       inter
       jetbrains-mono
       material-icons
-      maple-mono.NF
+      # maple-mono.NF
       minecraftia
-      nerd-fonts.im-writing
-      nerd-fonts.blex-mono
+      # nerd-fonts.im-writing
+      # nerd-fonts.blex-mono
       noto-fonts
       noto-fonts-emoji
       noto-fonts-cjk-sans
@@ -241,12 +248,19 @@ fonts = {
       symbola
       terminus_font
       victor-mono
-      nerd-fonts.fantasque-sans-mono
+      # nerd-fonts.fantasque-sans-mono
 
     ];
   };
   
   programs = {
+    hyprland = {
+      enable = true;
+      # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      portalPackage = pkgs.xdg-desktop-portal-hyprland;
+      xwayland.enable = true;
+    };
+
     git = {
       enable = true;
       package = pkgs.gitFull;
@@ -273,20 +287,16 @@ fonts = {
     hyprlock.enable = true;
     firefox.enable = true;
     nm-applet.indicator = true;
-    neovim = {
-      enable = true;
-      # defaultEditor = true;
-    };
-
+    neovim.enable = true;
     thunar.enable = true;
     thunar.plugins = with pkgs.xfce; [
-	exo
-	mousepad
-	thunar-archive-plugin
-	thunar-volman
-	tumbler
-        thunar-vcs-plugin
-        thunar-media-tags-plugin
+	  exo
+ 	  mousepad
+	  thunar-archive-plugin
+	  thunar-volman
+	  tumbler
+#      thunar-vcs-plugin
+      thunar-media-tags-plugin
     ];
 	
     virt-manager.enable = false;
@@ -321,4 +331,4 @@ fonts = {
     ];
     };
 
-  }
+}
