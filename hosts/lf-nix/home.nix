@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ pkgs, config, username, ... }:
 {
   # Home Manager version
   home.stateVersion = "24.11";
@@ -23,10 +23,10 @@
     description = "Create Neovim config symlinks";
     wantedBy = [ "default.target" ];
     script = ''
-      mkdir -p ${home.homeDirectory}/.config/nvim/lazyvim
-      mkdir -p ${home.homeDirectory}/.config/nvim/ksnvim
-      ln -sfn ${home.homeDirectory}/.config/nvim/lazyvim ${home.homeDirectory}/.config/lazyvim
-      ln -sfn ${home.homeDirectory}/.config/nvim/ksnvim ${home.homeDirectory}/.config/ksnvim
+    mkdir -p /home/${username}/.config/nvim/lazyvim
+      mkdir -p /home/${username}/.config/nvim/ksnvim
+      ln -sfn /home/${username}/.config/nvim/lazyvim /home/${username}/.config/lazyvim
+      ln -sfn /home/${username}/.config/nvim/ksnvim /home/${username}/.config/ksnvim
     '';
     serviceConfig = {
       Type = "oneshot";
