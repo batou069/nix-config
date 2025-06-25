@@ -163,6 +163,7 @@ zen-browser = pkgs.stdenv.mkDerivation rec {
 
     # --- MY PACKAGES ---
     # Your requested packages
+    stow
     zoxide
     starship
     fx
