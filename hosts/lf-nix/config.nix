@@ -7,9 +7,6 @@
     ./hardware.nix
     ./users.nix
     ./packages-fonts.nix
-    # ../../modules/amd-drivers.nix
-    # ../../modules/nvidia-drivers.nix
-    # ../../modules/nvidia-prime-drivers.nix
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
@@ -41,12 +38,7 @@
     ## BOOT LOADERS: NOTE USE ONLY 1. either systemd or grub  
     # Bootloader SystemD
     loader.systemd-boot.enable = true;
-  
-    loader.efi = {
-	    #efiSysMountPoint = "/efi"; #this is if you have separate /efi partition
-	    canTouchEfiVariables = true;
-  	  };
-
+    loader.efi.canTouchEfiVariables = true;
     loader.timeout = 5;    
   			
     # Make /tmp a tmpfs
@@ -75,7 +67,8 @@
   networking = {
     networkmanager.enable = true;
     hostName = "${host}";
-    timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
+    timeServers = options.networking.timeServers.default ++ [
+       "pool.ntp.org" ];
   }; 
 
   # Set your time zone.
@@ -116,7 +109,8 @@
       settings = {
         default_session = {
           user = username;
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet
+          --time --cmd Hyprland";
         };
       };
     };
@@ -136,12 +130,13 @@
         alsa.support32Bit = true;
         pulse.enable = true;
         wireplumber.enable = true;
-
-         extraConfig = {
+        extraConfig = {
            pipewire = {
              "context.properties" = {
                "default.clock.rate"          = 48000;
-               "default.clock.allowed-rates" = [ 44100 48000 88200 96000 176400 192000 352800 384000 705600 768000 ];
+               "default.clock.allowed-rates" = [ 44100 48000
+                88200 96000 176400 192000 352800 384000 705600 
+                768000 ];
                "default.clock.quantum"       = 1024;
                "default.clock.min-quantum"   = 1024;
                "default.clock.max-quantum"   = 1024;
@@ -181,10 +176,8 @@
     #hardware.openrgb.enable = true;
     #hardware.openrgb.motherboard = "amd";
 
-    fwupd.enable = true;
-
-    upower.enable = true;
-    
+    fwupd.enable = false;
+    upower.enable = true; 
     gnome.gnome-keyring.enable = true;
     
     #printing = {
@@ -209,15 +202,6 @@
       configDir = "/home/${username}/.config/syncthing";
     };
   };
-  
-  systemd.services.flatpak-repo = {
-    path = [ pkgs.flatpak ];
-    script = ''
-      flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    '';
-  };
-
-
 
   systemd.services = {
 #    # Service to clone your private GitLab repository
@@ -265,6 +249,8 @@
         Type = "oneshot";
         RemainAfterExit = true;
         User = "root";
+        PrivateTmp = false;
+        ProtectHome = false;
       };
     };
 };
@@ -389,8 +375,10 @@
     defaultNetwork.settings.dns_enabled = false;
   };
 
-  virtualisation.docker.enable = true;
-
+virtualisation.docker = {
+  enable = true;
+  rootless.enable = false;
+};
 
   console.keyMap = "${keyboardLayout}";
 
