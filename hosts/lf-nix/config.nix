@@ -7,9 +7,9 @@
     ./hardware.nix
     ./users.nix
     ./packages-fonts.nix
-    ../../modules/amd-drivers.nix
-    ../../modules/nvidia-drivers.nix
-    ../../modules/nvidia-prime-drivers.nix
+    # ../../modules/amd-drivers.nix
+    # ../../modules/nvidia-drivers.nix
+    # ../../modules/nvidia-prime-drivers.nix
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
@@ -141,14 +141,19 @@
            pipewire = {
              "context.properties" = {
                "default.clock.rate"          = 48000;
-               "default.clock.allowed-rates" = [ 44100 48000 96000 192000 ];
+               "default.clock.allowed-rates" = [ 44100 48000 88200 96000 176400 192000 352800 384000 705600 768000 ];
                "default.clock.quantum"       = 1024;
                "default.clock.min-quantum"   = 1024;
                "default.clock.max-quantum"   = 1024;
              };
            };
-         };
-      };
+          };
+          wireplumber.extraConfig = {
+                "51-disable-suspend" = {
+                  "monitor.session.rule.suspend-node.disabled" = true;
+                };
+              };
+            };
 	
 
 
@@ -390,7 +395,12 @@
   console.keyMap = "${keyboardLayout}";
 
   # For Electron apps to use wayland
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+	environment.sessionVariables = {
+	  NIXOS_OZONE_WL = "1"; # Enable Wayland Ozone platform for Electron apps
+	  ELECTRON_OZONE_PLATFORM_HINT = "wayland"; # Or "AUTO"
+	  # You might also try:
+	  # ELECTRON_ENABLE_WAYLAND = "1";
+	};
 
   programs = {
   # Zsh configuration

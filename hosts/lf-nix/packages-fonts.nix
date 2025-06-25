@@ -54,6 +54,7 @@
       librsvg
       xdg-desktop-portal-gtk      # Add the GTK portal
       xdg-desktop-portal-hyprland # Add the Hyprland portal
+      pipewire
     ];
 
     dontStrip = true;
@@ -71,16 +72,25 @@
         --run "mkdir -p \"\$PROFILE_DIR\"" \
         --add-flags "--profile \"\$PROFILE_DIR\""
 
-      # 3. Create the .desktop file for the application menu
-      mkdir -p $out/share/applications
-      cat > $out/share/applications/zen-browser.desktop <<EOF
-      [Desktop Entry]
-      Name=Zen Browser
-      Exec=zen-browser
-      Icon=zen-browser
-      Type=Application
-      Categories=Network;WebBrowser;
-      EOF
+      # # 3. Create the .desktop file for the application menu
+      # mkdir -p $out/share/applications
+      # cat > $out/share/applications/zen-browser.desktop <<EOF
+      # [Desktop Entry]
+      # Name=Zen Browser
+      # Exec=zen-browser
+      # Icon=zen-browser
+      # Type=Application
+      # Categories=Network;WebBrowser;
+      # EOF
+
+      desktopItem = pkgs.makeDesktopItem {
+        name = "Zen Browser";
+        desktopName = "Zen Browser";
+        exec = "zen-browser"; # Points to your wrapper script
+        icon = "zen-browser"; # Refers to the icon name you installed
+        categories = "Network;WebBrowser;";
+      };
+
 
       # 4. Install the icon
       mkdir -p $out/share/icons/hicolor/128x128/apps
@@ -91,9 +101,9 @@
   normcap-wrapped = pkgs.writeShellScriptBin "normcap" ''
     #!${pkgs.stdenv.shell}
     export QT_QPA_PLATFORM=wayland
-    # ADDED: Force the platform theme to be qt5ct
-    export QT_QPA_PLATFORMTHEME=qt5ct
+    export QT_QPA_PLATFORMTHEME=qt6ct
     export XDG_CURRENT_DESKTOP=Hyprland
+    export QT_LOGGING_RULES=qt5ct.debug=true
     exec ${pkgs.normcap}/bin/normcap "$@"
   '';
 
