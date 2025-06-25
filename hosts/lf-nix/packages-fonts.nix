@@ -116,7 +116,7 @@ zen-browser = pkgs.stdenv.mkDerivation rec {
     sof-firmware # added due to sound issues, missing microphone
     fastfetch
     (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
-    #ranger
+    # ranger
 
     # Hyprland Stuff
     # Buuild AGS v1 from source
@@ -192,7 +192,7 @@ zen-browser = pkgs.stdenv.mkDerivation rec {
     lazygit
     lazycli
     lazydocker
-   # lazyjournal
+   lazyjournal
     bitwarden-menu
     chromedriver
     google-chrome
@@ -222,10 +222,10 @@ fonts = {
       inter
       jetbrains-mono
       material-icons
-      # maple-mono.NF
+      maple-mono.NF
       minecraftia
-      # nerd-fonts.im-writing
-      # nerd-fonts.blex-mono
+      nerd-fonts.im-writing
+      nerd-fonts.blex-mono
       noto-fonts
       noto-fonts-emoji
       noto-fonts-cjk-sans
@@ -237,7 +237,7 @@ fonts = {
       symbola
       terminus_font
       victor-mono
-      # nerd-fonts.fantasque-sans-mono
+      nerd-fonts.fantasque-sans-mono
 
     ];
   };

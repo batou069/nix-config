@@ -2,8 +2,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     home-manager = {
-      url = "github:nix-community/home-manager/
-      release-25.05";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ags = {
@@ -41,14 +40,13 @@
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
                 home-manager.users.${username} = import ./hosts/lf-nix/home.nix;
-                home-manager.extraSpecialArgs = { inherit inputs; };
+                home-manager.extraSpecialArgs = { inherit inputs username; };
               }
             ];
           };
         };
 
-        homeConfigurations.${username} = home-manager.
-        lib.homeManagerConfiguration {
+        homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
             ./hosts/lf-nix/home.nix
@@ -58,8 +56,7 @@
               home.stateVersion = "24.11";
             }
           ];
-          extraSpecialArgs = { inherit inputs
-          username; };
+          extraSpecialArgs = { inherit inputs username; };
         };
       };
 }
