@@ -18,6 +18,8 @@
         regex
         tabulate
         ipykernel
+        selenium
+	beautifulsoup
       ]
     );
 
@@ -27,92 +29,67 @@
     ];
   };
 
+zen-browser = pkgs.stdenv.mkDerivation rec {
+  pname = "zen-browser";
+  version = "1.13.2b";
 
-
-
-  zen-browser = pkgs.stdenv.mkDerivation rec {
-    pname = "zen-browser";
-    version = "1.13.2b";
-
-    src = pkgs.fetchurl {
-        url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
-        sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
-    };
-
-    # All the tools we need for the build and install process
-    nativeBuildInputs = [ pkgs.autoPatchelfHook pkgs.makeWrapper ];
-
-    # All the libraries the binary needs to be patched against
-    buildInputs = with pkgs; [
-      alsa-lib
-      gtk3
-      cairo
-      gdk-pixbuf
-      glib
-      dbus
-      openssl
-      librsvg
-      xdg-desktop-portal-gtk      # Add the GTK portal
-      xdg-desktop-portal-hyprland # Add the Hyprland portal
-      pipewire
-    ];
-
-    dontStrip = true;
-
-    # A single, sequential install script that does everything
-    installPhase = ''
-      # 1. Install the browser's core files into a lib directory
-      mkdir -p $out/lib/zen-browser
-      mv * $out/lib/zen-browser/
-
-      # 2. Create the executable wrapper script in $out/bin
-      #    This script sets up the persistent profile and runs the real binary.
-      makeWrapper $out/lib/zen-browser/zen-bin $out/bin/zen-browser \
-        --set-default PROFILE_DIR "$HOME/.config/zen-browser-profile" \
-        --run "mkdir -p \"\$PROFILE_DIR\"" \
-        --add-flags "--profile \"\$PROFILE_DIR\""
-
-      # # 3. Create the .desktop file for the application menu
-      # mkdir -p $out/share/applications
-      # cat > $out/share/applications/zen-browser.desktop <<EOF
-      # [Desktop Entry]
-      # Name=Zen Browser
-      # Exec=zen-browser
-      # Icon=zen-browser
-      # Type=Application
-      # Categories=Network;WebBrowser;
-      # EOF
-
-      desktopItem = pkgs.makeDesktopItem {
-        name = "Zen Browser";
-        desktopName = "Zen Browser";
-        exec = "zen-browser"; # Points to your wrapper script
-        icon = "zen-browser"; # Refers to the icon name you installed
-        categories = "Network;WebBrowser;";
-      };
-
-
-      # 4. Install the icon
-      mkdir -p $out/share/icons/hicolor/128x128/apps
-      cp $out/lib/zen-browser/browser/chrome/icons/default/default128.png $out/share/icons/hicolor/128x128/apps/zen-browser.png
-    '';
+  src = pkgs.fetchurl {
+    url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
+    sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
   };
+
+  nativeBuildInputs = with pkgs; [ autoPatchelfHook makeWrapper ];
+  buildInputs = with pkgs; [
+    libGL nss nspr fontconfig openssl
+    pipewire libpulseaudio alsa-lib
+    gtk3 cairo gdk-pixbuf glib dbus librsvg
+    xdg-desktop-portal-gtk xdg-desktop-portal-hyprland
+  ];
+
+  sourceRoot = "zen";
+
+  installPhase = ''
+    runHook preInstall
+    mkdir -p $out/bin $out/share/applications $out/share/pixmaps
+    cp -r . $out/
+    makeWrapper $out/zen-bin $out/bin/zen \
+      --set LD_LIBRARY_PATH ${pkgs.lib.makeLibraryPath buildInputs} \
+      --set XDG_CURRENT_DESKTOP Hyprland \
+      --set XDG_SESSION_TYPE wayland \
+      --set MOZ_ENABLE_WAYLAND 1
+    # Copy icon to a standard location
+    cp $out/zen.png $out/share/pixmaps/zen-browser.png || echo "Warning: zen.png not found in source"
+    # Install desktop file
+    cp ${desktopItem}/share/applications/zen-browser.desktop $out/share/applications/zen-browser.desktop
+    runHook postInstall
+  '';
+
+  desktopItem = pkgs.makeDesktopItem {
+    name = "zen-browser";
+    exec = "zen"; # Use executable name, resolved via PATH
+    icon = "zen-browser"; # Use icon name, registered in pixmaps
+    comment = "A customizable, user-friendly web browser based on Firefox";
+    desktopName = "Zen Browser";
+    categories = [ "Network" "WebBrowser" ];
+  };
+};
+
 
   normcap-wrapped = pkgs.writeShellScriptBin "normcap" ''
     #!${pkgs.stdenv.shell}
     export QT_QPA_PLATFORM=wayland
     export QT_QPA_PLATFORMTHEME=qt6ct
     export XDG_CURRENT_DESKTOP=Hyprland
-    export QT_LOGGING_RULES=qt5ct.debug=true
+    export QT_LOGGING_RULES=qt6ct.debug=true
     exec ${pkgs.normcap}/bin/normcap "$@"
   '';
 
-  in 
+  in
 
   {
 
   nixpkgs.config.allowUnfree = true;
-  
+
   environment.systemPackages = (with pkgs; [
   # System Packages
     bc
@@ -123,11 +100,11 @@
     cpufrequtils
     duf                                # Utility For Viewing Disk Usage In Terminal
     findutils
-    ffmpeg   
+    ffmpeg
     glib #for gsettings to work
     gsettings-qt
     git
-    killall  
+    killall
     libappindicator
     libnotify
     openssl #required by Rainbow borders
@@ -139,8 +116,9 @@
     sof-firmware # added due to sound issues, missing microphone
     fastfetch
     (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
+    pactl
     #ranger
-      
+
     # Hyprland Stuff
     # Buuild AGS v1 from source
     inputs.ags.packages.${pkgs.system}.default
@@ -153,7 +131,7 @@
     grim
     gtk-engine-murrine #for gtk themes
     hypridle
-    imagemagick 
+    imagemagick
     inxi
     jq
     kitty
@@ -161,7 +139,7 @@
     networkmanagerapplet
     nwg-displays
     nwg-look
-    nvtopPackages.full	 
+    nvtopPackages.full
     pamixer
     pavucontrol
     playerctl
@@ -186,7 +164,7 @@
     # --- MY PACKAGES ---
     # Your requested packages
     zoxide
-    starship    
+    starship
     fx
     yq-go # Note: The package is named yq-go
     figlet
@@ -216,16 +194,17 @@
     lazydocker
    # lazyjournal
     bitwarden-menu
-
+    chromedriver
+    google-chrome
     # FROM ZaneyOS
     appimage-run # Needed For AppImage Support
     eza # Beautiful ls Replacement
     hyprpicker # Color Picker
-    lm_sensors # Used For Getting Hardware Temps        
+    lm_sensors # Used For Getting Hardware Temps
     lshw # Detailed Hardware Information
     ncdu # Disk Usage Analyzer With Ncurses Interface
     picard # For Changing Music Metadata & Getting Cover Art
-    usbutils # Good Tools For USB Devices    
+    usbutils # Good Tools For USB Devices
   ]) ++ [
       python-packages # Add the python environment
       r-with-packages # Add the R environment
@@ -262,7 +241,7 @@ fonts = {
 
     ];
   };
-  
+
   programs = {
     hyprland = {
       enable = true;
@@ -288,7 +267,7 @@ fonts = {
 
         # Automatically switch to GitLab user for specific directory
         "includeIf \"gitdir:~/git/\"" = {
-          path = toString ./gitconfig-gitlab; 
+          path = toString ./gitconfig-gitlab;
         };
       };
     };
@@ -308,9 +287,9 @@ fonts = {
 #      thunar-vcs-plugin
       thunar-media-tags-plugin
     ];
-	
+
     virt-manager.enable = false;
-    
+
     steam = {
       enable = true;
       remotePlay.openFirewall = true;
@@ -325,7 +304,7 @@ fonts = {
       enable = true;
       enableSSHSupport = true;
     };
-	
+
   };
 
   # Extra Portal Configuration
