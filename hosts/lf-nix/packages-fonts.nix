@@ -19,7 +19,7 @@
         tabulate
         ipykernel
         selenium
-	beautifulsoup
+	beautifulsoup4
       ]
     );
 
@@ -116,7 +116,6 @@ zen-browser = pkgs.stdenv.mkDerivation rec {
     sof-firmware # added due to sound issues, missing microphone
     fastfetch
     (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
-    pactl
     #ranger
 
     # Hyprland Stuff

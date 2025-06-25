@@ -49,6 +49,8 @@
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
+      PrivateTmp = false;
+      ProtectHome = false;
     };
   };
 }
