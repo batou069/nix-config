@@ -58,6 +58,7 @@
       "nix.serverSettings" = {
         "nixd.formatting.command" = [ "alejandra" ];
           };
+      "git.openRepositoryInParentFolders" = "always";
         };
       };
  # programs.home-manager.enable = true;
