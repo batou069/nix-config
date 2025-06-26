@@ -33,11 +33,32 @@
     };
   };
 
-  programs.Neovim = {
-    enable = true;
-    
-  }
 
-  # Enable Home Manager to manage itself
-  programs.home-manager.enable = true;
+
+  #VSCode configuration
+
+   programs.vscode = {
+    enable = true;
+    package = pkgs.vscode-fhs; 
+
+    # Define your VS Code settings here
+    profiles.default.userSettings = {
+      "editor.fontFamily" = "'MapleMono-NF-LightItalic', monospace"; 
+      "editor.fontSize" = 14; 
+      "editor.tabSize" = 2;   
+      # "editor.fontFamily": "'Fira Code', Consolas, monospace",
+      "editor.fontLigatures" = true;
+      "[docker-compose]" = {
+        "editor.defaultFormatter" = "KilianJPopp.docker-compose-support";
+        "editor.formatOnSave" = true;
+        };
+      "docker-compose.format.enabled" = true;
+      "nix.serverPath"= "nixd";
+      "nix.enableLanguageServer"= true;
+      "nix.serverSettings" = {
+        "nixd.formatting.command" = [ "alejandra" ];
+          };
+        };
+      };
+ # programs.home-manager.enable = true;
 }

@@ -186,7 +186,6 @@ zen-browser = pkgs.stdenv.mkDerivation rec {
     neovide
     rstudioWrapper
     hyprls
-    vscode-fhs
     zen-browser
     lazygit
     lazycli
