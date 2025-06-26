@@ -6,7 +6,6 @@
     enable = true;
     enableZshIntegration= true;
     package = pkgs.lsd;
-    enableAliases = true; # Enables aliases like `ll`, `ls`, `lt`
     settings = {
       date = "relative"; # Show relative dates
       icons = {

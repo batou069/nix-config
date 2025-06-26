@@ -20,7 +20,6 @@
       "--no-bold"
       "--bind='enter:execute(nvim {})'"
     ];
-    defaultEditor = true;
     fileWidgetCommand = "fd --type f --hidden --follow --exclude .git"; # Matches _fzf_compgen_path
     fileWidgetOptions = [
       "--preview 'bat --color=always {}'"
@@ -57,7 +56,7 @@
         preview-border = "#4b4646";
         label = "#C6D0F5";
         query = "#d9d9d9";
-    }
+    };
   };
 
   # home.packages = with pkgs; [
