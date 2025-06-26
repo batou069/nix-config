@@ -109,7 +109,6 @@ zen-browser = pkgs.stdenv.mkDerivation rec {
     libnotify
     openssl #required by Rainbow borders
     pciutils
-    vim
     wget
     xdg-user-dirs
     xdg-utils
@@ -205,6 +204,9 @@ zen-browser = pkgs.stdenv.mkDerivation rec {
     ncdu # Disk Usage Analyzer With Ncurses Interface
     picard # For Changing Music Metadata & Getting Cover Art
     usbutils # Good Tools For USB Devices
+
+    # Dev Stuff
+    nixd
   ]) ++ [
       python-packages # Add the python environment
       r-with-packages # Add the R environment
@@ -223,6 +225,7 @@ fonts = {
       jetbrains-mono
       material-icons
       maple-mono.NF
+      maple-mono.NF-unhinted
       minecraftia
       nerd-fonts.im-writing
       nerd-fonts.blex-mono
@@ -276,7 +279,6 @@ fonts = {
     hyprlock.enable = true;
     firefox.enable = true;
     nm-applet.indicator = true;
-    neovim.enable = true;
     thunar.enable = true;
     thunar.plugins = with pkgs.xfce; [
 	  exo

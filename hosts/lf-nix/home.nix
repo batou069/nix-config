@@ -33,6 +33,11 @@
     };
   };
 
+  programs.Neovim = {
+    enable = true;
+    
+  }
+
   # Enable Home Manager to manage itself
   programs.home-manager.enable = true;
 }
