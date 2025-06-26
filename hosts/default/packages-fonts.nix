@@ -92,8 +92,10 @@
   ];
 
 #FONTS
-fonts = {
-    packages = with pkgs; [
+fonts.enable = true;
+fonts.fontconfig.enable = true;
+fonts.fonts = with pkgs; [
+  fonts = [
       dejavu_fonts
       fira-code
       fira-code-symbols
@@ -118,7 +120,8 @@ fonts = {
       symbola
       terminus_font
       victor-mono
-    ];
+     ];
+   ];
   };
   
   programs = {
