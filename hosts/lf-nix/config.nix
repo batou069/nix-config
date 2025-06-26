@@ -14,8 +14,9 @@
 
   # BOOT related stuff
   boot = {
-    kernelPackages = pkgs.linuxPackages_zen; # zen Kernel
-    #kernelPackages = pkgs.linuxPackages_latest; # Kernel 
+    #kernelPackages = pkgs.linuxPackages_zen; # Performance geared
+    kernelPackages = pkgs.linuxPackages_latest; # Best Balance
+    #kernelPackages = pkgs.linuxPackages_lts # Most Stable 
 
     kernelParams = [
       "systemd.mask=systemd-vconsole-setup.service"
