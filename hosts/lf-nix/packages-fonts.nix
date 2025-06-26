@@ -1,250 +1,206 @@
-{ pkgs, inputs, ...}: let
-
-  python-packages = pkgs.python312.withPackages (
-    ps:
-      with ps; [
-        requests
-        pyquery # needed for hyprland-dots Weather script
-        requests
-        jupyterlab
-        matplotlib
-        numpy
-        pandas
-        pillow
-        plotly
-        pytest
-        seaborn
-        python-dotenv
-        regex
-        tabulate
-        ipykernel
-        selenium
-	beautifulsoup4
-      ]
-    );
-
-  r-with-packages = pkgs.rWrapper.override {
-    packages = with pkgs.rPackages; [
+{
+  pkgs,
+  inputs,
+  ...
+}: let
+    r-with-packages = pkgs.rWrapper.override {
+      packages = with pkgs.rPackages; [
       IRkernel
     ];
   };
 
-zen-browser = pkgs.stdenv.mkDerivation rec {
-  pname = "zen-browser";
-  version = "1.13.2b";
+  zen-browser = pkgs.stdenv.mkDerivation rec {
+    pname = "zen-browser";
+    version = "1.13.2b";
 
-  src = pkgs.fetchurl {
-    url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
-    sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
+    src = pkgs.fetchurl {
+      url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
+      sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
+    };
+
+    nativeBuildInputs = with pkgs; [autoPatchelfHook makeWrapper];
+    buildInputs = with pkgs; [
+      libGL
+      nss
+      nspr
+      fontconfig
+      openssl
+      pipewire
+      libpulseaudio
+      alsa-lib
+      gtk3
+      cairo
+      gdk-pixbuf
+      glib
+      dbus
+      librsvg
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-hyprland
+    ];
+
+    sourceRoot = "zen";
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/bin $out/share/applications $out/share/pixmaps
+      cp -r . $out/
+      makeWrapper $out/zen-bin $out/bin/zen \
+        --set LD_LIBRARY_PATH ${pkgs.lib.makeLibraryPath buildInputs} \
+        --set XDG_CURRENT_DESKTOP Hyprland \
+        --set XDG_SESSION_TYPE wayland \
+        --set MOZ_ENABLE_WAYLAND 1
+      # Copy icon to a standard location
+      cp $out/zen.png $out/share/pixmaps/zen-browser.png || echo "Warning: zen.png not found in source"
+      # Install desktop file
+      cp ${desktopItem}/share/applications/zen-browser.desktop $out/share/applications/zen-browser.desktop
+      runHook postInstall
+    '';
+
+    desktopItem = pkgs.makeDesktopItem {
+      name = "zen-browser";
+      exec = "zen"; # Use executable name, resolved via PATH
+      icon = "zen-browser"; # Use icon name, registered in pixmaps
+      comment = "A customizable, user-friendly web browser based on Firefox";
+      desktopName = "Zen Browser";
+      categories = ["Network" "WebBrowser"];
+    };
   };
-
-  nativeBuildInputs = with pkgs; [ autoPatchelfHook makeWrapper ];
-  buildInputs = with pkgs; [
-    libGL nss nspr fontconfig openssl
-    pipewire libpulseaudio alsa-lib
-    gtk3 cairo gdk-pixbuf glib dbus librsvg
-    xdg-desktop-portal-gtk xdg-desktop-portal-hyprland
-  ];
-
-  sourceRoot = "zen";
-
-  installPhase = ''
-    runHook preInstall
-    mkdir -p $out/bin $out/share/applications $out/share/pixmaps
-    cp -r . $out/
-    makeWrapper $out/zen-bin $out/bin/zen \
-      --set LD_LIBRARY_PATH ${pkgs.lib.makeLibraryPath buildInputs} \
-      --set XDG_CURRENT_DESKTOP Hyprland \
-      --set XDG_SESSION_TYPE wayland \
-      --set MOZ_ENABLE_WAYLAND 1
-    # Copy icon to a standard location
-    cp $out/zen.png $out/share/pixmaps/zen-browser.png || echo "Warning: zen.png not found in source"
-    # Install desktop file
-    cp ${desktopItem}/share/applications/zen-browser.desktop $out/share/applications/zen-browser.desktop
-    runHook postInstall
-  '';
-
-  desktopItem = pkgs.makeDesktopItem {
-    name = "zen-browser";
-    exec = "zen"; # Use executable name, resolved via PATH
-    icon = "zen-browser"; # Use icon name, registered in pixmaps
-    comment = "A customizable, user-friendly web browser based on Firefox";
-    desktopName = "Zen Browser";
-    categories = [ "Network" "WebBrowser" ];
-  };
-};
-
 
   normcap-wrapped = pkgs.writeShellScriptBin "normcap" ''
     #!${pkgs.stdenv.shell}
     export QT_QPA_PLATFORM=wayland
     export QT_QPA_PLATFORMTHEME=qt6ct
     export XDG_CURRENT_DESKTOP=Hyprland
-    export QT_LOGGING_RULES=qt6ct.debug=true
+    # export QT_LOGGING_RULES=qt6ct.debug=true
     exec ${pkgs.normcap}/bin/normcap "$@"
   '';
-
-  in
-
-  {
-
+in {
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = (with pkgs; [
-  # System Packages
-    bc
-    baobab
-    btrfs-progs
-    clang
-    curl
-    cpufrequtils
-    duf                                # Utility For Viewing Disk Usage In Terminal
-    findutils
-    ffmpeg
-    glib #for gsettings to work
-    gsettings-qt
-    git
-    killall
-    libappindicator
-    libnotify
-    openssl #required by Rainbow borders
-    pciutils
-    wget
-    xdg-user-dirs
-    xdg-utils
-    sof-firmware # added due to sound issues, missing microphone
-    fastfetch
-    (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
-    # ranger
+  environment.systemPackages =
+    (with pkgs; [
+      # System Packages
+      bc
+      baobab
+      btrfs-progs
+      clang
+      curl
+      cpufrequtils
+      duf # Utility For Viewing Disk Usage In Terminal
+      findutils
+      ffmpeg
+      glib #for gsettings to work
+      gsettings-qt
+      git
+      killall
+      libappindicator
+      libnotify
+      openssl #required by Rainbow borders
+      pciutils
+      wget
+      xdg-user-dirs
+      xdg-utils
+      sof-firmware # added due to sound issues, missing microphone
+      fastfetch
+      (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
+      # ranger
 
-    # Hyprland Stuff
-    # Buuild AGS v1 from source
-    inputs.ags.packages.${pkgs.system}.default
-    btop
-    brightnessctl # for brightness control
-    cava
-    cliphist
-    loupe
-    gnome-system-monitor
-    grim
-    gtk-engine-murrine #for gtk themes
-    hypridle
-    imagemagick
-    inxi
-    jq
-    kitty
-    libsForQt5.qtstyleplugin-kvantum #kvantum
-    networkmanagerapplet
-    nwg-displays
-    nwg-look
-    nvtopPackages.full
-    pamixer
-    pavucontrol
-    playerctl
-    polkit_gnome
-    libsForQt5.qt5ct
-    kdePackages.qt6ct
-    kdePackages.qtwayland
-    kdePackages.qtstyleplugin-kvantum #kvantum
-    rofi-wayland
-    slurp
-    swappy
-    swaynotificationcenter
-    swww
-    unzip
-    wallust
-    wl-clipboard
-    wlogout
-    xarchiver
-    yad
-    yt-dlp
+      # Hyprland Stuff
+      # Buuild AGS v1 from source
+      inputs.ags.packages.${pkgs.system}.default
+      btop
+      brightnessctl # for brightness control
+      cava
+      cliphist
+      loupe
+      gnome-system-monitor
+      grim
+      gtk-engine-murrine #for gtk themes
+      hypridle
+      imagemagick
+      inxi
+      jq
+      kitty
+      libsForQt5.qtstyleplugin-kvantum #kvantum
+      networkmanagerapplet
+      nwg-displays
+      nwg-look
+      nvtopPackages.full
+      pamixer
+      pavucontrol
+      playerctl
+      polkit_gnome
+      libsForQt5.qt5ct
+      kdePackages.qt6ct
+      kdePackages.qtwayland
+      kdePackages.qtstyleplugin-kvantum #kvantum
+      rofi-wayland
+      slurp
+      swappy
+      swaynotificationcenter
+      swww
+      unzip
+      wallust
+      wl-clipboard
+      wlogout
+      xarchiver
+      yad
+      yt-dlp
 
-    # --- MY PACKAGES ---
-    # Your requested packages
-    stow
-    zoxide
-    starship
-    fx
-    yq-go # Note: The package is named yq-go
-    figlet
-    bitwarden-cli
-    ghostty
-    uv
-    ruff
-    tmux
-    zellij
-    gedit
-    normcap-wrapped
-    bitwarden-desktop
-    twingate
-    vlc
-    obsidian
-    foot
-    calibre
-    nyxt
-    qutebrowser
-    neovide
-    rstudioWrapper
-    hyprls
-    zen-browser
-    lazygit
-    lazycli
-    lazydocker
-   lazyjournal
-    bitwarden-menu
-    chromedriver
-    google-chrome
-    # FROM ZaneyOS
-    appimage-run # Needed For AppImage Support
-    eza # Beautiful ls Replacement
-    hyprpicker # Color Picker
-    lm_sensors # Used For Getting Hardware Temps
-    lshw # Detailed Hardware Information
-    ncdu # Disk Usage Analyzer With Ncurses Interface
-    picard # For Changing Music Metadata & Getting Cover Art
-    usbutils # Good Tools For USB Devices
+      # --- MY PACKAGES ---
+      # Your requested packages
+      stow # Manage dotfiles symlinking
+      gnome-font-viewer # self explainatory
+      zoxide
+      starship
+      fx
+      yq-go # Note: The package is named yq-go
+      figlet
+      bitwarden-cli
+      ghostty
+      uv
+      ruff
+      tmux
+      zellij
+      gedit
+      normcap-wrapped
+      bitwarden-desktop
+      twingate
+      vlc
+      obsidian
+      foot
+      calibre
+      nyxt
+      qutebrowser
+      neovide
+      rstudioWrapper
+      hyprls
+      zen-browser
+      lazygit
+      lazycli
+      lazydocker
+      lazyjournal
+      bitwarden-menu
+      chromedriver
+      google-chrome
+      # FROM ZaneyOS
+      appimage-run # Needed For AppImage Support
+      hyprpicker # Color Picker
+      lm_sensors # Used For Getting Hardware Temps
+      lshw # Detailed Hardware Information
+      ncdu # Disk Usage Analyzer With Ncurses Interface
+      picard # For Changing Music Metadata & Getting Cover Art
+      usbutils # Good Tools For USB Devices
 
-    # Dev Stuff
-    nixd
-  ]) ++ [
-      python-packages # Add the python environment
+      # Dev Stuff
+      nixd
+    ])
+    ++ [
+      #   python-packages # Add the python environment
       r-with-packages # Add the R environment
-  ];
-
-#FONTS
-fonts = {
-    packages = with pkgs; [
-      dejavu_fonts
-      fira-code
-      fira-code-symbols
-      font-awesome
-      hackgen-nf-font
-      ibm-plex
-      inter
-      jetbrains-mono
-      material-icons
-      maple-mono.NF
-      maple-mono.NF-unhinted
-      minecraftia
-      nerd-fonts.im-writing
-      nerd-fonts.blex-mono
-      noto-fonts
-      noto-fonts-emoji
-      noto-fonts-cjk-sans
-      noto-fonts-cjk-serif
-      noto-fonts-monochrome-emoji
-      powerline-fonts
-      roboto
-      roboto-mono
-      symbola
-      terminus_font
-      victor-mono
-      nerd-fonts.fantasque-sans-mono
-
     ];
-  };
 
-  programs = {
+   programs = {
     hyprland = {
       enable = true;
       # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -280,12 +236,12 @@ fonts = {
     nm-applet.indicator = true;
     thunar.enable = true;
     thunar.plugins = with pkgs.xfce; [
-	  exo
- 	  mousepad
-	  thunar-archive-plugin
-	  thunar-volman
-	  tumbler
-#      thunar-vcs-plugin
+      exo
+      mousepad
+      thunar-archive-plugin
+      thunar-volman
+      tumbler
+      #      thunar-vcs-plugin
       thunar-media-tags-plugin
     ];
 
@@ -305,7 +261,6 @@ fonts = {
       enable = true;
       enableSSHSupport = true;
     };
-
   };
 
   # Extra Portal Configuration
@@ -319,6 +274,5 @@ fonts = {
       pkgs.xdg-desktop-portal-gtk
       pkgs.xdg-desktop-portal
     ];
-    };
-
+  };
 }
