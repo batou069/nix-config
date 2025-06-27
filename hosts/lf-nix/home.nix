@@ -9,11 +9,9 @@
   # User information
   home.username = username;
   home.homeDirectory = "/home/${username}";
-
+# home.backupFileExtension = "backup";  # Add this
   imports = [
-    ./home/bat.nix
-    ./home/lsd.nix
-    ./home/fzf.nix
+    ./home/cli.nix
     ./home/vscode.nix
   ];
 
@@ -27,7 +25,7 @@
     ibm-plex
     inter
     roboto
-
+    
     # Monospace / Programming Fonts
     fira-code
     jetbrains-mono
@@ -55,11 +53,10 @@
 
     # Niche/Specific Fonts
     minecraftia
-
+    
     fd
-    ripgrep
-    repgrep # Interactive replacer for ripgrep that makes it easy to find and replace across files on the command line
-    ripgrep-all # Ripgrep, but also search in PDFs, E-Books, Office documents, zip, tar.gz, and more
+   # repgrep # Interactive replacer for ripgrep that makes it easy to find and replace across files on the command line
+   # ripgrep-all # Ripgrep, but also search in PDFs, E-Books, Office documents, zip, tar.gz, and more
     alejandra
     pre-commit
     kdePackages.okular
@@ -149,3 +146,4 @@
   };
 
 }
+

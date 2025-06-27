@@ -27,7 +27,7 @@
   };
 
   #  environment.shells = with pkgs; [ zsh ];
-
+      
   systemd.user.services.install-pre-commit = {
     description = "Install pre-commit hooks for dotfiles";
     wantedBy = ["default.target"];
@@ -42,3 +42,4 @@
     };
   };
 }
+
