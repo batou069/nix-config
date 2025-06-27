@@ -12,52 +12,58 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, ags, ... }:
-    let
-      system = "x86_64-linux";
-      host = "lf-nix";
-      username = "lf";
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    home-manager,
+    ags,
+    ...
+  }: let
+    system = "x86_64-linux";
+    host = "lf-nix";
+    username = "lf";
 
-      pkgs = import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-        };
+    pkgs = import nixpkgs {
+      inherit system;
+      config = {
+        allowUnfree = true;
       };
-    in
-      {
-        nixosConfigurations = {
-          "${host}" = nixpkgs.lib.nixosSystem rec {
-            specialArgs = {
-              inherit system;
-              inherit inputs;
-              inherit username;
-              inherit host;
-            };
-            modules = [
-              ./hosts/lf-nix/config.nix
-              home-manager.nixosModules.home-manager
-              {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.users.${username} = import ./hosts/lf-nix/home.nix;
-                home-manager.extraSpecialArgs = { inherit inputs username; };
-              }
-            ];
-          };
-        };
+    };
 
-        homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-            ./hosts/lf-nix/home.nix
-            {
-              home.username = username;
-              home.homeDirectory = "/home/${username}";
-              home.stateVersion = "24.11";
-            }
-          ];
-          extraSpecialArgs = { inherit inputs username; };
+    homeManagerUserModule = {
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+      home-manager.users.${username} = import ./hosts/lf-nix/home.nix;
+      home-manager.extraSpecialArgs = {inherit inputs username;};
+    };
+  in {
+    nixosConfigurations = {
+      "${host}" = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit system;
+          inherit inputs;
+          inherit username;
+          inherit host;
         };
+        modules = [
+          ./hosts/lf-nix/config.nix
+          home-manager.nixosModules.home-manager
+          homeManagerUserModule
+        ];
       };
+    };
+
+    homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+      inherit pkgs;
+      modules = [
+        ./hosts/lf-nix/home.nix
+        {
+          home.username = username;
+          home.homeDirectory = "/home/${username}";
+          home.stateVersion = "25.05";
+        }
+      ];
+      extraSpecialArgs = {inherit inputs username;};
+    };
+  };
 }
