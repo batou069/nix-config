@@ -3,8 +3,8 @@
   inputs,
   ...
 }: let
-    r-with-packages = pkgs.rWrapper.override {
-      packages = with pkgs.rPackages; [
+  r-with-packages = pkgs.rWrapper.override {
+    packages = with pkgs.rPackages; [
       IRkernel
     ];
   };
@@ -146,7 +146,9 @@ in {
       xarchiver
       yad
       yt-dlp
-
+      inputs.nix-software-center.packages.${system}.nix-software-center
+      nix-search-tv
+      
       # --- MY PACKAGES ---
       # Your requested packages
       stow # Manage dotfiles symlinking
@@ -200,7 +202,7 @@ in {
       r-with-packages # Add the R environment
     ];
 
-   programs = {
+  programs = {
     hyprland = {
       enable = true;
       # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;

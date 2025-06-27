@@ -9,8 +9,8 @@
     # Define your VS Code settings here
     profiles.default = {
       userSettings = {
-        "editor.fontFamily" = "Maple Mono NF";
-        "editor.fontVariations" = "Medium Italic";
+        "editor.fontFamily" = "Maple Mono NF Italic";
+        # "editor.fontVariations" = "Medium Italic";
         "editor.fontLigatures" = "calt";
         "editor.fontSize" = 14;
         "editor.tabSize" = 2;

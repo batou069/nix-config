@@ -12,12 +12,13 @@
       "--preview-window 'right:70%:wrap'"
       "--border-label='File Picker'"
       "--layout=reverse"
-      "--border=none"
+      # "--border=none"
       "--info='hidden'"
       "--header=''"
       "--prompt='/ '"
       "-i"
-      "--no-bold"
+      # "--no-bold"
+      "--no-hscroll"
       "--bind='enter:execute(nvim {})'"
     ];
     fileWidgetCommand = "fd --type f --hidden --follow --exclude .git"; # Matches _fzf_compgen_path

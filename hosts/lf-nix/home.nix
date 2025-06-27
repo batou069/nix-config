@@ -4,7 +4,7 @@
   ...
 }: {
   # Home Manager version
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.05";
 
   # User information
   home.username = username;
@@ -14,6 +14,7 @@
     ./home/bat.nix
     ./home/lsd.nix
     ./home/fzf.nix
+    ./home/vscode.nix
   ];
 
   fonts.fontconfig.enable = true;
@@ -36,6 +37,7 @@
     victor-mono
     nerd-fonts.im-writing
     nerd-fonts.fantasque-sans-mono
+    maple-mono.NF
 
     # Icon / Symbol Fonts
     font-awesome
