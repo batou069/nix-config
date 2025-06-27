@@ -5,7 +5,7 @@
   programs.fzf = {
     enable = true;
     package = pkgs.fzf;
-    enableZshIntegration = true; # Enables Ctrl+T, Ctrl+R, Alt+C
+    enableZshIntegration = true;
     defaultCommand = "fd --type f --hidden --follow --exclude .git"; # Matches _fzf_compgen_path
     defaultOptions = [
       "--preview='bat --style=numbers --color=always --line-range :500 {}'"
