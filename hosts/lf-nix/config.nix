@@ -4,6 +4,7 @@
   username,
   options,
   inputs,
+  config,
   ...
 }: let
   inherit (import ./variables.nix) keyboardLayout;
@@ -301,24 +302,6 @@ in {
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
-  };
-
-  # Set system-wide default applications for MIME types and URI schemes
-  xdg.mime.defaultApplications = {
-    # Web Browser
-    "text/html" = "zen-browser.desktop";
-    "x-scheme-handler/http" = "zen-browser.desktop";
-    "x-scheme-handler/https" = "zen-browser.desktop";
-
-    # VSCode Auth
-    "x-scheme-handler/vscode" = "vscode.desktop";
-
-    # ADDED: Image Viewer Defaults
-    "image/jpeg" = "loupe.desktop";
-    "image/png" = "loupe.desktop";
-    "image/gif" = "loupe.desktop";
-    "image/bmp" = "loupe.desktop";
-    "image/svg+xml" = "loupe.desktop";
   };
 
   # Bluetooth

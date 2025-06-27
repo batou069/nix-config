@@ -27,16 +27,7 @@
   };
 
   #  environment.shells = with pkgs; [ zsh ];
-  environment.systemPackages = with pkgs; [
-    lsd
-    bat
-    fd
-    fzf
-    ripgrep
-    grip-grab
-    repgrep
-    ripgrep-all
-  ];
+
   systemd.user.services.install-pre-commit = {
     description = "Install pre-commit hooks for dotfiles";
     wantedBy = ["default.target"];

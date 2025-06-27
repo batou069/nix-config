@@ -80,8 +80,12 @@ in {
   environment.systemPackages =
     (with pkgs; [
       # System Packages
+      isd     # interactively interact with systemd
+      # trippy #Network diagnostic tool
       bc
+      erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
       baobab
+      rsync
       btrfs-progs
       clang
       curl
@@ -153,8 +157,6 @@ in {
       # Your requested packages
       stow # Manage dotfiles symlinking
       gnome-font-viewer # self explainatory
-      zoxide
-      starship
       fx
       yq-go # Note: The package is named yq-go
       figlet
@@ -163,7 +165,6 @@ in {
       uv
       ruff
       tmux
-      zellij
       gedit
       normcap-wrapped
       bitwarden-desktop
