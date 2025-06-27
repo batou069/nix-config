@@ -86,6 +86,7 @@ in {
       erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
       baobab
       rsync
+      home-manager
       btrfs-progs
       clang
       curl

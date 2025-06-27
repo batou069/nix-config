@@ -42,7 +42,8 @@
       home-manager.useUserPackages = true;
       home-manager.users.${username} = import ./hosts/lf-nix/home.nix;
       home-manager.extraSpecialArgs = {inherit inputs username;};
-    };
+      home-manager.backupFileExtension = "backup";
+      };
   in {
     nixosConfigurations = {
       "${host}" = nixpkgs.lib.nixosSystem {
