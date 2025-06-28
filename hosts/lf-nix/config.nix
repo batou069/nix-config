@@ -1,4 +1,13 @@
-{ config, pkgs, host, username, options, lib, inputs, system, ...}: let
+{ 
+  config,
+  pkgs,
+  host,
+  username,
+  options,
+ # lib,
+  inputs,
+ # system,
+  ...}: let
   
   inherit (import ./variables.nix) keyboardLayout;
     
@@ -10,6 +19,7 @@
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
+    #     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
   # BOOT related stuff
@@ -290,25 +300,6 @@
     enable32Bit = true;
    };
 
-  # Set system-wide default applications for MIME types and URI schemes
-  xdg.mime.defaultApplications = {
-    # Web Browser
-    "text/html" = "zen-browser.desktop";
-    "x-scheme-handler/http" = "zen-browser.desktop";
-    "x-scheme-handler/https" = "zen-browser.desktop";
-
-    # VSCode Auth
-    "x-scheme-handler/vscode" = "vscode.desktop";
-
-    # ADDED: Image Viewer Defaults
-    "image/jpeg" = "loupe.desktop";
-    "image/png" = "loupe.desktop";
-    "image/gif" = "loupe.desktop";
-    "image/bmp" = "loupe.desktop";
-    "image/svg+xml" = "loupe.desktop";
-  };
-
-
   # Bluetooth
   hardware = {
     bluetooth = {
@@ -392,19 +383,19 @@ virtualisation.docker = {
 	  # ELECTRON_ENABLE_WAYLAND = "1";
 	};
 
-  programs = {
-  # Zsh configuration
-    zsh = {
-    	enable = true;
-	enableCompletion = true;
-        ohMyZsh.enable = false;
-      
-        autosuggestions.enable = false;
-        syntaxHighlighting.enable = false;
-        promptInit = "";
-      };
-   };
-
+#   programs = {
+#   # Zsh configuration
+#     zsh = {
+#     	enable = true;
+# 	enableCompletion = true;
+#         ohMyZsh.enable = false;
+#       
+#         autosuggestions.enable = false;
+#         syntaxHighlighting.enable = false;
+#         promptInit = "";
+#       };
+#    };
+# 
   environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
 
   # Open ports in the firewall.
