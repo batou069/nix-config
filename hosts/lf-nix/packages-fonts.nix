@@ -80,7 +80,11 @@ in {
   environment.systemPackages =
     (with pkgs; [
       # System Packages
+      # home-manager
       bc
+      devenv
+      isd     # interactively interact with systemd
+      erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
       baobab
       btrfs-progs
       clang
@@ -146,13 +150,17 @@ in {
       xarchiver
       yad
       yt-dlp
+      nix-search-tv
+      gemini-cli
+
 
       # --- MY PACKAGES ---
       # Your requested packages
+      lutris
+      heroic
+      bottles
       stow # Manage dotfiles symlinking
       gnome-font-viewer # self explainatory
-      zoxide
-      starship
       fx
       yq-go # Note: The package is named yq-go
       figlet
@@ -161,7 +169,6 @@ in {
       uv
       ruff
       tmux
-      zellij
       gedit
       normcap-wrapped
       bitwarden-desktop
@@ -170,8 +177,8 @@ in {
       obsidian
       foot
       calibre
-      nyxt
-      qutebrowser
+      # nyxt
+      # qutebrowser
       neovide
       rstudioWrapper
       hyprls
@@ -208,27 +215,27 @@ in {
       xwayland.enable = true;
     };
 
-    git = {
-      enable = true;
-      package = pkgs.gitFull;
-      config = {
-        # Default user (GitHub)
-        user = {
-          name = "batou069";
-          email = "laurentf84@gmail.com";
-        };
-
-        # Set up the credential helper
-        credential = {
-          helper = "libsecret";
-        };
-
-        # Automatically switch to GitLab user for specific directory
-        "includeIf \"gitdir:~/git/\"" = {
-          path = toString ./gitconfig-gitlab;
-        };
-      };
-    };
+#    git = {
+#      enable = true;
+#      package = pkgs.gitFull;
+#      config = {
+#        # Default user (GitHub)
+#        user = {
+#          name = "batou069";
+#          email = "laurentf84@gmail.com";
+#        };
+#
+#        # Set up the credential helper
+#        credential = {
+#          helper = "libsecret";
+#        };
+#
+#        # Automatically switch to GitLab user for specific directory
+#        "includeIf \"gitdir:~/git/\"" = {
+#          path = toString ./gitconfig-gitlab;
+#        };
+#      };
+#    };
 
     waybar.enable = true;
     hyprlock.enable = true;
