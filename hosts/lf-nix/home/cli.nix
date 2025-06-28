@@ -17,7 +17,29 @@
         scrollbar = true;
       };
     };
+ 
+    zsh = {
+      enable = true;
+      enableCompletion = true;
+      autosuggestions.enable = true;
+      syntaxHighlighting = {
+        enable = true;
+        stratregy = [ "history" ];
+      };
+      initContent = ''
+        export PATH="$HOME/.nix-profile/bin:/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin:$PATH"
+#        eval "$(starship init zsh)"
+      '';
+    };
 
+    kitty = {
+      enable = true;
+      font = {
+        name = "Maple Mono NF";
+        size = 14;
+      };
+    };
+    
     eza = {
       enable = true;
       extraOptions = [
@@ -127,7 +149,10 @@
       };
     };
 
-  zoxide.enable = true;
+  zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+    };
     
   lsd = {
     enable = true;
@@ -152,14 +177,14 @@
         "--preview-window 'right:70%:wrap'"
         "--border-label='File Picker'"
         "--layout=reverse"
-        # "--border=none"
+        "--border=none"
         "--info='hidden'"
         "--header=''"
         "--prompt='/ '"
         "-i"
-        # "--no-bold"
+        "--no-bold"
         "--no-hscroll"
-        "--bind='enter:execute(nvim {})'"
+        #   "--bind='enter:execute(nvim {})'"
       ];
       fileWidgetCommand = "fd --type f --hidden --follow --exclude .git"; # Matches _fzf_compgen_path
       fileWidgetOptions = [
@@ -217,6 +242,7 @@
 
     starship = {
      enable = true;
+     enableZshIntegration = true;
      settings =
        let
          darkgray = "242";

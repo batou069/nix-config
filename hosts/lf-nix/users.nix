@@ -6,6 +6,7 @@
 # users.nix
 {
   users = {
+    defaultUserShell = pkgs.zsh;
     mutableUsers = true;
     users."${username}" = {
       homeMode = "755";
@@ -22,8 +23,8 @@
         "audio"
         "docker"
       ];
+      shell = pkgs.zsh;
     };
-    defaultUserShell = pkgs.zsh;
   };
 
   #  environment.shells = with pkgs; [ zsh ];

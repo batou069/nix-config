@@ -1,0 +1,11 @@
+$ nix --extra-experimental-features nix-command flakes build --out-link /tmp/nixos-rebuild.O6LwP1/nixos-rebuild /home/lf/NixOS-Hyprland#nixosConfigurations."lf-nix".config.system.build.nixos-rebuild -vv
+evaluating file '<nix/derivation-internal.nix>'
+evaluating derivation 'git+file:///home/lf/NixOS-Hyprland#nixosConfigurations."lf-nix".config.system.build.nixos-rebuild'...
+warning: Git tree '/home/lf/NixOS-Hyprland' is dirty
+evaluating file '/home/lf/NixOS-Hyprland/flake.nix'
+error: syntax error, unexpected PATH, expecting '.' or '='
+       at /home/lf/NixOS-Hyprland/flake.nix:99:20:
+           98|           home-manager.users.${username} = {
+           99|             import ./hosts/lf-nix/home.nix;
+             |                    ^
+          100|             home.backupFileExtension = "backup";

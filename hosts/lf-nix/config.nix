@@ -18,7 +18,7 @@ in {
     ../../modules/local-hardware-clock.nix
     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
-
+  
   # BOOT related stuff
   boot = {
     #kernelPackages = pkgs.linuxPackages_zen; # Performance geared
@@ -43,7 +43,6 @@ in {
     #  "vm.max_map_count" = 2147483642;
     #};
 
-    ## BOOT LOADERS: NOTE USE ONLY 1. either systemd or grub
     # Bootloader SystemD
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
@@ -66,6 +65,7 @@ in {
     };
 
     plymouth.enable = true;
+
   };
 
   vm.guest-services.enable = false;
@@ -102,7 +102,7 @@ in {
     LC_TELEPHONE = "he_IL.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
-
+  
   # Services to start
   services = {
     xserver = {
@@ -269,6 +269,7 @@ in {
       };
     };
   };
+
   # zram
   zramSwap = {
     enable = true;
@@ -387,20 +388,9 @@ in {
     # ELECTRON_ENABLE_WAYLAND = "1";
   };
 
-  programs = {
-    # Zsh configuration
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-      ohMyZsh.enable = false;
-
-      autosuggestions.enable = false;
-      syntaxHighlighting.enable = false;
-      promptInit = "";
-    };
-  };
-
   environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
+  
+  programs.zsh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -414,6 +404,6 @@ in {
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 }
 

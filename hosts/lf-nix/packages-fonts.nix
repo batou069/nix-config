@@ -79,6 +79,7 @@ in {
 
   environment.systemPackages =
     (with pkgs; [
+      home-manager
       # System Packages
       isd     # interactively interact with systemd
       # trippy #Network diagnostic tool
@@ -86,7 +87,6 @@ in {
       erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
       baobab
       rsync
-      home-manager
       btrfs-progs
       clang
       curl
@@ -125,7 +125,6 @@ in {
       imagemagick
       inxi
       jq
-      kitty
       libsForQt5.qtstyleplugin-kvantum #kvantum
       networkmanagerapplet
       nwg-displays
@@ -154,6 +153,10 @@ in {
       inputs.nix-software-center.packages.${system}.nix-software-center
       nix-search-tv
       
+#Gaming
+      lutris
+      heroic
+      bottles
       # --- MY PACKAGES ---
       # Your requested packages
       stow # Manage dotfiles symlinking
@@ -256,7 +259,7 @@ in {
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = false;
     };
-
+    gamemode.enable = true;
     dconf.enable = true;
     seahorse.enable = true;
     fuse.userAllowOther = true;

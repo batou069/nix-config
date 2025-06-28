@@ -10,6 +10,13 @@
       url = "github:aylur/ags/v1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixCats = {
+         url = "github:BirdeeHub/nixCats-nvim";
+      };
+    firefox-addons = {
+      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-mineral = {
       url = "github:cynicsketch/nix-mineral"; # Refers to the main branch and is updated to the latest commit when you use "nix flake update"
       # url = "github:cynicsketch/nix-mineral/v0.1.6-alpha" # Refers to a specific tag and follows that tag until you change it
@@ -19,60 +26,90 @@
     nix-software-center.url = "github:snowfallorg/nix-software-center";
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    home-manager,
-    ags,
-    ...
-  }: let
+#   outputs = inputs @ {
+#     self,
+#     nixpkgs,
+#     home-manager,
+#     ags,
+#     #"nixosModules.default = ./systemCat.nix";,
+#     ...
+#   }: let
+#     system = "x86_64-linux";
+#     host = "lf-nix";
+#     username = "lf";
+
+#     pkgs = import nixpkgs { inherit system; config = { allowUnfree = 
+#       true;  };
+#     };
+
+#     homeManagerUserModule = {
+#       home-manager.useGlobalPkgs = true;
+#       home-manager.useUserPackages = true;
+#       home-manager.users.${username} = import ./hosts/lf-nix/home.nix;
+#       home-manager.extraSpecialArgs = {inherit inputs username;};
+#       home-manager.backupFileExtension = "backup";
+#       };
+#   in {
+#     nixosConfigurations = {
+#       "${host}" = nixpkgs.lib.nixosSystem {
+#         specialArgs = {
+#           inherit system;
+#           inherit inputs;
+#           inherit username;
+#           inherit host;
+#         };
+#         modules = [
+#           ./hosts/lf-nix/config.nix
+#           home-manager.nixosModules.home-manager
+#           homeManagerUserModule
+#         ];
+#       };
+#     };
+
+#     homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+#       inherit pkgs;
+#       modules = [
+#         ./hosts/lf-nix/home.nix
+#         {
+#           home.username = username;
+#           home.homeDirectory = "/home/${username}";
+#           home.stateVersion = "25.05";
+#         }
+#       ];
+#       extraSpecialArgs = {inherit inputs username;};
+#     };
+#   };
+# }
+
+outputs = inputs @ { self, nixpkgs, home-manager, ags, ... }: let
     system = "x86_64-linux";
     host = "lf-nix";
     username = "lf";
-
-    pkgs = import nixpkgs {
-      inherit system;
-      config = {
-        allowUnfree = true;
-      };
-    };
-
-    homeManagerUserModule = {
-      home-manager.useGlobalPkgs = true;
-      home-manager.useUserPackages = true;
-      home-manager.users.${username} = import ./hosts/lf-nix/home.nix;
-      home-manager.extraSpecialArgs = {inherit inputs username;};
-      home-manager.backupFileExtension = "backup";
-      };
+    pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
   in {
-    nixosConfigurations = {
-      "${host}" = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit system;
-          inherit inputs;
-          inherit username;
-          inherit host;
-        };
-        modules = [
-          ./hosts/lf-nix/config.nix
-          home-manager.nixosModules.home-manager
-          homeManagerUserModule
-        ];
-      };
-    };
-
-    homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-      inherit pkgs;
+    nixosConfigurations."${host}" = nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit system inputs username host; };
       modules = [
-        ./hosts/lf-nix/home.nix
+        ./hosts/lf-nix/config.nix
+        home-manager.nixosModules.home-manager
         {
-          home.username = username;
-          home.homeDirectory = "/home/${username}";
-          home.stateVersion = "25.05";
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "backup";
+          home-manager.users.${username} = {
+            imports = [ ./hosts/lf-nix/home.nix ];
+          };
+          home-manager.extraSpecialArgs = { inherit inputs username; };
         }
       ];
-      extraSpecialArgs = {inherit inputs username;};
+    };
+    homeConfigurations."${username}" = home-manager.lib.homeManagerConfiguration {
+      inherit pkgs;
+      extraSpecialArgs = { inherit inputs username; };
+      modules = [
+        ./hosts/lf-nix/home.nix
+        { home-manager.backupFileExtension = "backup"; }
+      ];
     };
   };
 }
-
