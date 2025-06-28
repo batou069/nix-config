@@ -80,6 +80,7 @@ in {
   environment.systemPackages =
     (with pkgs; [
       home-manager
+      devenv
       # System Packages
       isd     # interactively interact with systemd
       # trippy #Network diagnostic tool

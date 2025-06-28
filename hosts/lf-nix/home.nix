@@ -3,6 +3,14 @@
   username,
   ...
 }: {
+
+
+  imports = [
+    ./home/cli.nix
+    ./home/vscode.nix
+    # ./home/firefox.nix
+  ];
+
   # Home Manager version
   home = {
   
@@ -57,6 +65,7 @@
       grip-grab # Fast, more lightweight ripgrep alternative for daily use cases
       vgrep # User-friendly pager for grep/git-grep/ripgrep
       xonsh # Python-ish, BASHwards-compatible shell
+      inputs.self.packages.${system}.my-nvim
       (python312.withPackages (
         ps:
           with ps; [
@@ -96,17 +105,15 @@
       EDITOR="nvim";
     };
 
-    file.".pre-commit-config.yaml" = {
-      source = ../../.pre-commit-config.yaml; # Path to the file in your dotfiles
-      target = ".pre-commit-config.yaml";
-    };
-};
-
-  imports = [
-    ./home/cli.nix
-    ./home/vscode.nix
-    # ./home/firefox.nix
-  ];
+    file = {
+      ".pre-commit-config.yaml" = {
+        source = ../../.pre-commit-config.yaml; # Path to the file in your dotfiles
+        target = ".pre-commit-config.yaml";
+        };
+      ".config/nvim" = {
+        source = "${config.home.homeDirectory}/dotfiles/nvim/.config/nvim";
+        };
+  };
 
   fonts.fontconfig.enable = true;
 
@@ -116,14 +123,15 @@
     };
 
     neovim = {
-      enable = true;
-      withPython3 = true;
-      defaultEditor = true;
+      enable = false;
+  #    withPython3 = true;
+  #    defaultEditor = true;
+  #    vimAlias = true;
     };
 
     git = {
       enable = true;
-      userName = "Battou069";
+      userName = "Batou069";
       userEmail = "laurentf84@gmail.com";
       aliases = {
         g="git";
