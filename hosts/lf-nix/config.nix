@@ -19,7 +19,7 @@
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
-    #     "${inputs.nix-mineral}/nix-mineral.nix"
+    "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
   # BOOT related stuff
@@ -383,19 +383,19 @@ virtualisation.docker = {
 	  # ELECTRON_ENABLE_WAYLAND = "1";
 	};
 
-#   programs = {
-#   # Zsh configuration
-#     zsh = {
-#     	enable = true;
-# 	enableCompletion = true;
-#         ohMyZsh.enable = false;
-#       
-#         autosuggestions.enable = false;
-#         syntaxHighlighting.enable = false;
-#         promptInit = "";
-#       };
-#    };
-# 
+   programs = {
+   # Zsh configuration
+     zsh = {
+     	enable = true;
+ 	enableCompletion = true;
+         ohMyZsh.enable = false;
+       
+         autosuggestions.enable = false;
+         syntaxHighlighting.enable = false;
+         promptInit = "";
+       };
+    };
+ 
   environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
 
   # Open ports in the firewall.

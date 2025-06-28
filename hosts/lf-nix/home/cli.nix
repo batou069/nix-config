@@ -20,7 +20,7 @@
     zsh = {
       enable = true;
       enableCompletion = true;
-      autosuggestions.enable = true;
+      autosuggestion.enable = true;
       history = {
         append = true;
         share = true;
@@ -29,7 +29,7 @@
         ignoreAllDups = true;
         ignoreDups = true;
         ignoreSpace = true;
-        path = "${config.xda.dataHome}/.zsh_history";
+        path = "${config.xdg.dataHome}/.zsh_history";
         size = 100000;
         save = 100000;
         extended = true;
@@ -39,7 +39,7 @@
       localVariables = {
         
       };
-      zsh_abbr.globalAbbreviations = {
+      zsh-abbr.globalAbbreviations = {
         C = "| wl-copy";
         G = "| rg ";
         L = "| less -R";
@@ -81,7 +81,6 @@
       };
       syntaxHighlighting = {
         enable = true;
-        stratregy = [ "history" ];
       };
 
       initContent = ''
@@ -314,7 +313,14 @@
            };
            file = "Dracula.tmTheme";
            };
-           };
+         };
+        extraPackages = with pkgs.bat-extras; [
+          batdiff
+          batman
+          prettybat
+          batwatch
+        ]
+        ;
     };
 
     starship = {

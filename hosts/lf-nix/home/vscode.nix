@@ -11,7 +11,7 @@
       userSettings = {
         "editor.fontFamily" = "FantasqueSansM Nerd Font Mono Italic";
         "editor.fontVariations" = "Medium Italic";
-        "editor.fontLigatures": "'calt', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero', 'onum'";
+        "editor.fontLigatures" = "'calt', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero', 'onum'";
         "editor.tabSize" = 2;
         "[docker-compose]" = {
           "editor.defaultFormatter" = "KilianJPopp.docker-compose-support";

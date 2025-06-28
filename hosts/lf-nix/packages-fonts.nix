@@ -82,7 +82,6 @@ in {
       # System Packages
       # home-manager
       bc
-      devenv
       isd     # interactively interact with systemd
       erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
       baobab
@@ -151,7 +150,7 @@ in {
       yad
       yt-dlp
       nix-search-tv
-      gemini-cli
+      gemini-cli    
 
 
       # --- MY PACKAGES ---
