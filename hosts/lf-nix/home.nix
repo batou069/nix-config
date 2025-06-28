@@ -1,6 +1,7 @@
 {
   pkgs,
   username,
+  config,
   ...
 }: {
 
@@ -21,6 +22,7 @@
     homeDirectory = "/home/${username}";
     # backupFileExtension = "backup";  # Add this
     packages = with pkgs; [
+      home-manager
       # --- Fonts ---
       # General Purpose / Sans-Serif Fonts
       dejavu_fonts
@@ -113,8 +115,8 @@
       ".config/nvim" = {
         source = "${config.home.homeDirectory}/dotfiles/nvim/.config/nvim";
         };
+   };
   };
-
   fonts.fontconfig.enable = true;
 
   programs= {
@@ -202,6 +204,5 @@
       "mimeapps.list".force = true;
     };
   };
-
 }
 

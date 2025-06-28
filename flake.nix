@@ -28,71 +28,19 @@
     nix-software-center.url = "github:snowfallorg/nix-software-center";
   };
 
-#   outputs = inputs @ {
-#     self,
-#     nixpkgs,
-#     home-manager,
-#     ags,
-#     #"nixosModules.default = ./systemCat.nix";,
-#     ...
-#   }: let
-#     system = "x86_64-linux";
-#     host = "lf-nix";
-#     username = "lf";
-
-#     pkgs = import nixpkgs { inherit system; config = { allowUnfree = 
-#       true;  };
-#     };
-
-#     homeManagerUserModule = {
-#       home-manager.useGlobalPkgs = true;
-#       home-manager.useUserPackages = true;
-#       home-manager.users.${username} = import ./hosts/lf-nix/home.nix;
-#       home-manager.extraSpecialArgs = {inherit inputs username;};
-#       home-manager.backupFileExtension = "backup";
-#       };
-#   in {
-#     nixosConfigurations = {
-#       "${host}" = nixpkgs.lib.nixosSystem {
-#         specialArgs = {
-#           inherit system;
-#           inherit inputs;
-#           inherit username;
-#           inherit host;
-#         };
-#         modules = [
-#           ./hosts/lf-nix/config.nix
-#           home-manager.nixosModules.home-manager
-#           homeManagerUserModule
-#         ];
-#       };
-#     };
-
-#     homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-#       inherit pkgs;
-#       modules = [
-#         ./hosts/lf-nix/home.nix
-#         {
-#           home.username = username;
-#           home.homeDirectory = "/home/${username}";
-#           home.stateVersion = "25.05";
-#         }
-#       ];
-#       extraSpecialArgs = {inherit inputs username;};
-#     };
-#   };
-# }
-
 outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, home-manager, ags, nixCats, firefox-addons, nix-mineral, nix-software-center, ... }: let
     system = "x86_64-linux";
     host = "lf-nix";
     username = "lf";
-    pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
-    unstablePkgs = import nixpkgs-unstable { inherit system; };
-    nvimConfigDir = "${builtins.getEnv "HOME"}/dotfiles/nvim/.config/nvim";
+    pkgs = import nixpkgs { 
+      inherit system; 
+      config.allowUnfree = true;
+      };
+      unstablePkgs = import nixpkgs-unstable { inherit system; };
+      nvimConfigDir = "${builtins.getEnv "HOME"}/dotfiles/nvim/.config/nvim";
   in {
     packages.${system} = {
-      my-nvim = nixCats.packages.${system}.nixCats {
+      my-nvim = nixCats.utils.mkPackages {
         inherit pkgs;
         packageName = "my-nvim";
         neovim-unwrapped = pkgs.neovim-unwrapped;
@@ -106,10 +54,13 @@ outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, home-manager, ags, nixCats
           lua-language-server # For Lua development
           pyright # For Python (if used)
           # Add dependencies for specific plugins if available in 25.05
-          obsidian # For obsidian.nvim (if it requires the Obsidian CLI)
           tree-sitter # For treesj.nvim and nvim-treesitter
           # Add more dependencies as needed (e.g., for golf.nvim if Go-related)
           go # Optional: for golf.nvim if it requires Go
+          debugpy # For nvim-dap-python
+          sqlfluff # For SQL formatting
+          nixd # For Nix LSP
+          alejandra # For Nix formatting
         ];
         categories = {
           myConfig = {
@@ -126,28 +77,14 @@ outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, home-manager, ags, nixCats
               -- Load custom config files
               require('config.autocmds')
               require('config.keymaps')
-              require('config.lazy')
               require('config.options')
-              -- Load custom plugins
-        #      require('plugins.alpha')
-        #      require('plugins.background')
-              require('plugins.changes') -- Overrides LazyVim plugin settings
-        #      require('plugins.comment-boxes')
-        #      require('plugins.comment')
-        #      require('plugins.cssview')
-        #      require('plugins.golf')
-        #      require('plugins.leetcode')
-        #      require('plugins.mini-ai-surround')
-        #      require('plugins.obsidian')
-        #      require('plugins.rainbow-delimiters')
-        #      require('plugins.treesj')
-        #      require('plugins.yanky')
+              require('config.lsp')
             '';
-            pre = ''
-              require('lazyvim.config').init()
-              vim.opt.rtp:prepend('${nvimConfigDir}')
-              dofile('${nvimConfigDir}/lazyvim/init.lua')
-            '';            
+            # pre = ''
+            #   require('lazyvim.config').init()
+            #   vim.opt.rtp:prepend('${nvimConfigDir}')
+            #   dofile('${nvimConfigDir}/lazyvim/init.lua')
+            # '';            
           };
         };
       };
@@ -156,6 +93,7 @@ outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, home-manager, ags, nixCats
       specialArgs = { inherit system inputs username host; };
       modules = [
         ./hosts/lf-nix/config.nix
+        # "${nix-mineral}/nix-mineral.nix"
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
@@ -164,19 +102,19 @@ outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, home-manager, ags, nixCats
           home-manager.users.${username} = {
             imports = [ ./hosts/lf-nix/home.nix ];
           };
-          home-manager.extraSpecialArgs = { inherit inputs username; };
+          home-manager.extraSpecialArgs = { inherit inputs username system; };
         }
       ];
     };
     homeConfigurations."${username}" = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
-      extraSpecialArgs = { inherit inputs username; };
+      extraSpecialArgs = { inherit inputs username system; };
       modules = [
         ./hosts/lf-nix/home.nix
         {
           home.username = username;
           home.homeDirectory = "/home/${username}";
-          home.stateVersion = "25.05";
+          home.stateVersion = "24.11";
           home-manager.backupFileExtension = "backup"; 
         }
       ];

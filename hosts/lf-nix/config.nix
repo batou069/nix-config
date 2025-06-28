@@ -321,6 +321,10 @@ in {
 
   # Security / Polkit
   security = {
+    sudo = {}
+      enable = true;
+      package = pkgs.sudo;
+  };
     rtkit.enable = true;
     polkit.enable = true;
     polkit.extraConfig = ''

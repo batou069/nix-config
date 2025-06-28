@@ -54,9 +54,8 @@
         p="python";
         py="python";
         e="exit";
-        ipy="ipython3" # >/dev/null 2>&1;
         btc="curl rate.sx";
-        paths='echo -e ${PATH//:/\\n}';
+        # paths="echo -e ${PATH//:/\\n}";
         d="docker";
         dc="docker compose";
         dcu="docker compose up";
@@ -64,21 +63,18 @@
         dcud="docker compose up -d";
         dps="docker ps";
         dpsa="docker ps -a";
-        drfa='docker rm -f $(docker ps -aq)';
+        drfa="'docker rm -f $(docker ps -aq)'";
         tai="tmux attach -t ai3";
         t="tmux";
-        ld='lazydocker';
-        lg='lazygit';
-        treesize='ncdu';
-        lastmod='find . -type f -not -path "*/\.*" -exec ls -lrt {} +';
-        t='tmux';
-        e='exit';
-        dc='docker compose';
-        zf='z "$(zoxide query -l | fzf --preview "ls --color {}" --preview-window "70%:wrap" --border-label="Dir Jump")"';
+        ld="lazydocker";
+        lg="lazygit";
+        treesize="ncdu";
+        lastmod="find . -type f -not -path '*/\.*' -exec ls -lrt {} +";
+        zf="z '$(zoxide query -l | fzf --preview 'ls --color {}' --preview-window '70%:wrap' --border-label='Dir Jump')'";
         gv="git grep --line-number . | fzf --delimiter : --nth 3.. --bind 'enter:become(nvim {1} +{2})' --border-label='Git Grep'";
-        dfz='docker ps -a | fzf --multi --header "Select container" --preview "docker inspect {1}" --preview-window "40%:wrap" --border-label="Docker Select" | awk "{print \$1}" | xargs -I {} docker start {}';
+        dfz="docker ps -a | fzf --multi --header 'Select container' --preview 'docker inspect {1}' --preview-window '40%:wrap' --border-label='Docker Select' | awk '{print \$1}' | xargs -I {} docker start {}";
         v="fzf --preview --border-label='File Picker' 'bat {}' --preview-window '70%:wrap' --multi --bind 'enter:become(nvim {+})'";
-        mans='man -k . | fzf --border-label="Man Pages" | awk "{print \$1}" | xargs -r man';
+        mans="man -k . | fzf --border-label='Man Pages' | awk '{print \$1}' | xargs -r man";
         ns="nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --preview-window 'right:40%:wrap' --scheme history";
         ".."="cd ..";
         "..."="cd ../..";
@@ -92,9 +88,7 @@
       initContent = ''
         export PATH="$HOME/.nix-profile/bin:/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin:$PATH"
         yt() {fabric -y "$1" --transcript}
-        cheat() {curl "cheat.sh/${*:-}"}
-        aliases() {alias | grep ${*:-} | bat -l c}
-        nixi() {nix profile install "nixpkgs#${*:-}";}
+
         mkcd() { mkdir -p "$1" && cd "$1" }
         rgn() { rg --line-number --no-heading "$@" | awk -F: '{print $1 " [" $2 "]"}' | fzf --border-label 'Ripgrep Search' --delimiter ' \[' --nth 1 --preview 'bat --style=plain --color=always {1} --line-range $(({2}-5)): --highlight-line {2}' --preview-window 'right,70%,border-left' --border-label 'Ripgrep Search' --bind 'enter:become(nvim {1} +{2})' }
         rga-fzf() {
