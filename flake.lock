@@ -43,13 +43,29 @@
         "type": "github"
       }
     },
+    "nix-mineral": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1749651658,
+        "narHash": "sha256-kLS9fHO4W0eWg5J5heT3SEMcuYlsyJzCLTzJ/BA13wo=",
+        "owner": "cynicsketch",
+        "repo": "nix-mineral",
+        "rev": "637b3efb739d03082258f7cf0fee73d8b647c939",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cynicsketch",
+        "repo": "nix-mineral",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1750622754,
-        "narHash": "sha256-kMhs+YzV4vPGfuTpD3mwzibWUE6jotw5Al2wczI0Pv8=",
+        "lastModified": 1750969886,
+        "narHash": "sha256-zW/OFnotiz/ndPFdebpo3X0CrbVNf22n4DjN2vxlb58=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "c7ab75210cb8cb16ddd8f290755d9558edde7ee1",
+        "rev": "a676066377a2fe7457369dd37c31fd2263b662f4",
         "type": "github"
       },
       "original": {
@@ -63,6 +79,7 @@
       "inputs": {
         "ags": "ags",
         "home-manager": "home-manager",
+        "nix-mineral": "nix-mineral",
         "nixpkgs": "nixpkgs"
       }
     },
