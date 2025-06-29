@@ -13,6 +13,7 @@
   imports = [
     ./home/cli.nix
     ./home/vscode.nix
+    ./home/firefox
   ];
 
   fonts.fontconfig.enable = true;
@@ -91,6 +92,7 @@
           networkx
           python-louvain
           neo4j
+        
         ]
     ))
   ];
@@ -136,7 +138,10 @@
         "application/pdf" = "org.kde.okular.desktop";
         "application/xml" = "code.desktop";
         "application/x-yaml" = "code.desktop";
+        "application/json" = "code.desktop";
         "image/avif" = "loupe.desktop";
+        "audio/*" = [ "vlc.desktop" ];
+        "video/*" = [ "vlc.desktop" ];
         # "image/heif" = "org.kde.gwenview.desktop";
         # "image/x-icns" = "loupe.desktop";
         # "inode/directory" = "org.kde.dolphin.desktop";

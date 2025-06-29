@@ -10,7 +10,7 @@
   ...}: let
   
   inherit (import ./variables.nix) keyboardLayout;
-    
+
   in {
   imports = [
     ./hardware.nix
@@ -20,6 +20,7 @@
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
     "${inputs.nix-mineral}/nix-mineral.nix"
+    # ./disko.nix
   ];
 
   # BOOT related stuff
@@ -371,6 +372,9 @@
 virtualisation.docker = {
   enable = true;
   rootless.enable = false;
+  autoPrune.enable = true;
+  enableOnBoot = true;
+
 };
 
   console.keyMap = "${keyboardLayout}";
