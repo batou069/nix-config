@@ -20,7 +20,7 @@
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
     "${inputs.nix-mineral}/nix-mineral.nix"
-    
+    # ./disko.nix
   ];
 
   # BOOT related stuff
