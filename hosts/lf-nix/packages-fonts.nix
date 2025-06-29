@@ -123,6 +123,10 @@ in {
       imagemagick
       inxi
       jq
+      ijq
+      manix
+      mediainfo
+
       kitty
       libsForQt5.qtstyleplugin-kvantum #kvantum
       networkmanagerapplet
@@ -151,8 +155,7 @@ in {
       yt-dlp
       nix-search-tv
       gemini-cli    
-
-
+      claude-code
       # --- MY PACKAGES ---
       # Your requested packages
       lutris
@@ -197,7 +200,7 @@ in {
       ncdu # Disk Usage Analyzer With Ncurses Interface
       picard # For Changing Music Metadata & Getting Cover Art
       usbutils # Good Tools For USB Devices
-
+      gcr
       # Dev Stuff
       nixd
     ])
@@ -238,7 +241,7 @@ in {
 
     waybar.enable = true;
     hyprlock.enable = true;
-    firefox.enable = true;
+    # firefox.enable = true;
     nm-applet.indicator = true;
     thunar.enable = true;
     thunar.plugins = with pkgs.xfce; [
