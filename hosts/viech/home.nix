@@ -93,24 +93,23 @@
           python-louvain
           neo4j
           mypy
-          mypy-extensions        
+          mypy-extensions
         ]
     ))
   ];
 
-  home.sessionVariables  = {
-      I="$HOME/git/c/";
-      P="$HOME/git/py/";
-      C="$HOME/.config/";
-      G="$HOME/git/";
-      R="$HOME/apps/";
-      O="$HOME/Obsidian/";
-      D="$HOME/dotfiles/";
-      N="$HOME/NixOS-Hyprland/";
-      TERM="xterm-256color";
-      VISUAL="nvim";
-      EDITOR="nvim";
-    };
+  home.sessionVariables = {
+    P = "$HOME/git/py/";
+    C = "$HOME/.config/";
+    G = "$HOME/git/";
+    R = "$HOME/repos/";
+    O = "$HOME/Obsidian/";
+    D = "$HOME/dotfiles/";
+    N = "$HOME/NixOS-Hyprland/";
+    TERM = "xterm-256color";
+    VISUAL = "nvim";
+    EDITOR = "nvim";
+  };
 
   home.file.".pre-commit-config.yaml" = {
     source = ../../.pre-commit-config.yaml; # Path to the file in your dotfiles
@@ -141,8 +140,8 @@
         "application/x-yaml" = "code.desktop";
         "application/json" = "code.desktop";
         "image/avif" = "loupe.desktop";
-        "audio/*" = [ "vlc.desktop" ];
-        "video/*" = [ "vlc.desktop" ];
+        "audio/*" = ["vlc.desktop"];
+        "video/*" = ["vlc.desktop"];
         # "image/heif" = "org.kde.gwenview.desktop";
         # "image/x-icns" = "loupe.desktop";
         # "inode/directory" = "org.kde.dolphin.desktop";
@@ -163,5 +162,5 @@
     configFile = {
       "mimeapps.list".force = true;
     };
-};
+  };
 }
