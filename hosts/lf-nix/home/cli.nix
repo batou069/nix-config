@@ -144,15 +144,11 @@
 
     # for nushell wrapper to pick up HM things
     #bash.enable = true;
-    #fish.enable = true; # only for nushell completions really
+    fish.enable = true; # only for nushell completions really
     carapace = {
       enable = true;
       enableZshIntegration = true;
       enableFishIntegration = true;
-    };
-
-    fish = {
-      enable = true;
     };
 
     nushell = {
