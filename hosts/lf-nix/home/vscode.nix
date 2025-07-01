@@ -1,18 +1,27 @@
-{
-  pkgs,
-  ...
-}: {
-    programs.vscode = {
+{pkgs, ...}: {
+  programs.vscode = {
     enable = true;
     package = pkgs.vscode;
 
     # Define your VS Code settings here
     profiles.default = {
       userSettings = {
-        "editor.fontFamily" = "FantasqueSansM Nerd Font Mono Italic";
-        "editor.fontVariations" = "Medium Italic";
+        # "editor.fontFamily" = "FantasqueSansM Nerd Font Mono Italic";
+        "editor.fontFamily" = "Maple Mono NF";
         "editor.fontLigatures" = "'calt', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero', 'onum'";
-        #"editor.fontLigatures" = true;
+        "editor.tokenColorCustomizations" = {
+          "textMateRules" = [
+            {
+              "scope" = [
+                "source"
+                "text"
+              ];
+              "settings" = {
+                # "fontStyle" = "italic";
+              };
+            }
+          ];
+        };
         "editor.tabSize" = 2;
         "[docker-compose]" = {
           "editor.defaultFormatter" = "KilianJPopp.docker-compose-support";
@@ -25,7 +34,7 @@
           "nixd.formatting.command" = ["alejandra"];
         };
         "[nix]" = {
-          "editor.defaultFormatter" = "jnoortheen.nix-ide";
+          "editor.defaultFormatter" = "kamadorueda.alejandra";
           "editor.formatOnSave" = true;
         };
         "git.openRepositoryInParentFolders" = "always";
@@ -74,7 +83,6 @@
         ms-toolsai.vscode-jupyter-cell-tags
         ms-toolsai.jupyter-keymap
         ms-azuretools.vscode-docker
-        bungcip.better-toml
         zainchen.json
         vscodevim.vim
         visualstudioexptteam.intellicode-api-usage-examples

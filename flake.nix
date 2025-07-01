@@ -24,11 +24,20 @@
     disko.url = "github:nix-community/disko";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     sops-nix.url = "github:Mic92/sops-nix";
+    flake-utils.url = "github:numtide/flake-utils";
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+  };
 
-  outputs = inputs @ { self, nixpkgs, home-manager, ags, disko, sops-nix, ... }:
+
+  outputs = inputs @ { self, nixpkgs, home-manager, ags, disko, sops-nix, nur, ... }:
     let
-      # Function to generate a NixOS system configuration
+      # nur-no-pkgs = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/main.tar.gz") {};
+      # nur.modules.nixos.default;
+      # nur.legacyPackages."${system}".repos.iopq.modules.xraya;
+          # Function to generate a NixOS system configuration
       mkNixosSystem = { system, host, username }: nixpkgs.lib.nixosSystem {
         specialArgs = { inherit system inputs username host; };
         modules = [
@@ -44,6 +53,7 @@
             };
             home-manager.extraSpecialArgs = { inherit inputs username system; };
           }
+ 
         ];
       };
     in
@@ -60,6 +70,18 @@
         #   host = "viech";
         #   username = "lf";
         # };
+      };
+      # imports = lib.attrValues nur-no-pkgs.repos.moredhel.hmModules.rawModules;
+
+      services.unison = {
+        enable = true;
+        profiles = {
+          org = {
+            src = "/home/moredhel/org";
+            dest = "/home/moredhel/org.backup";
+            extraArgs = "-batch -watch -ui text -repeat 60 -fat";
+          };
+        };
       };
     };
 }
