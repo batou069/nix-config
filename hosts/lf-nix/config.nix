@@ -1,5 +1,5 @@
 { 
-  config,
+  # config,
   pkgs,
   host,
   username,
@@ -399,7 +399,13 @@ virtualisation.docker = {
          promptInit = "";
        };
     };
- 
+
+  # nixpkgs.config.packageOverrides = pkgs: {
+  #   nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/main.tar.gz") {
+  #     inherit pkgs;
+  #   };
+  # };
+
   environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
 
   # Open ports in the firewall.

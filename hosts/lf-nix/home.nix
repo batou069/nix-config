@@ -2,120 +2,145 @@
   pkgs,
   username,
   ...
-}: {
-  # Home Manager version
-  home.stateVersion = "24.11";
-
-  # User information
-  home.username = username;
-  home.homeDirectory = "/home/${username}";
-
-  imports = [
+}:
+ {
+    imports = [
     ./home/cli.nix
     ./home/vscode.nix
-    # ./home/firefox
   ];
 
-  fonts.fontconfig.enable = true;
 
-  # User-specific packages
-  home.packages = with pkgs; [
-    # --- Fonts ---
-    # General Purpose / Sans-Serif Fonts
-    dejavu_fonts
-    ibm-plex
-    inter
-    roboto
+  # nixpkgs.overlays = [
+  #         inputs.nur.overlays.default];
 
-    # Monospace / Programming Fonts
-    fira-code
-    jetbrains-mono
-    hackgen-nf-font
-    roboto-mono
-    terminus_font
-    victor-mono
-    nerd-fonts.im-writing
-    nerd-fonts.fantasque-sans-mono
+  # Home Manager version
+  home = {
+    stateVersion = "24.11";
 
-    # Icon / Symbol Fonts
-    font-awesome
-    fira-code-symbols
-    material-icons
-    powerline-fonts
-    symbola
+    # User information
+    username = username;
+    homeDirectory = "/home/${username}";
 
-    # Noto Fonts
-    noto-fonts
-    noto-fonts-emoji
-    noto-fonts-cjk-sans
-    noto-fonts-cjk-serif
-    noto-fonts-monochrome-emoji
 
-    # Niche/Specific Fonts
-    minecraftia
 
-    eza
-    fd
-    # ripgrep
-    repgrep
-    # ripgrep-all
-    alejandra
-    pre-commit
-    kdePackages.okular
-    vgrep # User-friendly pager for grep/git-grep/ripgrep
-    xonsh # Python-ish, BASHwards-compatible shell
-    (python312.withPackages (
-      ps:
-        with ps; [
-          requests
-          pyquery
-          jupyterlab
-          jupyter
-          matplotlib
-          numpy
-          pandas
-          pillow
-          plotly
-          pytest
-          seaborn
-          python-dotenv
-          regex
-          tabulate
-          ipykernel
-          selenium
-          beautifulsoup4
-          pika
-          pymongo
-          lxml
-          redis
-          aiohttp
-          networkx
-          python-louvain
-          neo4j
-          mypy
-          mypy-extensions        
-        ]
-    ))
-  ];
 
-  home.sessionVariables  = {
-      I="$HOME/git/c/";
-      P="$HOME/git/py/";
-      C="$HOME/.config/";
-      G="$HOME/git/";
-      R="$HOME/apps/";
-      O="$HOME/Obsidian/";
-      D="$HOME/dotfiles/";
-      N="$HOME/NixOS-Hyprland/";
-      TERM="xterm-256color";
-      VISUAL="nvim";
-      EDITOR="nvim";
+    # User-specific packages
+    packages = with pkgs; [
+      # --- Fonts ---
+      # General Purpose / Sans-Serif Fonts
+      dejavu_fonts
+      ibm-plex
+      inter
+      roboto
+
+      # Monospace / Programming Fonts
+      fira-code
+      jetbrains-mono
+      hackgen-nf-font
+      roboto-mono
+      terminus_font
+      victor-mono
+      nerd-fonts.im-writing
+      nerd-fonts.fantasque-sans-mono
+      maple-mono.NF
+      
+      # Icon / Symbol Fonts
+      font-awesome
+      fira-code-symbols
+      material-icons
+      powerline-fonts
+      symbola
+
+      # Noto Fonts
+      noto-fonts
+      noto-fonts-emoji
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      noto-fonts-monochrome-emoji
+
+      # Niche/Specific Fonts
+      minecraftia
+
+      fpp
+      fish
+      ladybird
+      meld
+      normcap
+      eza
+      fd
+      # ripgrep
+      repgrep
+      # ripgrep-all
+      alejandra
+      pre-commit
+      kdePackages.okular
+      vgrep # User-friendly pager for grep/git-grep/ripgrep
+      xonsh # Python-ish, BASHwards-compatible shell
+      # pkgs.nur.repos
+      vimPluginsUpdater
+      vimgolf
+      rofi-obsidian
+      tradingview
+      neovide
+      (python312.withPackages (
+        ps:
+          with ps; [
+            requests
+            pyquery
+            jupyterlab
+            jupyter
+            matplotlib
+            numpy
+            pandas
+            pillow
+            plotly
+            pytest
+            # seaborn
+            python-dotenv
+            regex
+            # tabulate
+            ipykernel
+            # selenium
+            # beautifulsoup4
+            # pika
+            # pymongo
+            # lxml
+            # redis
+            # aiohttp  
+          ]
+      ))
+    ];
+
+    sessionVariables  = {
+        I = "$HOME/git/c/";
+        P = "$HOME/git/py/";
+        C = "$HOME/.config/";
+        G = "$HOME/git/";
+        R = "$HOME/apps/";
+        O = "$HOME/Obsidian/";
+        D = "$HOME/dotfiles/";
+        N = "$HOME/NixOS-Hyprland/";
+        TERM = "xterm-256color";
+        VISUAL = "nvim";
+        EDITOR = "nvim";
+      };
+
+    file = {
+      ".pre-commit-config.yaml" = {
+        source = ../../.pre-commit-config.yaml; # Path to the file in your dotfiles
+        target = ".pre-commit-config.yaml";
+      };
+      ".gitignore" = {
+        text = ''
+          keys.txt
+          example_config/
+          example_config/*
+        '';
+      };
     };
-
-  home.file.".pre-commit-config.yaml" = {
-    source = ../../.pre-commit-config.yaml; # Path to the file in your dotfiles
-    target = ".pre-commit-config.yaml";
   };
+ 
+  fonts.fontconfig.enable = true;
 
   xdg = {
     mimeApps = {
@@ -143,9 +168,6 @@
         "image/avif" = "loupe.desktop";
         "audio/*" = [ "vlc.desktop" ];
         "video/*" = [ "vlc.desktop" ];
-        # "image/heif" = "org.kde.gwenview.desktop";
-        # "image/x-icns" = "loupe.desktop";
-        # "inode/directory" = "org.kde.dolphin.desktop";
       };
     };
     userDirs = {
@@ -155,8 +177,6 @@
       download = "$HOME/Downloads";
       music = "$HOME/Music";
       pictures = "$HOME/Pictures";
-      # publicShare = "$HOME/";
-      # templates = "$HOME/";
       videos = "$HOME/Videos";
     };
 
