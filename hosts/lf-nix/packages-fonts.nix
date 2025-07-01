@@ -117,7 +117,6 @@ in {
       # qutebrowser
       rstudioWrapper
       hyprls
-      zen-browser
       lazygit
       lazycli
       lazydocker

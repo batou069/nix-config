@@ -2,13 +2,19 @@
   pkgs,
   username,
   ...
-}:
- {
-    imports = [
+}: {
+  imports = [
     ./home/cli.nix
     ./home/vscode.nix
+    ./home/bat.nix
+    ./home/firefox.nix
+    ./home/fzf.nix
+    ./home/git.nix
+    ./home/lsd.nix
+    ./home/nvim.nix
+    ./home/starship.nix
+    ./home/zsh.nix
   ];
-
 
   # nixpkgs.overlays = [
   #         inputs.nur.overlays.default];
@@ -20,9 +26,6 @@
     # User information
     username = username;
     homeDirectory = "/home/${username}";
-
-
-
 
     # User-specific packages
     packages = with pkgs; [
@@ -43,7 +46,7 @@
       nerd-fonts.im-writing
       nerd-fonts.fantasque-sans-mono
       maple-mono.NF
-      
+
       # Icon / Symbol Fonts
       font-awesome
       fira-code-symbols
@@ -62,11 +65,9 @@
       minecraftia
 
       fpp
-      fish
       ladybird
       meld
       normcap
-      eza
       fd
       # ripgrep
       repgrep
@@ -106,24 +107,24 @@
             # pymongo
             # lxml
             # redis
-            # aiohttp  
+            # aiohttp
           ]
       ))
     ];
 
-    sessionVariables  = {
-        I = "$HOME/git/c/";
-        P = "$HOME/git/py/";
-        C = "$HOME/.config/";
-        G = "$HOME/git/";
-        R = "$HOME/apps/";
-        O = "$HOME/Obsidian/";
-        D = "$HOME/dotfiles/";
-        N = "$HOME/NixOS-Hyprland/";
-        TERM = "xterm-256color";
-        VISUAL = "nvim";
-        EDITOR = "nvim";
-      };
+    sessionVariables = {
+      I = "$HOME/git/c/";
+      P = "$HOME/git/py/";
+      C = "$HOME/.config/";
+      G = "$HOME/git/";
+      R = "$HOME/apps/";
+      O = "$HOME/Obsidian/";
+      D = "$HOME/dotfiles/";
+      N = "$HOME/NixOS-Hyprland/";
+      TERM = "xterm-256color";
+      VISUAL = "nvim";
+      EDITOR = "nvim";
+    };
 
     file = {
       ".pre-commit-config.yaml" = {
@@ -139,7 +140,7 @@
       };
     };
   };
- 
+
   fonts.fontconfig.enable = true;
 
   xdg = {
@@ -166,8 +167,8 @@
         "application/x-yaml" = "code.desktop";
         "application/json" = "code.desktop";
         "image/avif" = "loupe.desktop";
-        "audio/*" = [ "vlc.desktop" ];
-        "video/*" = [ "vlc.desktop" ];
+        "audio/*" = ["vlc.desktop"];
+        "video/*" = ["vlc.desktop"];
       };
     };
     userDirs = {
@@ -183,5 +184,5 @@
     configFile = {
       "mimeapps.list".force = true;
     };
-};
+  };
 }
