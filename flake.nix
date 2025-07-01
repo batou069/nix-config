@@ -61,7 +61,7 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.users.${username} = {
-              imports = [./hosts/${host}/home.nix];
+              imports = [./pkgs/home.nix];
             };
             home-manager.extraSpecialArgs = {inherit inputs username system;};
           }
@@ -75,11 +75,11 @@
         username = "lf";
       };
 
-      # "viech" = mkNixosSystem {
-      #   system = "x86_64-linux";
-      #   host = "viech";
-      #   username = "lf";
-      # };
+      "viech" = mkNixosSystem {
+        system = "x86_64-linux";
+        host = "viech";
+        username = "lf";
+      };
     };
     # imports = lib.attrValues nur-no-pkgs.repos.moredhel.hmModules.rawModules;
 

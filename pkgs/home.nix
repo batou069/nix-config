@@ -4,16 +4,16 @@
   ...
 }: {
   imports = [
-    ./home/cli.nix
-    ./home/vscode.nix
-    ./home/bat.nix
-    # ./home/firefox.nix
-    ./home/fzf.nix
-    ./home/git.nix
-    ./home/lsd.nix
-    ./home/nvim.nix
-    ./home/starship.nix
-    ./home/zsh.nix
+    ./cli.nix
+    ./vscode.nix
+    ./bat.nix
+    # ./firefox.nix
+    ./fzf.nix
+    ./git.nix
+    ./lsd.nix
+    ./nvim/default.nix
+    ./starship.nix
+    ./zsh.nix
   ];
 
   # nixpkgs.overlays = [
@@ -65,10 +65,12 @@
       minecraftia
 
       fpp
+      igrep
       ladybird
       meld
       normcap
       fd
+      igrep
       # ripgrep
       repgrep
       # ripgrep-all
