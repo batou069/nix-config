@@ -7,7 +7,7 @@
     ./home/cli.nix
     ./home/vscode.nix
     ./home/bat.nix
-    ./home/firefox.nix
+    # ./home/firefox.nix
     ./home/fzf.nix
     ./home/git.nix
     ./home/lsd.nix
@@ -108,6 +108,7 @@
             # lxml
             # redis
             # aiohttp
+            # NetscapeBookmarksFileParser
           ]
       ))
     ];
