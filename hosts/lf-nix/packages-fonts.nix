@@ -3,12 +3,11 @@
   inputs,
   ...
 }: let
-    r-with-packages = pkgs.rWrapper.override {
-      packages = with pkgs.rPackages; [
+  r-with-packages = pkgs.rWrapper.override {
+    packages = with pkgs.rPackages; [
       IRkernel
     ];
   };
-
 in {
   nixpkgs.config.allowUnfree = true;
 
@@ -17,7 +16,7 @@ in {
       # System Packages
       # home-manager
       bc
-      isd     # interactively interact with systemd
+      isd # interactively interact with systemd
       erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
       baobab
       btrfs-progs
@@ -88,7 +87,7 @@ in {
       yad
       yt-dlp
       nix-search-tv
-      gemini-cli 
+      gemini-cli
       claude-code
 
       # --- MY PACKAGES ---
@@ -141,17 +140,18 @@ in {
       r-with-packages # Add the R environment
     ];
 
-   programs = {
+  programs = {
     hyprland = {
       enable = true;
       # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
       portalPackage = pkgs.xdg-desktop-portal-hyprland;
       xwayland.enable = true;
+      withUWSM = true;
     };
 
     waybar.enable = true;
     hyprlock.enable = true;
-    # firefox.enable = true;
+    firefox.enable = true;
     nm-applet.indicator = true;
     thunar.enable = true;
     thunar.plugins = with pkgs.xfce; [

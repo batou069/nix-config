@@ -31,15 +31,27 @@
     };
   };
 
-
-  outputs = inputs @ { self, nixpkgs, home-manager, ags, disko, sops-nix, nur, ... }:
-    let
-      # nur-no-pkgs = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/main.tar.gz") {};
-      # nur.modules.nixos.default;
-      # nur.legacyPackages."${system}".repos.iopq.modules.xraya;
-          # Function to generate a NixOS system configuration
-      mkNixosSystem = { system, host, username }: nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit system inputs username host; };
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    home-manager,
+    ags,
+    disko,
+    sops-nix,
+    nur,
+    ...
+  }: let
+    # nur-no-pkgs = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/main.tar.gz") {};
+    # nur.modules.nixos.default;
+    # nur.legacyPackages."${system}".repos.iopq.modules.xraya;
+    # Function to generate a NixOS system configuration
+    mkNixosSystem = {
+      system,
+      host,
+      username,
+    }:
+      nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit system inputs username host;};
         modules = [
           disko.nixosModules.default
           ./hosts/${host}/config.nix
@@ -49,39 +61,37 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.users.${username} = {
-              imports = [ ./hosts/${host}/home.nix ];
+              imports = [./hosts/${host}/home.nix];
             };
-            home-manager.extraSpecialArgs = { inherit inputs username system; };
+            home-manager.extraSpecialArgs = {inherit inputs username system;};
           }
- 
         ];
       };
-    in
-    {
-      nixosConfigurations = {
-        "lf-nix" = mkNixosSystem {
-          system = "x86_64-linux";
-          host = "lf-nix";
-          username = "lf";
-        };
-        
-      # "viech" = mkNixosSystem {
-        #   system = "x86_64-linux";
-        #   host = "viech";
-        #   username = "lf";
-        # };
+  in {
+    nixosConfigurations = {
+      "lf-nix" = mkNixosSystem {
+        system = "x86_64-linux";
+        host = "lf-nix";
+        username = "lf";
       };
-      # imports = lib.attrValues nur-no-pkgs.repos.moredhel.hmModules.rawModules;
 
-      services.unison = {
-        enable = true;
-        profiles = {
-          org = {
-            src = "/home/moredhel/org";
-            dest = "/home/moredhel/org.backup";
-            extraArgs = "-batch -watch -ui text -repeat 60 -fat";
-          };
+      # "viech" = mkNixosSystem {
+      #   system = "x86_64-linux";
+      #   host = "viech";
+      #   username = "lf";
+      # };
+    };
+    # imports = lib.attrValues nur-no-pkgs.repos.moredhel.hmModules.rawModules;
+
+    services.unison = {
+      enable = true;
+      profiles = {
+        org = {
+          src = "/home/moredhel/org";
+          dest = "/home/moredhel/org.backup";
+          extraArgs = "-batch -watch -ui text -repeat 60 -fat";
         };
       };
     };
+  };
 }

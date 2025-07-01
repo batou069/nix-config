@@ -1,6 +1,4 @@
-{ config, lib, pkgs, ... }:
-
-{
+{...}: {
   sops = {
     defaultSopsFile = ../../secrets.yaml;
     gnupg.sshKeyPaths = [
