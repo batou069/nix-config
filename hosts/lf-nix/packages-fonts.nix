@@ -38,6 +38,7 @@ in {
       xdg-user-dirs
       xdg-utils
       sof-firmware # added due to sound issues, missing microphone
+      linux-firmware
       fastfetch
       (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
       # ranger

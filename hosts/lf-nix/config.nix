@@ -36,7 +36,7 @@ in {
     ];
 
     initrd = {
-      availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "usbhid" "sd_mod"];
+      availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod"];
       kernelModules = [];
     };
 
@@ -293,6 +293,7 @@ in {
 
   # Extra Logitech Support
   hardware = {
+    firmware = [ pkgs.sof-firmware ];
     logitech.wireless.enable = true;
     logitech.wireless.enableGraphical = true;
   };

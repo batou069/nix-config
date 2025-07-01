@@ -83,6 +83,7 @@
       rofi-obsidian
       tradingview
       neovide
+      home-manager
       (python312.withPackages (
         ps:
           with ps; [
@@ -180,6 +181,10 @@
       music = "$HOME/Music";
       pictures = "$HOME/Pictures";
       videos = "$HOME/Videos";
+    };
+    configFile."nvim/lua" = {
+      recursive = true;
+      source = ./lua;
     };
 
     configFile = {

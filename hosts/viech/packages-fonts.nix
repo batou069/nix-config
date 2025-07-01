@@ -3,8 +3,8 @@
   inputs,
   ...
 }: let
-    r-with-packages = pkgs.rWrapper.override {
-      packages = with pkgs.rPackages; [
+  r-with-packages = pkgs.rWrapper.override {
+    packages = with pkgs.rPackages; [
       IRkernel
     ];
   };
@@ -82,7 +82,7 @@ in {
       # System Packages
       # home-manager
       bc
-      isd     # interactively interact with systemd
+      isd # interactively interact with systemd
       erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
       baobab
       btrfs-progs
@@ -109,7 +109,7 @@ in {
       # ranger
 
       # Hyprland Stuff
-      # Buuild AGS v1 from source
+      # Build AGS v1 from source
       inputs.ags.packages.${pkgs.system}.default
       btop
       brightnessctl # for brightness control
@@ -154,7 +154,7 @@ in {
       yad
       yt-dlp
       nix-search-tv
-      gemini-cli    
+      gemini-cli
       claude-code
       # --- MY PACKAGES ---
       # Your requested packages
@@ -162,7 +162,7 @@ in {
       heroic
       bottles
       stow # Manage dotfiles symlinking
-      gnome-font-viewer # self explainatory
+      gnome-font-viewer # self explanatory
       fx
       yq-go # Note: The package is named yq-go
       figlet
@@ -209,7 +209,7 @@ in {
       r-with-packages # Add the R environment
     ];
 
-   programs = {
+  programs = {
     hyprland = {
       enable = true;
       # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -217,27 +217,27 @@ in {
       xwayland.enable = true;
     };
 
-#    git = {
-#      enable = true;
-#      package = pkgs.gitFull;
-#      config = {
-#        # Default user (GitHub)
-#        user = {
-#          name = "batou069";
-#          email = "laurentf84@gmail.com";
-#        };
-#
-#        # Set up the credential helper
-#        credential = {
-#          helper = "libsecret";
-#        };
-#
-#        # Automatically switch to GitLab user for specific directory
-#        "includeIf \"gitdir:~/git/\"" = {
-#          path = toString ./gitconfig-gitlab;
-#        };
-#      };
-#    };
+    #    git = {
+    #      enable = true;
+    #      package = pkgs.gitFull;
+    #      config = {
+    #        # Default user (GitHub)
+    #        user = {
+    #          name = "batou069";
+    #          email = "laurentf84@gmail.com";
+    #        };
+    #
+    #        # Set up the credential helper
+    #        credential = {
+    #          helper = "libsecret";
+    #        };
+    #
+    #        # Automatically switch to GitLab user for specific directory
+    #        "includeIf \"gitdir:~/git/\"" = {
+    #          path = toString ./gitconfig-gitlab;
+    #        };
+    #      };
+    #    };
 
     waybar.enable = true;
     hyprlock.enable = true;
