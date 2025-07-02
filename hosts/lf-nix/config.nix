@@ -23,9 +23,9 @@ in {
 
   # BOOT related stuff
   boot = {
-    #kernelPackages = pkgs.linuxPackages_zen; # Performance geared
-    kernelPackages = pkgs.linuxPackages_latest; # Best Balance
-    #kernelPackages = pkgs.linuxPackages_lts # Most Stable
+    kernelPackages = pkgs.linuxPackages_zen; # Performance geared
+    #kernelPackages = pkgs.linuxPackages_latest; # Best Balance
+    #kernelPackages = pkgs.linuxPackages_lts; # Most Stable
 
     kernelParams = [
       "systemd.mask=systemd-vconsole-setup.service"
@@ -37,7 +37,8 @@ in {
 
     initrd = {
       availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod"];
-      kernelModules = ["snd_sof_pci"];
+      kernelModules = ["snd_sof_pci" "kvm-intel"];
+      extraModulePackages = [];
     };
 
     # Needed For Some Steam Games
@@ -141,36 +142,36 @@ in {
       alsa.support32Bit = true;
       pulse.enable = true;
       wireplumber.enable = true;
-      extraConfig = {
-        pipewire = {
-          "context.properties" = {
-            "default.clock.rate" = 48000;
-            "default.clock.allowed-rates" = [
-              44100
-              48000
-              88200
-              96000
-              176400
-              192000
-              352800
-              384000
-              705600
-              768000
-            ];
-            "default.clock.quantum" = 1024;
-            "default.clock.min-quantum" = 1024;
-            "default.clock.max-quantum" = 1024;
-          };
-        };
-      };
-      wireplumber.extraConfig = {
-        "51-disable-suspend" = {
-          "monitor.session.rule.suspend-node.disabled" = true;
-        };
-      };
+      # extraConfig = {
+      #   pipewire = {
+      #     "context.properties" = {
+      #       "default.clock.rate" = 48000;
+      #       "default.clock.allowed-rates" = [
+      #         44100
+      #         48000
+      #         88200
+      #         96000
+      #         176400
+      #         192000
+      #         352800
+      #         384000
+      #         705600
+      #         768000
+      #       ];
+      #       "default.clock.quantum" = 1024;
+      #       "default.clock.min-quantum" = 1024;
+      #       "default.clock.max-quantum" = 1024;
+      #     };
+      #   };
+      # };
+      # wireplumber.extraConfig = {
+      #   "51-disable-suspend" = {
+      #     "monitor.session.rule.suspend-node.disabled" = true;
+      #   };
+      # };
     };
 
-    #pulseaudio.enable = false; #unstable
+    pulseaudio.enable = false; #unstable
     udev.enable = true;
     envfs.enable = true;
     dbus.enable = true;
@@ -181,13 +182,10 @@ in {
     };
 
     libinput.enable = true;
-
     rpcbind.enable = false;
     nfs.server.enable = false;
-
     openssh.enable = true;
-    flatpak.enable = false;
-
+    flatpak.enable = true;
     blueman.enable = true;
 
     #hardware.openrgb.enable = true;
