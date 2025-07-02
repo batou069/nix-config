@@ -1,5 +1,6 @@
 {
   pkgs,
+  pkgs-unstable,
   inputs,
   ...
 }: let
@@ -15,18 +16,17 @@ in {
     (with pkgs; [
       # System Packages
       # home-manager
-      bc
+
       isd # interactively interact with systemd
       erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
       baobab
       btrfs-progs
       clang
-      curl
+
       cpufrequtils
       duf # Utility For Viewing Disk Usage In Terminal
       findutils
       ffmpeg
-      glib #for gsettings to work
       gsettings-qt
       git
       killall
@@ -37,9 +37,8 @@ in {
       wget
       xdg-user-dirs
       xdg-utils
-      sof-firmware # added due to sound issues, missing microphone
       linux-firmware
-      fastfetch
+
       (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
       # ranger
 
@@ -57,7 +56,7 @@ in {
       hypridle
       imagemagick
       inxi
-      jq
+
       ijq
       manix
       mediainfo
@@ -65,7 +64,6 @@ in {
       libsForQt5.qtstyleplugin-kvantum #kvantum
       networkmanagerapplet
       nwg-displays
-      nwg-look
       nvtopPackages.full
       pamixer
       pavucontrol
@@ -79,7 +77,7 @@ in {
       slurp
       swappy
       swaynotificationcenter
-      swww
+
       unzip
       wallust
       wl-clipboard
@@ -87,9 +85,6 @@ in {
       xarchiver
       yad
       yt-dlp
-      nix-search-tv
-      gemini-cli
-      claude-code
 
       # --- MY PACKAGES ---
       # Your requested packages
@@ -101,14 +96,10 @@ in {
       fx
       yq-go # Note: The package is named yq-go
       figlet
-      bitwarden-cli
       ghostty
       uv
-      ruff
       tmux
       gedit
-      bitwarden-desktop
-      twingate
       vlc
       obsidian
       foot
@@ -116,18 +107,17 @@ in {
       # nyxt
       # qutebrowser
       rstudioWrapper
-      hyprls
-      lazygit
+
       lazycli
       lazydocker
       lazyjournal
       bitwarden-menu
       chromedriver
       google-chrome
+      lagrange
       # FROM ZaneyOS
       appimage-run # Needed For AppImage Support
       hyprpicker # Color Picker
-      lm_sensors # Used For Getting Hardware Temps
       lshw # Detailed Hardware Information
       ncdu # Disk Usage Analyzer With Ncurses Interface
       picard # For Changing Music Metadata & Getting Cover Art
@@ -135,6 +125,56 @@ in {
       gcr
       # Dev Stuff
       nixd
+    ])
+    ++ (with pkgs.unstable; [
+      # --- Fonts ---
+      # General Purpose / Sans-Serif Fonts
+      dejavu_fonts
+      ibm-plex
+      inter
+      roboto
+
+      # Monospace / Programming Fonts
+      fira-code
+      jetbrains-mono
+      hackgen-nf-font
+      roboto-mono
+      terminus_font
+      victor-mono
+      nerd-fonts.im-writing
+      nerd-fonts.fantasque-sans-mono
+      maple-mono.NF
+
+      # Icon / Symbol Fonts
+      font-awesome
+      fira-code-symbols
+      material-icons
+      powerline-fonts
+      symbola
+
+      # Noto Fonts
+      noto-fonts
+      noto-fonts-emoji
+      noto-fonts-cjk-sans
+
+      gemini-cli
+      bc
+      curl
+      glib #for gsettings to work
+      # sof-firmware
+      fastfetch
+      jq
+      nwg-look
+      swww
+      nix-search-tv
+      claude-code
+      bitwarden-cli
+      ruff
+      bitwarden-desktop
+      twingate
+      hyprls
+      lazygit
+      lm_sensors # Used For Getting Hardware Temps
     ])
     ++ [
       #   python-packages # Add the python environment

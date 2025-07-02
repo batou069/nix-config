@@ -11,7 +11,7 @@
     ./fzf.nix
     ./git.nix
     ./lsd.nix
-    ./nvim/default.nix
+    ./nvim
     ./starship.nix
     ./zsh.nix
   ];
@@ -66,7 +66,7 @@
 
       fpp
       igrep
-      ladybird
+      unstable.ladybird
       meld
       normcap
       fd
@@ -75,7 +75,7 @@
       repgrep
       # ripgrep-all
       alejandra
-      pre-commit
+      unstable.pre-commit
       kdePackages.okular
       vgrep # User-friendly pager for grep/git-grep/ripgrep
       xonsh # Python-ish, BASHwards-compatible shell
@@ -85,7 +85,7 @@
       rofi-obsidian
       tradingview
       neovide
-      home-manager
+      unstable.home-manager
       (python312.withPackages (
         ps:
           with ps; [
@@ -132,7 +132,7 @@
 
     file = {
       ".pre-commit-config.yaml" = {
-        source = ../../.pre-commit-config.yaml; # Path to the file in your dotfiles
+        source = ../.pre-commit-config.yaml; # Path to the file in your dotfiles
         target = ".pre-commit-config.yaml";
       };
       ".gitignore" = {
@@ -184,10 +184,10 @@
       pictures = "$HOME/Pictures";
       videos = "$HOME/Videos";
     };
-    configFile."nvim/lua" = {
-      recursive = true;
-      source = ./lua;
-    };
+    # configFile."nvim/lua" = {
+    #   recursive = true;
+    #   source = ./lua;
+    # };
 
     configFile = {
       "mimeapps.list".force = true;

@@ -22,11 +22,11 @@ in {
         intel-media-driver
         libvdpau-va-gl
         libva
-			  libva-utils
+        libva-utils
       ];
     };
-	hardware.firmware = with pkgs; [
-	  sof-firmware
-	];
+    hardware.firmware = with pkgs; [
+      unstable.sof-firmware
+    ];
   };
 }
