@@ -1,7 +1,8 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    #
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     # stylix.url = "github:nix-community/stylix/release-25.05";
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
@@ -34,6 +35,7 @@
   outputs = inputs @ {
     self,
     nixpkgs,
+    nixpkgs-unstable, # Fixed missing comma
     home-manager,
     ags,
     disko,
@@ -45,14 +47,35 @@
     # nur.modules.nixos.default;
     # nur.legacyPackages."${system}".repos.iopq.modules.xraya;
     # Function to generate a NixOS system configuration
+    # --- Old approach (commented out) ---
+    # pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
     mkNixosSystem = {
       system,
       host,
       username,
     }:
       nixpkgs.lib.nixosSystem {
+        # --- Old specialArgs (commented out) ---
+        # specialArgs = {inherit system inputs username host pkgs-unstable;};
+        # --- New specialArgs ---
+        # pkgs-unstable is no longer needed as it will be part of the main `pkgs` via the overlay.
         specialArgs = {inherit system inputs username host;};
+
         modules = [
+          # --- New overlay approach ---
+          # This module adds an overlay to the main `pkgs` set for this system.
+          # Unstable packages will be accessible via `pkgs.unstable`.
+          {
+            nixpkgs.overlays = [
+              (final: prev: {
+                unstable = import nixpkgs-unstable {
+                  system = prev.system;
+                  config.allowUnfree = true;
+                };
+              })
+            ];
+          }
+
           disko.nixosModules.default
           ./hosts/${host}/config.nix
           home-manager.nixosModules.home-manager
@@ -63,6 +86,10 @@
             home-manager.users.${username} = {
               imports = [./pkgs/home.nix];
             };
+            # --- Old extraSpecialArgs for home-manager (commented out) ---
+            # home-manager.extraSpecialArgs = {inherit inputs username system pkgs-unstable;};
+            # --- New extraSpecialArgs for home-manager ---
+            # The main `pkgs` (which now includes the unstable overlay) is passed automatically.
             home-manager.extraSpecialArgs = {inherit inputs username system;};
           }
         ];

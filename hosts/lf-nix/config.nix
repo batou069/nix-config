@@ -37,7 +37,7 @@ in {
 
     initrd = {
       availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod"];
-      kernelModules = [];
+      kernelModules = ["snd_sof_pci"];
     };
 
     # Needed For Some Steam Games
@@ -293,7 +293,7 @@ in {
 
   # Extra Logitech Support
   hardware = {
-    firmware = [ pkgs.sof-firmware ];
+    firmware = [pkgs.sof-firmware];
     logitech.wireless.enable = true;
     logitech.wireless.enableGraphical = true;
   };
