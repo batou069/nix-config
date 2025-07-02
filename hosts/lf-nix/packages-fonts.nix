@@ -16,6 +16,7 @@ in {
     (with pkgs; [
       # System Packages
       # home-manager
+      alsa-utils
 
       isd # interactively interact with systemd
       erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
@@ -175,6 +176,7 @@ in {
       hyprls
       lazygit
       lm_sensors # Used For Getting Hardware Temps
+      sof-firmware
     ])
     ++ [
       #   python-packages # Add the python environment
