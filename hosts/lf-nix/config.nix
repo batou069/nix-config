@@ -21,13 +21,13 @@ in {
     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
-  # BOOT related stuff
   boot = {
-    kernelPackages = pkgs.linuxPackages_zen; # Performance geared
-    #kernelPackages = pkgs.linuxPackages_latest; # Best Balance
-    #kernelPackages = pkgs.linuxPackages_lts; # Most Stable
+    # kernelPackages = pkgs.linuxPackages_zen; # Performance geared
+    kernelPackages = pkgs.linuxPackages_latest; # Best Balance
+    # kernelPackages = pkgs.linuxPackages_testing; # Bleeding edge
 
     kernelParams = [
+      "snd_intel_dspcfg.dsp_driver=3"
       "systemd.mask=systemd-vconsole-setup.service"
       "systemd.mask=dev-tpmrm0.device" #this is to mask that stupid 1.5 mins systemd bug
       "nowatchdog"
@@ -36,15 +36,14 @@ in {
     ];
 
     initrd = {
-      availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod"];
-      kernelModules = ["snd_sof_pci" "kvm-intel"];
-      extraModulePackages = [];
+      availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod" "sdhci_pci"];
+      kernelModules = ["kvm-intel"];
     };
-
+    extraModulePackages = [];
     # Needed For Some Steam Games
-    #kernel.sysctl = {
-    #  "vm.max_map_count" = 2147483642;
-    #};
+    kernel.sysctl = {
+      "vm.max_map_count" = 2147483642;
+    };
 
     ## BOOT LOADERS: NOTE USE ONLY 1. either systemd or grub
     # Bootloader SystemD
@@ -142,36 +141,14 @@ in {
       alsa.support32Bit = true;
       pulse.enable = true;
       wireplumber.enable = true;
-      # extraConfig = {
-      #   pipewire = {
-      #     "context.properties" = {
-      #       "default.clock.rate" = 48000;
-      #       "default.clock.allowed-rates" = [
-      #         44100
-      #         48000
-      #         88200
-      #         96000
-      #         176400
-      #         192000
-      #         352800
-      #         384000
-      #         705600
-      #         768000
-      #       ];
-      #       "default.clock.quantum" = 1024;
-      #       "default.clock.min-quantum" = 1024;
-      #       "default.clock.max-quantum" = 1024;
-      #     };
-      #   };
-      # };
-      # wireplumber.extraConfig = {
-      #   "51-disable-suspend" = {
-      #     "monitor.session.rule.suspend-node.disabled" = true;
-      #   };
-      # };
+      wireplumber.extraConfig = {
+        "alsa-monitor" = {
+          "disabled" = true;
+        };
+      };
     };
 
-    pulseaudio.enable = false; #unstable
+    # pulseaudio.enable = false; #unstable
     udev.enable = true;
     envfs.enable = true;
     dbus.enable = true;
@@ -381,6 +358,10 @@ in {
   };
 
   console.keyMap = "${keyboardLayout}";
+
+  environment.systemPackages = with pkgs; [
+    pulseaudio
+  ];
 
   # For Electron apps to use wayland
   environment.sessionVariables = {

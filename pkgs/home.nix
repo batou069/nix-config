@@ -87,7 +87,7 @@
       neovide
       appimage-run
       unstable.home-manager
-
+      codex
       (python312.withPackages (
         ps:
           with ps; [
