@@ -85,7 +85,9 @@
       rofi-obsidian
       tradingview
       neovide
+      appimage-run
       unstable.home-manager
+
       (python312.withPackages (
         ps:
           with ps; [
