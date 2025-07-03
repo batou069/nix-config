@@ -22,6 +22,22 @@
         "type": "github"
       }
     },
+    "claudia": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1751531875,
+        "narHash": "sha256-XYbH1/cJf+BamQ5xZqcdfRtCWPvwWL3VjGCjofjgcqE=",
+        "owner": "getAsterisk",
+        "repo": "claudia",
+        "rev": "552ae03362a489520088d1b659af5ed461ef096b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "getAsterisk",
+        "repo": "claudia",
+        "type": "github"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": "nixpkgs"
@@ -48,11 +64,11 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1751429002,
-        "narHash": "sha256-ihzv16jv0mx4yW64wXuJBnTKigRVsR+aY9i/5WvS+tA=",
+        "lastModified": 1751515409,
+        "narHash": "sha256-yu+/TxHkuZ8GHKwpKTv1BpfbYD1wH1CyPsOmY72chTg=",
         "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "08812a6d58b96f717f9d4a8c3e5aa9db0554eb6f",
+        "rev": "2e0dcafe8c48470e036908f34a2a1413f75bd804",
         "type": "gitlab"
       },
       "original": {
@@ -108,11 +124,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1750792728,
-        "narHash": "sha256-Lh3dopA8DdY+ZoaAJPrtkZOZaFEJGSYjOdAYYgOPgE4=",
+        "lastModified": 1751468302,
+        "narHash": "sha256-tWosziZTT039x6PgEZUhzGlV8oLvdDmIgKTE8ESMaEA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "366f00797b1efb70f2882d3da485e3c10fd3d557",
+        "rev": "501cfec8277f931a9c9af9f23d3105c537faeafe",
         "type": "github"
       },
       "original": {
@@ -227,11 +243,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1751442984,
-        "narHash": "sha256-VgB+UJAupT5jWdw+1c1IMptrzTiRFGk7MJIiSUq2TJ4=",
+        "lastModified": 1751546121,
+        "narHash": "sha256-0PB4PQTtENzx7SImli2MBNspLf+P6fL46YMjBh9ZOzQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "5365d082abff136302afd81bace38ce1e2f04f1a",
+        "rev": "23d1a22632806287684f335d3fedc20442f9c0a2",
         "type": "github"
       },
       "original": {
@@ -243,6 +259,7 @@
     "root": {
       "inputs": {
         "ags": "ags",
+        "claudia": "claudia",
         "disko": "disko",
         "firefox-addons": "firefox-addons",
         "flake-utils": "flake-utils",

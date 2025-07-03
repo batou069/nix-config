@@ -30,7 +30,10 @@
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    claudia.url = "github:getAsterisk/claudia";
+    claudia = {
+      url = "github:getAsterisk/claudia";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -113,6 +116,7 @@
 
     packages.x86_64-linux.claudia = import ./pkgs/claudia.nix {
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      pkgs-unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
       claudia-src = self.inputs.claudia;
     };
     # imports = lib.attrValues nur-no-pkgs.repos.moredhel.hmModules.rawModules;

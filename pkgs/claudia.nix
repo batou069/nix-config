@@ -1,5 +1,5 @@
 # /home/lf/nix/pkgs/claudia.nix
-{ pkgs, claudia-src }:
+{ pkgs, pkgs-unstable, claudia-src }:
 
 pkgs.stdenv.mkDerivation {
   pname = "claudia";
@@ -11,12 +11,12 @@ pkgs.stdenv.mkDerivation {
   nativeBuildInputs = with pkgs; [
     rustc
     cargo
-    bun
+    pkgs-unstable.bun # Use bun from unstable
     git
     pkg-config
     # From the "build-essential" package
     gcc
-    make
+    gnumake
   ];
 
   # These are the system libraries required for the build,
@@ -28,8 +28,8 @@ pkgs.stdenv.mkDerivation {
     librsvg
     patchelf
     openssl
-    libxdo
-    libsoup3
+    xdotool
+    libsoup_3
     # This is usually part of webkitgtk
     # javascriptcoregtk_4_1
   ];
@@ -68,6 +68,6 @@ pkgs.stdenv.mkDerivation {
     # IMPORTANT: Please verify the actual license from the repository.
     license = licenses.mit;
     platforms = platforms.linux;
-    maintainers = [ ];
+    maintainers = [];
   };
 }
