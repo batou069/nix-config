@@ -18,7 +18,7 @@ in {
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
-    "../../pkgs/disable-monitors.nix"
+    ../../pkgs/disable-monitors.nix
     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
