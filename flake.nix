@@ -31,8 +31,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     claudia = {
-      url = "github:getAsterisk/claudia";
-      flake = false;
+      url = "github:getAsterisk/claudia/218ecfb8b2069b69e4c40734e178e2a6af9fced7";
     };
   };
 
@@ -69,6 +68,33 @@
           # --- New overlay approach ---
           # This module adds an overlay to the main `pkgs` set for this system.
           # Unstable packages will be accessible via `pkgs.unstable`.
+          sops-nix.nixosModules.sops-nix
+          ./hosts/${host}/sops.nix
+          nur.nixosModules.nur
+          {
+            # This is the main `pkgs` set that will include the unstable overlay.
+            pkgs = import nixpkgs {
+              inherit system;
+              config.allowUnfree = true; # Allow unfree packages globally
+              overlays = [
+                (final: prev: {
+                  unstable = import nixpkgs-unstable {
+                    inherit system;
+                    config.allowUnfree = true; # Allow unfree packages in the unstable overlay
+                  };
+                })
+              ];
+            };
+
+            # The `claudia` package is now available as `pkgs.claudia`.
+            claudia = inputs.claudia.packages.${system}.default;
+
+            # The ags package is now available as `pkgs.ags`.
+            ags = inputs.ags.packages.${system}.default;
+
+            # The firefox-addons are now available as `pkgs.firefox-addons`.
+            firefox-addons = inputs.firefox-addons.packages.${system};
+          }
           {
             nixpkgs.overlays = [
               (final: prev: {
@@ -76,7 +102,7 @@
                   system = prev.system;
                   config.allowUnfree = true;
                 };
-                claudia = self.packages.${prev.system}.claudia;
+                claudia = inputs.claudia.packages.${prev.system}.default;
               })
             ];
           }
@@ -113,13 +139,6 @@
         username = "lf";
       };
     };
-
-    packages.x86_64-linux.claudia = import ./pkgs/claudia.nix {
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      pkgs-unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
-      claudia-src = self.inputs.claudia;
-    };
-    # imports = lib.attrValues nur-no-pkgs.repos.moredhel.hmModules.rawModules;
 
     services.unison = {
       enable = true;

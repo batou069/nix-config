@@ -1,7 +1,4 @@
-{
-  pkgs, 
-  ...
-}:{
+{pkgs, ...}: {
   programs.fzf = {
     enable = true;
     package = pkgs.fzf;
@@ -10,29 +7,29 @@
     defaultCommand = "fd --type f --hidden --follow --exclude .git"; # Matches _fzf_compgen_path
     defaultOptions = [
       "--preview='bat --style=numbers --color=always --line-range :500 {}'"
-      "--preview-window 'right:70%:wrap'"
-      "--border-label='File Picker'"
+      # "--preview-window 'right:70%:wrap'"
+      # "--border-label='File Picker'"
       "--layout=reverse"
-      "--border=none"
-      "--info='hidden'"
-      "--header=''"
-      "--prompt='/ '"
+      # "--border=none"
+      # "--info='hidden'"
+      # "--header=''"
+      # "--prompt='/ '"
       "-i"
-      "--no-bold"
-      "--no-hscroll"
+      # "--no-bold"
+      # "--no-hscroll"
       #   "--bind='enter:execute(nvim {})'"
     ];
     fileWidgetCommand = "fd --type f --hidden --follow --exclude .git"; # Matches _fzf_compgen_path
     fileWidgetOptions = [
       "--preview 'bat --color=always {}'"
       "--preview-window '70%:wrap'"
-      "--border-label='File Picker'"
+      # "--border-label='File Picker'"
     ];
     changeDirWidgetCommand = "fd --type d --hidden --follow --exclude .git"; # Matches _fzf_compgen_dir
     changeDirWidgetOptions = [
       "--preview 'lsd -a --tree --directory-only --color=always {}'"
-      "--preview-window '70%:wrap'"
-      "--border-label='Dir Jump'"
+      "--preview-window '5  0%:wrap'"
+      # "--border-label='Dir Jump'"
     ];
     historyWidgetOptions = [
       "--border-label='History Search'"

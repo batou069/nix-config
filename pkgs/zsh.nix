@@ -81,8 +81,9 @@
               echo "opening $file" &&
               xdg-open "$file"
               }
-
-
+              [[ -f /run/secrets/api_keys/openai ]] && export OPENAI_API_KEY="$(cat /run/secrets/api_keys/openai)"
+              [[ -f /run/secrets/api_keys/gemini ]] && export GEMINI_API_KEY="$(cat /run/secrets/api_keys/gemini)"
+              [[ -f /run/secrets/api_keys/anthropic ]] && export ANTHROPIC_API_KEY="$(cat /run/secrets/api_keys/anthropic)"
       #        eval "$(starship init zsh)"
     '';
   };
