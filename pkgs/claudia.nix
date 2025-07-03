@@ -1,73 +1,89 @@
 # /home/lf/nix/pkgs/claudia.nix
-{ pkgs, pkgs-unstable, claudia-src }:
+{
+  pkgs,
+  pkgs-unstable,
+  claudia-src,
+}: let
+  bun_dependencies = pkgs.stdenv.mkDerivation {
+    pname = "claudia-bun-deps";
+    version = "unstable-from-source";
 
-pkgs.stdenv.mkDerivation {
-  pname = "claudia";
-  version = "unstable-from-source";
+    src = claudia-src;
 
-  src = claudia-src;
+    # We only need bun here. `patchShebangs` is a command provided by stdenv,
+    # not a separate package input.
+    nativeBuildInputs = [
+      pkgs-unstable.bun
+    ];
 
-  # These are the build tools required by the project.
-  nativeBuildInputs = with pkgs; [
-    rustc
-    cargo
-    pkgs-unstable.bun # Use bun from unstable
-    git
-    pkg-config
-    # From the "build-essential" package
-    gcc
-    gnumake
-  ];
+    outputHashMode = "recursive";
+    outputHashAlgo = "sha256";
+    # This hash will be wrong. You need to get the new one after the fix.
+    outputHash = "sha256-nxi2N7IKLe0vJV4pD/DBIcssTmSa8cUjq+R9ZFJqIrE=";
 
-  # These are the system libraries required for the build,
-  # based on the README's apt install command.
-  buildInputs = with pkgs; [
-    webkitgtk_4_1
-    gtk3
-    libayatana-appindicator
-    librsvg
-    patchelf
-    openssl
-    xdotool
-    libsoup_3
-    # This is usually part of webkitgtk
-    # javascriptcoregtk_4_1
-  ];
+    installPhase = ''
+      runHook preInstall
+      bun install --frozen-lockfile
+      # Copy the contents of node_modules into the output directory
+      cp -r node_modules/. $out/
+      runHook postInstall
+    '';
 
-  # We need to set a HOME directory for bun to work correctly
-  # inside the sandboxed build environment.
-  preBuild = ''
-    export HOME=$(mktemp -d)
-    bun install
-  '';
-
-  buildPhase = ''
-    runHook preBuild
-    bun run tauri build
-    runHook postBuild
-  '';
-
-  installPhase = ''
-    runHook preInstall
-
-    # The README says the executable is in this directory.
-    # We will install it into the package's bin folder.
-    install -Dm755 src-tauri/target/release/claudia $out/bin/claudia
-
-    # We can also grab the AppImage if it exists, as a convenience.
-    if [ -f src-tauri/target/release/bundle/appimage/*.AppImage ]; then
-      install -Dm755 src-tauri/target/release/bundle/appimage/*.AppImage $out/bin/claudia.AppImage
-    fi
-
-    runHook postInstall
-  '';
-
-  meta = with pkgs.lib; {
-    description = "A command-line tool for managing AWS Lambda functions and API Gateway APIs";
-    homepage = "https://github.com/getAsterisk/claudia";
-    # IMPORTANT: Please verify the actual license from the repository.
-    license = licenses.mit;
-    platforms = platforms.linux;
-    maintainers = [];
+    # After installing, fix the scripts.
+    # The `patchShebangs` command is available here automatically.
+    postInstall = ''
+      patchShebangs $out
+    '';
   };
-}
+in
+  pkgs.stdenv.mkDerivation {
+    pname = "claudia";
+    version = "unstable-from-source";
+
+    src = claudia-src;
+
+    nativeBuildInputs = with pkgs; [
+      rustc
+      cargo
+      pkgs-unstable.bun
+      git
+      pkg-config
+      gcc
+      gnumake
+    ];
+
+    buildInputs = with pkgs; [
+      webkitgtk_4_1
+      gtk3
+      libayatana-appindicator
+      librsvg
+      patchelf
+      openssl
+      xdotool
+      libsoup_3
+    ];
+
+    preBuild = ''
+      ln -s ${bun_dependencies} node_modules
+    '';
+
+    buildPhase = ''
+      runHook preBuild
+      bun run tauri build
+      runHook postBuild
+    '';
+
+    installPhase = ''
+      runHook preInstall
+      install -Dm755 src-tauri/target/release/claudia $out/bin/claudia
+      runHook postInstall
+    '';
+
+    meta = with pkgs.lib; {
+      description = "A GUI for Claude AI, built with Tauri and Rust.";
+      homepage = "https://github.com/getAsterisk/claudia";
+      license = licenses.mit;
+      platforms = platforms.linux;
+      maintainers = [];
+    };
+  }
