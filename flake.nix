@@ -54,24 +54,7 @@
         specialArgs = {inherit inputs username host system;};
 
         modules = [
-          # Define overlays in a single, clean module.
-          {
-            nixpkgs.overlays = [
-              (final: prev: {
-                # Add unstable packages under pkgs.unstable
-                unstable = import nixpkgs-unstable {
-                  inherit system;
-                  config.allowUnfree = true;
-                };
-                # Add other packages from flake inputs
-                claudia = inputs.claudia.packages.${prev.system}.default;
-                ags = inputs.ags.packages.${prev.system}.default;
-                firefox-addons = inputs.firefox-addons.packages.${prev.system};
-              })
-            ];
-            # Allow unfree packages for the main pkgs set
-            nixpkgs.config.allowUnfree = true;
-          }
+          
 
           # Now, import all necessary modules.
           # They can access the inputs via the `inputs` argument
@@ -79,7 +62,7 @@
           disko.nixosModules.default
           sops-nix.nixosModules.sops # Corrected module name
           # nur.nixosModules.nur
-          inputs.nur.overlays.default
+          
           # Your custom host and user configurations
           ./hosts/${host}/config.nix
           ./hosts/${host}/sops.nix
