@@ -1,5 +1,5 @@
 {
-  # config,
+  config,
   pkgs,
   host,
   username,
@@ -18,7 +18,7 @@ in {
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
-    ../../pkgs/disable-monitors.nix
+    # ../../pkgs/disable-monitors.nix
     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
@@ -364,7 +364,7 @@ in {
     NIXOS_OZONE_WL = "1"; # Enable Wayland Ozone platform for Electron apps
     ELECTRON_OZONE_PLATFORM_HINT = "wayland"; # Or "AUTO"
     # You might also try:
-    # ELECTRON_ENABLE_WAYLAND = "1";
+    ELECTRON_ENABLE_WAYLAND = "1";
   };
 
   programs = {
@@ -374,10 +374,21 @@ in {
       enableCompletion = true;
       ohMyZsh.enable = false;
 
-      autosuggestions.enable = false;
-      syntaxHighlighting.enable = false;
+      autosuggestions.enable = true;
+      syntaxHighlighting.enable = true;
       promptInit = "";
     };
+  };
+
+  systemd.services.user-session-env = {
+    script = ''
+          export OPENAI_API_KEY="$(cat
+      ${config.sops.secrets."api_keys/openai".path})"
+          export GEMINI_API_KEY="$(cat
+      ${config.sops.secrets."api_keys/gemini".path})"
+          export ANTHROPIC_API_KEY="$(cat
+      ${config.sops.secrets."api_keys/anthropic".path})"
+    '';
   };
 
   # nixpkgs.config.packageOverrides = pkgs: {

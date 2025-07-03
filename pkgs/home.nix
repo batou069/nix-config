@@ -1,8 +1,17 @@
 {
   pkgs,
   username,
+  inputs,
+  # config,
   ...
 }: {
+  # Enable NUR
+  nixpkgs.config.packageOverrides = pkgs: {
+    nur = import inputs.nur {
+      inherit pkgs;
+    };
+  };
+
   imports = [
     ./cli.nix
     ./vscode.nix
@@ -88,6 +97,9 @@
       appimage-run
       unstable.home-manager
       codex
+      claudia
+      nur.repos.AusCyber.zen-browser
+      "nur.repos.7mind.ibkr-tws"
       (python312.withPackages (
         ps:
           with ps; [
@@ -131,6 +143,9 @@
       TERM = "xterm-256color";
       VISUAL = "nvim";
       EDITOR = "nvim";
+      OPENAI_API_KEY = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
+      GEMINI_API_KEY = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
+      ANTHROPIC_API_KEY = "$(cat /run/secrets/api_keys/anthropic 2>/dev/null || echo '')";
     };
 
     file = {
