@@ -1,4 +1,4 @@
-{pkgs}: {
+{pkgs, ...}: {
   services.pipewire.wireplumber.configPackages = [
     (pkgs.writeTextDir "share/wireplumber/main.lua.d/51-disable-monitors.lua" ''
       rule = {
