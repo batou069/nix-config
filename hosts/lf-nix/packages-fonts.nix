@@ -1,6 +1,5 @@
 {
   pkgs,
-  pkgs-unstable,
   inputs,
   ...
 }: let
@@ -11,6 +10,10 @@
   };
 in {
   nixpkgs.config.allowUnfree = true;
+
+  nix.extraOptions = ''
+    plugin-files = ${pkgs.nix-doc}/lib/libnix_doc_plugin.so
+  '';
 
   environment.systemPackages =
     (with pkgs; [

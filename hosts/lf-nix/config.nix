@@ -18,6 +18,7 @@ in {
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
+    "../../pkgs/disable-monitors.nix"
     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
@@ -141,11 +142,6 @@ in {
       alsa.support32Bit = true;
       pulse.enable = true;
       wireplumber.enable = true;
-      wireplumber.extraConfig = {
-        "alsa-monitor" = {
-          "disabled" = true;
-        };
-      };
     };
 
     # pulseaudio.enable = false; #unstable
