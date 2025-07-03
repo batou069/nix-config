@@ -30,6 +30,7 @@
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    claudia.url = "github:getAsterisk/claudia";
   };
 
   outputs = inputs @ {
@@ -72,6 +73,7 @@
                   system = prev.system;
                   config.allowUnfree = true;
                 };
+                claudia = self.packages.${prev.system}.claudia;
               })
             ];
           }
@@ -107,6 +109,11 @@
         host = "viech";
         username = "lf";
       };
+    };
+
+    packages.x86_64-linux.claudia = import ./pkgs/claudia.nix {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      claudia-src = self.inputs.claudia;
     };
     # imports = lib.attrValues nur-no-pkgs.repos.moredhel.hmModules.rawModules;
 
