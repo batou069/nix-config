@@ -1,9 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    #
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    # stylix.url = "github:nix-community/stylix/release-25.05";
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -17,9 +15,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-mineral = {
-      url = "github:cynicsketch/nix-mineral"; # Refers to the main branch and is updated to the latest commit when you use "nix flake update"
-      # url = "github:cynicsketch/nix-mineral/v0.1.6-alpha" # Refers to a specific tag and follows that tag until you change it
-      # url = "github:cynicsketch/nix-mineral/cfaf4cf15c7e6dc7f882c471056b57ea9ea0ee61" # Refers to a specific commit and follows that until you change it
+      url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
     disko.url = "github:nix-community/disko";
@@ -38,7 +34,7 @@
   outputs = inputs @ {
     self,
     nixpkgs,
-    nixpkgs-unstable, # Fixed missing comma
+    nixpkgs-unstable,
     home-manager,
     ags,
     disko,
@@ -46,82 +42,60 @@
     nur,
     ...
   }: let
-    # nur-no-pkgs = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/main.tar.gz") {};
-    # nur.modules.nixos.default;
-    # nur.legacyPackages."${system}".repos.iopq.modules.xraya;
     # Function to generate a NixOS system configuration
-    # --- Old approach (commented out) ---
-    # pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
     mkNixosSystem = {
       system,
       host,
       username,
     }:
       nixpkgs.lib.nixosSystem {
-        # --- Old specialArgs (commented out) ---
-        # specialArgs = {inherit system inputs username host pkgs-unstable;};
-        # --- New specialArgs ---
-        # pkgs-unstable is no longer needed as it will be part of the main `pkgs` via the overlay.
-        specialArgs = {inherit system inputs username host;};
+        # Pass all flake inputs to modules via specialArgs.
+        # This is the standard way to make them available where needed.
+        specialArgs = {inherit inputs username host system;};
 
         modules = [
-          # --- New overlay approach ---
-          # This module adds an overlay to the main `pkgs` set for this system.
-          # Unstable packages will be accessible via `pkgs.unstable`.
-          sops-nix.nixosModules.sops-nix
-          ./hosts/${host}/sops.nix
-          nur.nixosModules.nur
-          {
-            # This is the main `pkgs` set that will include the unstable overlay.
-            pkgs = import nixpkgs {
-              inherit system;
-              config.allowUnfree = true; # Allow unfree packages globally
-              overlays = [
-                (final: prev: {
-                  unstable = import nixpkgs-unstable {
-                    inherit system;
-                    config.allowUnfree = true; # Allow unfree packages in the unstable overlay
-                  };
-                })
-              ];
-            };
-
-            # The `claudia` package is now available as `pkgs.claudia`.
-            claudia = inputs.claudia.packages.${system}.default;
-
-            # The ags package is now available as `pkgs.ags`.
-            ags = inputs.ags.packages.${system}.default;
-
-            # The firefox-addons are now available as `pkgs.firefox-addons`.
-            firefox-addons = inputs.firefox-addons.packages.${system};
-          }
+          # Define overlays in a single, clean module.
           {
             nixpkgs.overlays = [
               (final: prev: {
+                # Add unstable packages under pkgs.unstable
                 unstable = import nixpkgs-unstable {
-                  system = prev.system;
+                  inherit system;
                   config.allowUnfree = true;
                 };
+                # Add other packages from flake inputs
                 claudia = inputs.claudia.packages.${prev.system}.default;
+                ags = inputs.ags.packages.${prev.system}.default;
+                firefox-addons = inputs.firefox-addons.packages.${prev.system};
               })
             ];
+            # Allow unfree packages for the main pkgs set
+            nixpkgs.config.allowUnfree = true;
           }
 
+          # Now, import all necessary modules.
+          # They can access the inputs via the `inputs` argument
+          # that specialArgs provides.
           disko.nixosModules.default
+          sops-nix.nixosModules.sops # Corrected module name
+          nur.nixosModules.nur
+
+          # Your custom host and user configurations
           ./hosts/${host}/config.nix
+          ./hosts/${host}/sops.nix
+
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup";
-            home-manager.users.${username} = {
-              imports = [./pkgs/home.nix];
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "backup";
+              # Pass flake inputs to home-manager modules as well
+              extraSpecialArgs = {inherit inputs username system;};
+              users.${username} = {
+                imports = [./pkgs/home.nix];
+              };
             };
-            # --- Old extraSpecialArgs for home-manager (commented out) ---
-            # home-manager.extraSpecialArgs = {inherit inputs username system pkgs-unstable;};
-            # --- New extraSpecialArgs for home-manager ---
-            # The main `pkgs` (which now includes the unstable overlay) is passed automatically.
-            home-manager.extraSpecialArgs = {inherit inputs username system;};
           }
         ];
       };
@@ -140,15 +114,19 @@
       };
     };
 
-    services.unison = {
-      enable = true;
-      profiles = {
-        org = {
-          src = "/home/moredhel/org";
-          dest = "/home/moredhel/org.backup";
-          extraArgs = "-batch -watch -ui text -repeat 60 -fat";
-        };
-      };
-    };
+    # This 'services' block is invalid here.
+    # Move the unison configuration to your NixOS configuration,
+    # for example, inside ./hosts/lf-nix/config.nix
+    #
+    # services.unison = {
+    #   enable = true;
+    #   profiles = {
+    #     org = {
+    #       src = "/home/moredhel/org";
+    #       dest = "/home/moredhel/org.backup";
+    #       extraArgs = "-batch -watch -ui text -repeat 60 -fat";
+    #     };
+    #   };
+    # };
   };
 }

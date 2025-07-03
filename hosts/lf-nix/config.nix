@@ -116,6 +116,17 @@ in {
       };
     };
 
+    unison = {
+      enable = true;
+      profiles = {
+        org = {
+          src = "/home/moredhel/org";
+          dest = "/home/moredhel/org.backup";
+          extraArgs = "-batch -watch -ui text -repeat 60 -fat";
+        };
+      };
+    };
+
     greetd = {
       enable = true;
       vt = 1;
