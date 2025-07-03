@@ -68,8 +68,7 @@
           # --- New overlay approach ---
           # This module adds an overlay to the main `pkgs` set for this system.
           # Unstable packages will be accessible via `pkgs.unstable`.
-          sops-nix.nixosModules.sops-nix
-          ./hosts/${host}/sops.nix
+
           nur.nixosModules.nur
           {
             # This is the main `pkgs` set that will include the unstable overlay.

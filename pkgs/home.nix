@@ -5,13 +5,6 @@
   # config,
   ...
 }: {
-  # Enable NUR
-  nixpkgs.config.packageOverrides = pkgs: {
-    nur = import inputs.nur {
-      inherit pkgs;
-    };
-  };
-
   imports = [
     ./cli.nix
     ./vscode.nix
@@ -76,6 +69,7 @@
       fpp
       igrep
       unstable.ladybird
+      unstable.manix
       meld
       normcap
       fd
@@ -98,8 +92,9 @@
       unstable.home-manager
       codex
       claudia
-      nur.repos.AusCyber.zen-browser
-      "nur.repos.7mind.ibkr-tws"
+      statix
+      # nur.repos.AusCyber.zen-browser
+      # ; nur.repos.7mind.ibkr-tws
       (python312.withPackages (
         ps:
           with ps; [

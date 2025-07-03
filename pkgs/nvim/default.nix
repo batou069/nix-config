@@ -109,7 +109,7 @@
       lazy-nvim
       # Base Distro
       LazyVim
-
+      statix
       #   # Coding
       #   mini-pairs
       #   ts-comments-nvim
