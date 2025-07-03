@@ -56,6 +56,7 @@
       v = "fzf --preview --border-label='File Picker' 'bat {}' --preview-window '70%:wrap' --multi --bind 'enter:become(nvim {+})'";
       mans = "man -k . | fzf --border-label='Man Pages' | awk '{print \$1}' | xargs -r man";
       ns = "nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --preview-window 'right:40%:wrap' --scheme history";
+      manx = "manix '' | grep '^# ' | sed 's/^# \(.*\) (.*/\1/;s/ (.*//;s/^# //' | fzf --preview='manix '{}'' | xargs manix";
       ".." = "cd ..";
       "..." = "cd ../..";
     };

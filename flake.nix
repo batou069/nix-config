@@ -78,8 +78,8 @@
           # that specialArgs provides.
           disko.nixosModules.default
           sops-nix.nixosModules.sops # Corrected module name
-          nur.nixosModules.nur
-
+          # nur.nixosModules.nur
+          inputs.nur.overlays.default
           # Your custom host and user configurations
           ./hosts/${host}/config.nix
           ./hosts/${host}/sops.nix

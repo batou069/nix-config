@@ -22,6 +22,10 @@ in {
     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
+  nixpkgs.overlays = [
+    inputs.nur.overlay
+  ];
+
   boot = {
     # kernelPackages = pkgs.linuxPackages_zen; # Performance geared
     kernelPackages = pkgs.linuxPackages_latest; # Best Balance
@@ -116,16 +120,16 @@ in {
       };
     };
 
-    unison = {
-      enable = true;
-      profiles = {
-        org = {
-          src = "/home/moredhel/org";
-          dest = "/home/moredhel/org.backup";
-          extraArgs = "-batch -watch -ui text -repeat 60 -fat";
-        };
-      };
-    };
+    # unison = {
+    #   enable = true;
+    #   profiles = {
+    #     org = {
+    #       src = "/home/moredhel/org";
+    #       dest = "/home/moredhel/org.backup";
+    #       extraArgs = "-batch -watch -ui text -repeat 60 -fat";
+    #     };
+    #   };
+    # };
 
     greetd = {
       enable = true;

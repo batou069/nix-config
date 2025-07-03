@@ -195,7 +195,7 @@ in {
       withUWSM = true;
     };
 
-    waybar.enable = true;
+    # waybar.enable = true;
     hyprlock.enable = true;
     firefox.enable = true;
     nm-applet.indicator = true;
