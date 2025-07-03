@@ -23,8 +23,19 @@ in {
   ];
 
   nixpkgs.overlays = [
-    inputs.nur.overlay
+    inputs.nur.overlays.default
+    (final: prev: {
+      unstable = import inputs.nixpkgs-unstable {
+        inherit (prev) system;
+        config.allowUnfree = true;
+      };
+      claudia = inputs.claudia.packages.${prev.system}.default;
+      ags = inputs.ags.packages.${prev.system}.default;
+      firefox-addons = inputs.firefox-addons.packages.${prev.system};
+    })
   ];
+
+  nixpkgs.config.allowUnfree = true;
 
   boot = {
     # kernelPackages = pkgs.linuxPackages_zen; # Performance geared
