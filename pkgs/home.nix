@@ -114,6 +114,7 @@
             # redis
             # aiohttp
             # NetscapeBookmarksFileParser
+            scipy
           ]
       ))
     ];
