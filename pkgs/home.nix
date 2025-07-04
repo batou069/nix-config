@@ -1,8 +1,6 @@
 {
   pkgs,
   username,
-  inputs,
-  # config,
   ...
 }: {
   imports = [
@@ -18,9 +16,6 @@
     ./zsh.nix
   ];
 
-  # nixpkgs.overlays = [
-  #         inputs.nur.overlays.default];
-
   # Home Manager version
   home = {
     stateVersion = "24.11";
@@ -31,41 +26,6 @@
 
     # User-specific packages
     packages = with pkgs; [
-      # --- Fonts ---
-      # General Purpose / Sans-Serif Fonts
-      dejavu_fonts
-      ibm-plex
-      inter
-      roboto
-
-      # Monospace / Programming Fonts
-      fira-code
-      jetbrains-mono
-      hackgen-nf-font
-      roboto-mono
-      terminus_font
-      victor-mono
-      nerd-fonts.im-writing
-      nerd-fonts.fantasque-sans-mono
-      maple-mono.NF
-
-      # Icon / Symbol Fonts
-      font-awesome
-      fira-code-symbols
-      material-icons
-      powerline-fonts
-      symbola
-
-      # Noto Fonts
-      noto-fonts
-      noto-fonts-emoji
-      noto-fonts-cjk-sans
-      noto-fonts-cjk-serif
-      noto-fonts-monochrome-emoji
-
-      # Niche/Specific Fonts
-      minecraftia
-
       fpp
       igrep
       unstable.ladybird
@@ -82,7 +42,6 @@
       kdePackages.okular
       vgrep # User-friendly pager for grep/git-grep/ripgrep
       xonsh # Python-ish, BASHwards-compatible shell
-      # pkgs.nur.repos
       vimPluginsUpdater
       vimgolf
       rofi-obsidian
@@ -93,9 +52,6 @@
       codex
       claudia
       statix
-      nur.repos.AusCyber.zen-browser
-      # ; nur.repos.7mind.ibkr-tws
-      # nur.repos.novel2430.zen-browser
       (python312.withPackages (
         ps:
           with ps; [

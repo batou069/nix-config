@@ -3,3 +3,8 @@ repos:
     rev: 3.0.0 # Use the latest version or pin to a specific one
     hooks:
       - id: alejandra
+  - repo: https://github.com/yuvipanda/pre-commit-hook-ensure-sops
+    rev: v1.0
+    hooks:
+      - id: sops-encryption
+        exclude: *.\.md

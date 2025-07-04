@@ -32,8 +32,74 @@ in {
       claudia = inputs.claudia.packages.${prev.system}.default;
       ags = inputs.ags.packages.${prev.system}.default;
       firefox-addons = inputs.firefox-addons.packages.${prev.system};
+      # neovim = inputs.neovim.packages.${prev.system}.default;
+      # gemini-cli = inputs.gemini-cli.packages.${prev.system}.default;
+      # nur = inputs.nur.packages.${prev.system};
     })
   ];
+  stylix = {
+    enable = true;
+    enableReleaseChecks = true;
+    base16Scheme = ./mocha.yaml;
+    polarity = "dark";
+    homeManagerIntegration = {
+      autoImport = true;
+      followSystem = true;
+    };
+    opacity = {
+      applications = 0.8;
+      desktop = 0.9;
+      popups = 1.0;
+      terminal = 0.85;
+    };
+    overlays.enable = true;
+    fonts = {
+      monospace.name = "Maple Mono NF";
+      sansSerif.name = "IBM Plex Sans";
+      serif.name = "DejaVu Serif";
+      packages = with pkgs; [
+        # General Purpose / Sans-Serif Fonts
+        dejavu_fonts
+        ibm-plex
+        inter
+        roboto
+
+        # Monospace / Programming Fonts
+        fira-code
+        jetbrains-mono
+        hackgen-nf-font
+        roboto-mono
+        terminus_font
+        victor-mono
+        nerd-fonts.im-writing
+        nerd-fonts.fantasque-sans-mono
+        maple-mono.NF
+
+        # Icon / Symbol Fonts
+        font-awesome
+        fira-code-symbols
+        material-icons
+        powerline-fonts
+        symbola
+
+        # Noto Fonts
+        noto-fonts
+        noto-fonts-emoji
+        noto-fonts-cjk-sans
+        noto-fonts-cjk-serif
+        noto-fonts-monochrome-emoji
+
+        # Niche/Specific Fonts
+        minecraftia
+      ];
+      sizes = {
+        applications = 13;
+        desktop = 10;
+        popups = 12;
+        terminal = 14;
+      };
+    };
+  };
 
   nixpkgs.config.allowUnfree = true;
 
