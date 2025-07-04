@@ -31,13 +31,13 @@
     claudia = {
       url = "github:getAsterisk/claudia/218ecfb8b2069b69e4c40734e178e2a6af9fced7";
     };
-    neovim = {
-      url = github:neovim/neovim/contrib;
-    };
-    gemini-cli = {
-      url = "github:novel2430/gemini-cli";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # neovim = {
+    #   url = github:neovim/neovim/contrib;
+    # };
+    # gemini-cli = {
+    #   url = "github:novel2430/gemini-cli";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
   outputs = inputs @ {
@@ -71,7 +71,6 @@
           sops-nix.nixosModules.sops # Corrected module name
           # nur.nixosModules.nur
           nur.modules.nixos.default
-          nur.legacyPackages."${system}".repos.novel2430.zen-browser
           # nur.legacyPackages."${system}".repos.7mind.ibkr-tws
           stylix.nixosModules.stylix
           # Your custom host and user configurations
