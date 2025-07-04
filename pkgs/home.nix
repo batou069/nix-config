@@ -14,7 +14,7 @@
     ./git.nix
     ./lsd.nix
     ./nvim
-    ./starship.nix
+    ./starship2.nix
     ./zsh.nix
   ];
 
@@ -93,8 +93,9 @@
       codex
       claudia
       statix
-      # nur.repos.AusCyber.zen-browser
+      nur.repos.AusCyber.zen-browser
       # ; nur.repos.7mind.ibkr-tws
+      # nur.repos.novel2430.zen-browser
       (python312.withPackages (
         ps:
           with ps; [
