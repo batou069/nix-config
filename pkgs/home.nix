@@ -12,7 +12,8 @@
     ./git.nix
     ./lsd.nix
     ./nvim
-    ./starship2.nix
+    ./starship.nix
+    ./waybar.nix
     ./zsh.nix
   ];
 
@@ -27,6 +28,7 @@
     # User-specific packages
     packages = with pkgs; [
       fpp
+      # ags
       igrep
       unstable.ladybird
       unstable.manix
@@ -52,6 +54,9 @@
       codex
       claudia
       statix
+      nur.repos.novel2430.zen-browser-bin
+      nur.repos."7mind".ibkr-tws
+      nixdoc
       (python312.withPackages (
         ps:
           with ps; [
@@ -116,6 +121,11 @@
   };
 
   fonts.fontconfig.enable = true;
+  # catppuccin = {
+  #   flavor = "mocha";
+  #   accent = "peach";
+  #   enable = true;
+  # };
 
   xdg = {
     mimeApps = {
@@ -154,13 +164,19 @@
       pictures = "$HOME/Pictures";
       videos = "$HOME/Videos";
     };
-    # configFile."nvim/lua" = {
-    #   recursive = true;
-    #   source = ./lua;
-    # };
-
     configFile = {
+      "nvim/lua" = {
+        recursive = true;
+        source = ./nvim/lua;
+      };
       "mimeapps.list".force = true;
+    };
+  };
+  stylix.targets = {
+    waybar.enable = false;
+    hyprland.enable = false;
+    vscode = {
+      enable = true;
     };
   };
 }

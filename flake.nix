@@ -7,11 +7,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix.url = "github:nix-community/stylix/release-25.05";
-    ags = {
-      # url = "github:aylur/ags/v1";
-      url = "github:aylur/ags";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # ags = {
+    #   # url = "github:aylur/ags/v1";
+    #   url = "github:aylur/ags";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     firefox-addons = {
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -26,11 +26,12 @@
     flake-utils.url = "github:numtide/flake-utils";
     nur = {
       url = "github:nix-community/NUR";
-      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     claudia = {
       url = "github:getAsterisk/claudia/218ecfb8b2069b69e4c40734e178e2a6af9fced7";
     };
+    # catppuccin.url = "github:catppuccin/nix";
     # neovim = {
     #   url = github:neovim/neovim/contrib;
     # };
@@ -45,11 +46,12 @@
     nixpkgs,
     nixpkgs-unstable,
     home-manager,
-    ags,
+    # ags,
     disko,
     sops-nix,
     nur,
     stylix,
+    # catppuccin,
     ...
   }: let
     # Function to generate a NixOS system configuration
@@ -76,7 +78,7 @@
           # Your custom host and user configurations
           ./hosts/${host}/config.nix
           ./hosts/${host}/sops.nix
-
+          # catppuccin.nixosModules.catppuccin
           home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -86,7 +88,10 @@
               # Pass flake inputs to home-manager modules as well
               extraSpecialArgs = {inherit inputs username system;};
               users.${username} = {
-                imports = [./pkgs/home.nix];
+                imports = [
+                  ./pkgs/home.nix
+                  # catppuccin.homeManagerModules.catppuccin
+                ];
               };
             };
           }
