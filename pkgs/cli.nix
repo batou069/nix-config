@@ -8,7 +8,7 @@
       enable = true;
       settings = {
         clipboard = "internal";
-        colorscheme = "one-dark";
+        # colorscheme = "one-dark";
         diffgutter = true;
         indentchar = "space";
         scrollbar = true;
@@ -18,7 +18,7 @@
     kitty = {
       enable = true;
       font = {
-        name = "Maple Mono NF Italic";
+        name = "Maple Mono NF";
         size = 14;
       };
     };
@@ -48,7 +48,7 @@
           show_program_path = 0;
           highlight_base_name = 1;
           header_layout = "two_67_33";
-          color_scheme = 6;
+          # color_scheme = 6;
         }
         // (with config.lib.htop; leftMeters [(bar "AllCPUs4")])
         // (

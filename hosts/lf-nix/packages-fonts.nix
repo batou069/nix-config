@@ -47,7 +47,8 @@ in {
       # ranger
 
       # Hyprland Stuff
-      inputs.ags.packages.${pkgs.system}.default
+      ags
+      # inputs.ags.packages.${pkgs.system}.default
       nix-your-shell
       btop
       brightnessctl # for brightness control
@@ -129,38 +130,9 @@ in {
       gcr
       # Dev Stuff
       nixd
+      nh
     ])
     ++ (with pkgs.unstable; [
-      # --- Fonts ---
-      # General Purpose / Sans-Serif Fonts
-      dejavu_fonts
-      ibm-plex
-      inter
-      roboto
-
-      # Monospace / Programming Fonts
-      fira-code
-      jetbrains-mono
-      hackgen-nf-font
-      roboto-mono
-      terminus_font
-      victor-mono
-      nerd-fonts.im-writing
-      nerd-fonts.fantasque-sans-mono
-      maple-mono.NF
-
-      # Icon / Symbol Fonts
-      font-awesome
-      fira-code-symbols
-      material-icons
-      powerline-fonts
-      symbola
-
-      # Noto Fonts
-      noto-fonts
-      noto-fonts-emoji
-      noto-fonts-cjk-sans
-
       gemini-cli
       bc
       curl
@@ -195,10 +167,6 @@ in {
       withUWSM = true;
     };
 
-    # waybar.enable = true;
-    hyprlock.enable = true;
-    firefox.enable = true;
-    nm-applet.indicator = true;
     thunar.enable = true;
     thunar.plugins = with pkgs.xfce; [
       exo

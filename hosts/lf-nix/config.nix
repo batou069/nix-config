@@ -4,7 +4,7 @@
   host,
   username,
   options,
-  # lib,
+  lib,
   inputs,
   # system,
   ...
@@ -23,83 +23,36 @@ in {
   ];
 
   nixpkgs.overlays = [
-    inputs.nur.overlays.default
     (final: prev: {
       unstable = import inputs.nixpkgs-unstable {
         inherit (prev) system;
         config.allowUnfree = true;
       };
       claudia = inputs.claudia.packages.${prev.system}.default;
-      ags = inputs.ags.packages.${prev.system}.default;
+      # ags = inputs.ags.packages.${prev.system}.default;
       firefox-addons = inputs.firefox-addons.packages.${prev.system};
-      # neovim = inputs.neovim.packages.${prev.system}.default;
-      # gemini-cli = inputs.gemini-cli.packages.${prev.system}.default;
-      # nur = inputs.nur.packages.${prev.system};
+    })
+    (final: prev: {
+      nur =
+        prev.nur
+        // {
+          repos =
+            prev.nur.repos
+            // {
+              "7mind" =
+                prev.nur.repos."7mind"
+                // {
+                  ibkr-tws = prev.nur.repos."7mind".ibkr-tws.overrideAttrs (old: {
+                    src = prev.fetchurl {
+                      url = "https://download2.interactivebrokers.com/installers/tws/stable-standalone/tws-stable-standalone-linux-x64.sh";
+                      sha256 = "+z77sypqbN9PMMOQnJTfdDHRP5NVfTOCUBT0AaAn87Y=";
+                    };
+                  });
+                };
+            };
+        };
     })
   ];
-  stylix = {
-    enable = true;
-    enableReleaseChecks = true;
-    base16Scheme = ./mocha.yaml;
-    polarity = "dark";
-    homeManagerIntegration = {
-      autoImport = true;
-      followSystem = true;
-    };
-    opacity = {
-      applications = 0.8;
-      desktop = 0.9;
-      popups = 1.0;
-      terminal = 0.85;
-    };
-    overlays.enable = true;
-    fonts = {
-      monospace.name = "Maple Mono NF";
-      sansSerif.name = "IBM Plex Sans";
-      serif.name = "DejaVu Serif";
-      packages = with pkgs; [
-        # General Purpose / Sans-Serif Fonts
-        dejavu_fonts
-        ibm-plex
-        inter
-        roboto
-
-        # Monospace / Programming Fonts
-        fira-code
-        jetbrains-mono
-        hackgen-nf-font
-        roboto-mono
-        terminus_font
-        victor-mono
-        nerd-fonts.im-writing
-        nerd-fonts.fantasque-sans-mono
-        maple-mono.NF
-
-        # Icon / Symbol Fonts
-        font-awesome
-        fira-code-symbols
-        material-icons
-        powerline-fonts
-        symbola
-
-        # Noto Fonts
-        noto-fonts
-        noto-fonts-emoji
-        noto-fonts-cjk-sans
-        noto-fonts-cjk-serif
-        noto-fonts-monochrome-emoji
-
-        # Niche/Specific Fonts
-        minecraftia
-      ];
-      sizes = {
-        applications = 13;
-        desktop = 10;
-        popups = 12;
-        terminal = 14;
-      };
-    };
-  };
 
   nixpkgs.config.allowUnfree = true;
 
@@ -283,57 +236,57 @@ in {
     };
   };
 
-  systemd.services = {
-    #    # Service to clone your private GitLab repository
-    #    initial-clone-gitlab = {
-    #      description = "Initial clone of private GitLab repository";
-    #      wants = [ "network-online.target" ];
-    #      after = [ "network-online.target" ];
-    #      # ADD THIS BLOCK: Make commands available to the script
-    #      path = [
-    #        pkgs.gitFull      # Provides 'git'
-    #        pkgs.util-linux   # Provides 'runuser'
-    #      ];
-    #      script = ''
-    #        if [ ! -d "/home/${username}/git/laurent.flaster" ]; then
-    #          mkdir -p /home/${username}/git
-    #          chown ${username} /home/${username}/git
-    #          runuser -u ${username} -- git clone https://git.infinitylabs.co.il/ilrd/ramat-gan/ai3/laurent.flaster.git /home/${username}/git/laurent.flaster
-    #        fi
-    #      '';
-    #      serviceConfig = {
-    #        Type = "oneshot";
-    #        RemainAfterExit = true;
-    #        User = "root";
-    #      };
-    #    };
+  # systemd.services = {
+  #    # Service to clone your private GitLab repository
+  #    initial-clone-gitlab = {
+  #      description = "Initial clone of private GitLab repository";
+  #      wants = [ "network-online.target" ];
+  #      after = [ "network-online.target" ];
+  #      # ADD THIS BLOCK: Make commands available to the script
+  #      path = [
+  #        pkgs.gitFull      # Provides 'git'
+  #        pkgs.util-linux   # Provides 'runuser'
+  #      ];
+  #      script = ''
+  #        if [ ! -d "/home/${username}/git/laurent.flaster" ]; then
+  #          mkdir -p /home/${username}/git
+  #          chown ${username} /home/${username}/git
+  #          runuser -u ${username} -- git clone https://git.infinitylabs.co.il/ilrd/ramat-gan/ai3/laurent.flaster.git /home/${username}/git/laurent.flaster
+  #        fi
+  #      '';
+  #      serviceConfig = {
+  #        Type = "oneshot";
+  #        RemainAfterExit = true;
+  #        User = "root";
+  #      };
+  #    };
 
-    # Service to clone your Obsidian Brain repository
-    initial-clone-brain = {
-      description = "Initial clone of Obsidian Brain repository";
-      wants = ["network-online.target"];
-      after = ["network-online.target"];
-      # ADD THIS BLOCK: Make commands available to the script
-      path = [
-        pkgs.gitFull # Provides 'git'
-        pkgs.util-linux # Provides 'runuser'
-      ];
-      script = ''
-        if [ ! -d "/home/${username}/Obsidian/brain" ]; then
-          mkdir -p /home/${username}/Obsidian
-          chown ${username} /home/${username}/Obsidian
-          runuser -u ${username} -- git clone https://github.com/batou069/brain.git /home/${username}/Obsidian/brain
-        fi
-      '';
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        User = "root";
-        PrivateTmp = false;
-        ProtectHome = false;
-      };
-    };
-  };
+  # Service to clone your Obsidian Brain repository
+  #   initial-clone-brain = {
+  #     description = "Initial clone of Obsidian Brain repository";
+  #     wants = ["network-online.target"];
+  #     after = ["network-online.target"];
+  #     # ADD THIS BLOCK: Make commands available to the script
+  #     path = [
+  #       pkgs.gitFull # Provides 'git'
+  #       pkgs.util-linux # Provides 'runuser'
+  #     ];
+  #     script = ''
+  #       if [ ! -d "/home/${username}/Obsidian/brain" ]; then
+  #         mkdir -p /home/${username}/Obsidian
+  #         chown ${username} /home/${username}/Obsidian
+  #         runuser -u ${username} -- git clone https://github.com/batou069/brain.git /home/${username}/Obsidian/brain
+  #       fi
+  #     '';
+  #     serviceConfig = {
+  #       Type = "oneshot";
+  #       RemainAfterExit = true;
+  #       User = "root";
+  #       PrivateTmp = false;
+  #       ProtectHome = false;
+  #     };
+  #   };
+  # };
   # zram
   zramSwap = {
     enable = true;
@@ -457,6 +410,7 @@ in {
     ELECTRON_OZONE_PLATFORM_HINT = "wayland"; # Or "AUTO"
     # You might also try:
     ELECTRON_ENABLE_WAYLAND = "1";
+    FLAKE = "/home/lf/nix";
   };
 
   programs = {
@@ -483,13 +437,120 @@ in {
     '';
   };
 
-  # nixpkgs.config.packageOverrides = pkgs: {
-  #   nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/main.tar.gz") {
-  #     inherit pkgs;
-  #   };
-  # };
-
   environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
+  # qt.platformTheme.name = "kvantum";
+  # qt.style = "kvantum";
+  fonts = {
+    enableDefaultPackages = false;
+    packages = with pkgs; [
+      # General Purpose / Sans-Serif Fonts
+      # dejavu_fonts
+      ibm-plex
+      inter
+      roboto
+      aleo-fonts
+
+      # Monospace / Programming Fonts
+      fira-code
+      jetbrains-mono
+      hackgen-nf-font
+      roboto-mono
+      terminus_font
+      victor-mono
+      nerd-fonts.im-writing
+      nerd-fonts.fantasque-sans-mono
+      maple-mono.NF
+
+      # Icon / Symbol Fonts
+      font-awesome
+      fira-code-symbols
+      material-icons
+      powerline-fonts
+      symbola
+
+      # Noto Fonts
+      noto-fonts
+      noto-fonts-emoji
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      noto-fonts-monochrome-emoji
+      noto-fonts-color-emoji
+      # Niche/Specific Fonts
+      minecraftia
+    ];
+    fontconfig = {
+      defaultFonts = {
+        serif = [
+          "Noto Serif CJK JP"
+          "Noto Serif"
+        ];
+
+        sansSerif = [
+          "Noto Sans CJK JP"
+          "Noto Sans"
+        ];
+
+        monospace = [
+          "Noto Sans Mono CJK JP"
+          "Noto Sans Mono"
+        ];
+      };
+
+      allowBitmaps = false;
+    };
+  };
+
+  stylix = {
+    enable = true;
+    enableReleaseChecks = true;
+    base16Scheme = ./macchiato.yaml;
+    polarity = "dark";
+    homeManagerIntegration = {
+      autoImport = true;
+      followSystem = true;
+    };
+    targets.nixvim.enable = false;
+
+    opacity = {
+      applications = 0.95;
+      desktop = 1.0;
+      popups = 1.0;
+      terminal = 0.95;
+    };
+    # overlays.enable = true;
+    fonts = {
+      serif = {
+        # package = pkgs.aleo-fonts;
+        # name = "Aleo";
+        package = pkgs.maple-mono.NF;
+        name = "Maple Mono NF";
+      };
+
+      sansSerif = {
+        # package = pkgs.noto-fonts-cjk-sans;
+        # name = "Noto Sans CJK JP";
+        package = pkgs.maple-mono.NF;
+        name = "Maple Mono NF";
+      };
+
+      monospace = {
+        package = pkgs.maple-mono.NF;
+        name = "Maple Mono NF Italic";
+      };
+
+      emoji = {
+        package = pkgs.noto-fonts-color-emoji;
+        name = "Noto Color Emoji";
+      };
+
+      sizes = {
+        applications = 13;
+        desktop = 10;
+        popups = 12;
+        terminal = 14;
+      };
+    };
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

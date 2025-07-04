@@ -7,7 +7,7 @@
     profiles.default = {
       userSettings = {
         # "editor.fontFamily" = "FantasqueSansM Nerd Font Mono Italic";
-        "editor.fontFamily" = "Maple Mono NF";
+        "editor.fontFamily" = "Maple Mono NF Italic";
         "editor.fontLigatures" = "'calt', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero', 'onum'";
         "editor.tokenColorCustomizations" = {
           "textMateRules" = [
@@ -40,7 +40,7 @@
         "git.openRepositoryInParentFolders" = "always";
         "workbench.iconTheme" = "vscode-icons";
         "vsicons.dontShowNewVersionMessage" = true;
-        "workbench.colorTheme" = "Catppuccin Mocha";
+        # "workbench.colorTheme" = "Catppuccin Mocha";
         "python.defaultInterpreterPath" = "${pkgs.python312}/bin/python3";
       };
       languageSnippets = {

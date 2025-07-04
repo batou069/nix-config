@@ -103,179 +103,179 @@
     vimAlias = true;
     vimdiffAlias = true;
     withNodeJs = true;
-
+    withPython3 = true;
     plugins = with pkgs.vimPlugins; [
       # Plugin Manager
       lazy-nvim
       # Base Distro
       LazyVim
       statix
-      #   # Coding
-      #   mini-pairs
-      #   ts-comments-nvim
-      #   mini-ai
-      #   lazydev-nvim
+      # Coding
+      mini-pairs
+      ts-comments-nvim
+      mini-ai
+      lazydev-nvim
 
-      #   # Blink
-      #   blink-cmp
-      #   friendly-snippets
+      # Blink
+      blink-cmp
+      friendly-snippets
 
-      #   # Editor
-      #   neo-tree-nvim
-      #   grug-far-nvim
-      #   flash-nvim
-      #   which-key-nvim
-      #   gitsigns-nvim
-      #   trouble-nvim
-      #   todo-comments-nvim
+      # Editor
+      neo-tree-nvim
+      grug-far-nvim
+      flash-nvim
+      which-key-nvim
+      gitsigns-nvim
+      trouble-nvim
+      todo-comments-nvim
 
-      #   # Fzf
-      #   fzf-lua
+      # Fzf
+      fzf-lua
 
-      #   # Formatting
-      #   conform-nvim
+      # Formatting
+      conform-nvim
 
-      #   # Linting
-      #   nvim-lint
+      # Linting
+      nvim-lint
 
-      #   # LSP
-      #   nvim-lspconfig
+      # LSP
+      nvim-lspconfig
 
-      #   # TreeSitter
-      #   nvim-treesitter.withAllGrammars
-      #   nvim-treesitter-textobjects
-      #   nvim-ts-autotag
+      # TreeSitter
+      nvim-treesitter.withAllGrammars
+      nvim-treesitter-textobjects
+      nvim-ts-autotag
 
-      #   # UI
-      #   bufferline-nvim
-      #   lualine-nvim
-      #   noice-nvim
-      #   mini-icons
-      #   nui-nvim
+      # UI
+      bufferline-nvim
+      lualine-nvim
+      noice-nvim
+      mini-icons
+      nui-nvim
 
-      #   # Util
-      #   snacks-nvim
-      #   persistence-nvim
-      #   plenary-nvim
+      # Util
+      snacks-nvim
+      persistence-nvim
+      plenary-nvim
 
-      #   # Mini-comment Extra
-      #   mini-comment
-      #   nvim-ts-context-commentstring
+      # Mini-comment Extra
+      mini-comment
+      nvim-ts-context-commentstring
 
-      #   # Mini-surround Extra
-      #   mini-surround
+      # Mini-surround Extra
+      mini-surround
 
-      #   # DAP Core Extra
-      #   nvim-dap
-      #   nvim-dap-ui
-      #   nvim-dap-virtual-text
-      #   nvim-nio
+      # DAP Core Extra
+      nvim-dap
+      nvim-dap-ui
+      nvim-dap-virtual-text
+      nvim-nio
 
-      #   # DAP Neovim Lua Adapter Extra
-      #   # one-small-step-for-vimkind
+      # DAP Neovim Lua Adapter Extra
+      # one-small-step-for-vimkind
 
-      #   # Aerial Extra
-      #   aerial-nvim
+      # Aerial Extra
+      aerial-nvim
 
-      #   # Illuminate Extra
-      #   vim-illuminate
+      # Illuminate Extra
+      vim-illuminate
 
-      #   # Inc-rename Extra
-      #   inc-rename-nvim
+      # Inc-rename Extra
+      inc-rename-nvim
 
-      #   # Leap Extra
-      #   flit-nvim
-      #   leap-nvim
-      #   vim-repeat
+      # Leap Extra
+      flit-nvim
+      leap-nvim
+      vim-repeat
 
-      #   # Mini-diff Extra
-      #   mini-diff
+      # Mini-diff Extra
+      mini-diff
 
-      #   # Navic Extra
-      #   nvim-navic
+      # Navic Extra
+      nvim-navic
 
-      #   # Overseer Extra
-      #   overseer-nvim
+      # Overseer Extra
+      overseer-nvim
 
-      #   # Clangd Extra
-      #   clangd_extensions-nvim
+      # Clangd Extra
+      clangd_extensions-nvim
 
-      #   # Helm Extra
-      #   vim-helm
+      # Helm Extra
+      vim-helm
 
-      #   # JSON/YAML Extra
-      #   SchemaStore-nvim # load known formats for json and yaml
+      # JSON/YAML Extra
+      SchemaStore-nvim # load known formats for json and yaml
 
-      #   # Markdown Extra
-      #   markdown-preview-nvim
-      #   render-markdown-nvim
+      # Markdown Extra
+      markdown-preview-nvim
+      render-markdown-nvim
 
-      #   # Python Extra
-      #   neotest-python
-      #   nvim-dap-python
+      # Python Extra
+      neotest-python
+      nvim-dap-python
 
-      #   # Rust Extra
-      #   crates-nvim
-      #   rustaceanvim
+      # Rust Extra
+      crates-nvim
+      rustaceanvim
 
-      #   # Terraform Extra
-      #   # telescope-terraform-doc-nvim
-      #   # telescope-terraform-nvim
+      # Terraform Extra
+      # telescope-terraform-doc-nvim
+      # telescope-terraform-nvim
 
-      #   # LSP Extra
-      #   neoconf-nvim
-      #   none-ls-nvim
+      # LSP Extra
+      neoconf-nvim
+      none-ls-nvim
 
-      #   # Test Extra
-      #   neotest
+      # Test Extra
+      neotest
 
-      #   # Edgy Extra
-      #   edgy-nvim
+      # Edgy Extra
+      edgy-nvim
 
-      #   # Mini-animate Extra
-      #   mini-animate
+      # Mini-animate Extra
+      mini-animate
 
-      #   # Treesitter-context Extra
-      #   nvim-treesitter-context
+      # Treesitter-context Extra
+      nvim-treesitter-context
 
-      #   # Project Extra
-      #   project-nvim
+      # Project Extra
+      project-nvim
 
-      #   # Startuptime
-      #   vim-startuptime
+      # Startuptime
+      vim-startuptime
 
-      #   nvim-web-devicons
-      #   nvim-notify
-      #   nvim-lsp-notify
+      nvim-web-devicons
+      nvim-notify
+      nvim-lsp-notify
 
-      #   # smart typing
-      #   guess-indent-nvim
+      # smart typing
+      guess-indent-nvim
 
-      #   # LSP
-      #   nvim-lightbulb # lightbulb for quick actions
-      #   nvim-code-action-menu # code action menu
-      # ];
+      # LSP
+      nvim-lightbulb # lightbulb for quick actions
+      nvim-code-action-menu # code action menu
+    ];
 
-      # extraPackages = with pkgs; [
-      #   gcc # needed for nvim-treesitter
+    extraPackages = with pkgs; [
+      gcc # needed for nvim-treesitter
 
-      #   # HTML, CSS, JSON
-      #   vscode-langservers-extracted
+      # HTML, CSS, JSON
+      vscode-langservers-extracted
 
-      #   # LazyVim defaults
-      #   stylua
-      #   shfmt
+      # LazyVim defaults
+      stylua
+      shfmt
 
-      #   # Markdown extra
-      #   markdownlint-cli2
-      #   marksman
+      # Markdown extra
+      markdownlint-cli2
+      marksman
 
-      #   # JSON and YAML extras
-      #   nodePackages.yaml-language-server
+      # JSON and YAML extras
+      nodePackages.yaml-language-server
 
-      #   # Custom
-      #   editorconfig-checker
-      #   shellcheck
+      # Custom
+      editorconfig-checker
+      shellcheck
     ];
 
     extraLuaConfig = ''
