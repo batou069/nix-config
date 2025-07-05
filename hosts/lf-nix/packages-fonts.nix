@@ -1,8 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: let
+{pkgs, ...}: let
   r-with-packages = pkgs.rWrapper.override {
     packages = with pkgs.rPackages; [
       IRkernel
@@ -166,18 +162,20 @@ in {
       xwayland.enable = true;
       withUWSM = true;
     };
-
-    thunar.enable = true;
-    thunar.plugins = with pkgs.xfce; [
-      exo
-      mousepad
-      thunar-archive-plugin
-      thunar-volman
-      tumbler
-      #      thunar-vcs-plugin
-      thunar-media-tags-plugin
-    ];
-
+    waybar.enable = true;
+    thunar = {
+      enable = true;
+      # thunar.
+      plugins = with pkgs.xfce; [
+        exo
+        mousepad
+        thunar-archive-plugin
+        thunar-volman
+        tumbler
+        #      thunar-vcs-plugin
+        thunar-media-tags-plugin
+      ];
+    };
     virt-manager.enable = false;
 
     steam = {

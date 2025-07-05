@@ -1,43 +1,40 @@
 {pkgs, ...}: {
   programs.waybar = {
     enable = true;
-    package = pkgs.waybar {
-      withUWSM = true;
-    };
+    package = pkgs.waybar;
     # style = {
     #   ''
     #       asd
     #   '';
     # };
     settings = {
-      mainBar = {
+      "mainBar" = {
         layer = "top";
         position = "top";
         width = 1050;
         margin-top = 3;
+        modules-left = [
+          "clock"
+          "custom/weather"
+        ];
+
+        modules-center = [
+          "hyprland/workspaces#roman"
+        ];
+
+        modules-right = [
+          "custom/menu"
+          "tray"
+          "group/notify"
+          "mpris"
+          "network"
+          "bluetooth"
+          "backlight"
+          "pulseaudio"
+          "battery"
+          "custom/power"
+        ];
       };
-      modules-left = [
-        "clock"
-        "custom/weather"
-      ];
-
-      modules-center = [
-        "hyprland/workspaces#roman"
-      ];
-
-      modules-right = [
-        "custom/menu"
-        "tray"
-        "group/notify"
-        "mpris"
-        "network"
-        "bluetooth"
-        "backlight"
-        "pulseaudio"
-        "battery"
-        "custom/power"
-      ];
-
       temperature = {
         interval = 10;
         tooltip = true;
@@ -981,137 +978,81 @@
         format = "";
         tooltip = false;
       };
-    };
-  };
-  "group/app_drawer" = {
-    orientation = "inherit";
-    drawer = {
-      transition-duration = 500;
-      children-class = "custom/menu";
-      transition-left-to-right = true;
-    };
-    modules = [
-      "custom/menu"
-      "custom/light_dark"
-      "custom/file_manager"
-      "custom/tty"
-      "custom/browser"
-      "custom/settings"
-    ];
-  };
-  "group/motherboard" = {
-    orientation = "horizontal";
-    modules = [
-      "cpu"
-      "power-profiles-daemon"
-      "memory"
-      "temperature"
-      "disk"
-    ];
-  };
+      "group/app_drawer" = {
+        orientation = "inherit";
+        drawer = {
+          transition-duration = 500;
+          children-class = "custom/menu";
+          transition-left-to-right = true;
+        };
+      };
+      "group/motherboard" = {
+        orientation = "horizontal";
+      };
 
-  "group/mobo_drawer" = {
-    orientation = "inherit";
-    drawer = {
-      transition-duration = 500;
-      children-class = "cpu";
-      transition-left-to-right = true;
-    };
-    modules = [
-      "temperature"
-      "cpu"
-      "power-profiles-daemon"
-      "memory"
-      "disk"
-    ];
-  };
-  "group/laptop" = {
-    orientation = "inherit";
-    modules = [
-      "backlight"
-      "battery"
-    ];
-  };
-  "group/audio" = {
-    orientation = "inherit";
-    drawer = {
-      transition-duration = 500;
-      children-class = "pulseaudio";
-      transition-left-to-right = true;
-    };
-    modules = [
-      "pulseaudio"
-      "pulseaudio#microphone"
-    ];
-  };
+      "group/mobo_drawer" = {
+        orientation = "inherit";
+        drawer = {
+          transition-duration = 500;
+          children-class = "cpu";
+          transition-left-to-right = true;
+        };
+      };
+      "group/laptop" = {
+        orientation = "inherit";
+      };
+      "group/audio" = {
+        orientation = "inherit";
+        drawer = {
+          transition-duration = 500;
+          children-class = "pulseaudio";
+          transition-left-to-right = true;
+        };
+      };
 
-  "group/connections" = {
-    orientation = "inherit";
-    drawer = {
-      transition-duration = 500;
-      children-class = "bluetooth";
-      transition-left-to-right = true;
-    };
-    modules = [
-      "network"
-      "bluetooth"
-    ];
-  };
+      "group/connections" = {
+        orientation = "inherit";
+        drawer = {
+          transition-duration = 500;
+          children-class = "bluetooth";
+          transition-left-to-right = true;
+        };
+      };
 
-  "group/status" = {
-    orientation = "inherit";
-    drawer = {
-      transition-duration = 500;
-      children-class = "custom/power";
-      transition-left-to-right = false;
-    };
-    modules = [
-      "custom/power"
-      "custom/lock"
-      "keyboard-state"
-      "custom/keyboard"
-    ];
-  };
-  "group/notify" = {
-    orientation = "inherit";
-    drawer = {
-      transition-duration = 500;
-      children-class = "custom/swaync";
-      transition-left-to-right = false;
-    };
-    modules = [
-      "custom/swaync"
-      "custom/dot_update"
-    ];
-  };
+      "group/status" = {
+        orientation = "inherit";
+        drawer = {
+          transition-duration = 500;
+          children-class = "custom/power";
+          transition-left-to-right = false;
+        };
+      };
+      "group/notify" = {
+        orientation = "inherit";
+        drawer = {
+          transition-duration = 500;
+          children-class = "custom/swaync";
+          transition-left-to-right = false;
+        };
+      };
 
-  "group/power" = {
-    orientation = "inherit";
-    drawer = {
-      transition-duration = 500;
-      children-class = "drawer-child";
-      transition-left-to-right = false;
+      "group/power" = {
+        orientation = "inherit";
+        drawer = {
+          transition-duration = 500;
+          children-class = "drawer-child";
+          transition-left-to-right = false;
+        };
+      };
+      # groups for vertical
+      "group/power#vert" = {
+        orientation = "inherit";
+        drawer = {
+          transition-duration = 300;
+          children-class = "not-memory";
+          transition-left-to-right = false;
+        };
+      };
     };
-    modules = [
-      "custom/power"
-      "custom/quit"
-      "custom/lock"
-      "custom/reboot"
-    ];
-  };
-  # groups for vertical
-  "group/power#vert" = {
-    orientation = "inherit";
-    drawer = {
-      transition-duration = 300;
-      children-class = "not-memory";
-      transition-left-to-right = false;
-    };
-    modules = [
-      "custom/power"
-      "custom/lock"
-      "custom/logout"
-      "custom/reboot"
-    ];
   };
 }

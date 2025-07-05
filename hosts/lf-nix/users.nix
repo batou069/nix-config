@@ -27,21 +27,21 @@
   };
 
   #  environment.shells = with pkgs; [ zsh ];
-  environment.systemPackages = with pkgs; [
-    lsd
-    bat
-    fd
-    fzf
-    ripgrep
-    grip-grab
-    repgrep
-    ripgrep-all
-  ];
+  # environment.systemPackages = with pkgs; [
+    # lsd
+    # bat
+  #  fd
+    # fzf
+    # ripgrep
+   # grip-grab
+   # repgrep
+   # ripgrep-all
+  #   ];
   systemd.user.services.install-pre-commit = {
     description = "Install pre-commit hooks for dotfiles";
     wantedBy = ["default.target"];
     script = ''
-      ${pkgs.pre-commit}/bin/pre-commit install --install-dir $HOME/NixOS-Hyprland
+      ${pkgs.pre-commit}/bin/pre-commit install --install-dir $HOME/nix
     '';
     serviceConfig = {
       Type = "oneshot";
