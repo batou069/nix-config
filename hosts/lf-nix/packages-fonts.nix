@@ -183,7 +183,7 @@ in {
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = false;
     };
-
+    firefox.enable = true;
     dconf.enable = true;
     seahorse.enable = true;
     fuse.userAllowOther = true;

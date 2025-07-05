@@ -7,12 +7,13 @@
     ./cli.nix
     ./vscode.nix
     ./bat.nix
-    ./firefox.nix
+    # ./firefox.nix
     ./fzf.nix
     ./git.nix
     ./lsd.nix
     ./nvim
     ./starship.nix
+    ./television.nix
     # ./waybar.nix
     ./zsh.nix
   ];
@@ -59,7 +60,6 @@
       nixdoc
       glow
       gum
-      television
       mpd
       (python312.withPackages (
         ps:
