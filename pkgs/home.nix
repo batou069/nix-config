@@ -7,13 +7,13 @@
     ./cli.nix
     ./vscode.nix
     ./bat.nix
-    # ./firefox.nix
+    ./firefox.nix
     ./fzf.nix
     ./git.nix
     ./lsd.nix
     ./nvim
     ./starship.nix
-    ./waybar.nix
+    # ./waybar.nix
     ./zsh.nix
   ];
 
@@ -57,6 +57,10 @@
       nur.repos.novel2430.zen-browser-bin
       nur.repos."7mind".ibkr-tws
       nixdoc
+      glow
+      gum
+      television
+      mpd
       (python312.withPackages (
         ps:
           with ps; [
@@ -89,14 +93,14 @@
     ];
 
     sessionVariables = {
-      I = "$HOME/git/c/";
-      P = "$HOME/git/py/";
-      C = "$HOME/.config/";
-      G = "$HOME/git/";
-      R = "$HOME/apps/";
-      O = "$HOME/Obsidian/";
-      D = "$HOME/dotfiles/";
-      N = "$HOME/NixOS-Hyprland/";
+      P = "$HOME/git/py";
+      C = "$HOME/.config";
+      G = "$HOME/git";
+      R = "$HOME/repos";
+      O = "$HOME/Obsidian";
+      D = "$HOME/dotfiles";
+      N = "$HOME/nix";
+      DL = "$HOME/Downloads";
       TERM = "xterm-256color";
       VISUAL = "nvim";
       EDITOR = "nvim";
@@ -172,11 +176,11 @@
       "mimeapps.list".force = true;
     };
   };
-  stylix.targets = {
-    waybar.enable = false;
-    hyprland.enable = false;
-    vscode = {
-      enable = true;
-    };
-  };
+  # stylix.targets = {
+  #   waybar.enable = true;
+  #   hyprland.enable = true;
+  #   vscode = {
+  #     enable = true;
+  #   };
+  # };
 }

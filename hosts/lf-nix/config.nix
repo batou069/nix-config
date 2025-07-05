@@ -417,11 +417,11 @@ in {
     # Zsh configuration
     zsh = {
       enable = true;
-      enableCompletion = true;
+      enableCompletion = false;
       ohMyZsh.enable = false;
 
-      autosuggestions.enable = true;
-      syntaxHighlighting.enable = true;
+      autosuggestions.enable = false;
+      syntaxHighlighting.enable = false;
       promptInit = "";
     };
   };
@@ -503,7 +503,7 @@ in {
   stylix = {
     enable = true;
     enableReleaseChecks = true;
-    base16Scheme = ./macchiato.yaml;
+    base16Scheme = ./frappe.yaml;
     polarity = "dark";
     homeManagerIntegration = {
       autoImport = true;
@@ -513,7 +513,7 @@ in {
 
     opacity = {
       applications = 0.95;
-      desktop = 1.0;
+      desktop = 0.95;
       popups = 1.0;
       terminal = 0.95;
     };
@@ -523,14 +523,14 @@ in {
         # package = pkgs.aleo-fonts;
         # name = "Aleo";
         package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF";
+        name = "Maple Mono NF Italic";
       };
 
       sansSerif = {
         # package = pkgs.noto-fonts-cjk-sans;
         # name = "Noto Sans CJK JP";
         package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF";
+        name = "Maple Mono NF Italic";
       };
 
       monospace = {

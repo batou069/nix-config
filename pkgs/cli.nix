@@ -17,10 +17,10 @@
 
     kitty = {
       enable = true;
-      font = {
-        name = "Maple Mono NF";
-        size = 14;
-      };
+      # font = {
+      # name = "Maple Mono NF";
+      # size = 14;
+      # };
     };
 
     eza = {
