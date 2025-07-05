@@ -510,6 +510,7 @@ in {
       followSystem = true;
     };
     targets.nixvim.enable = false;
+    # targets.firefox.profileNames = ["default"];
 
     opacity = {
       applications = 0.95;
