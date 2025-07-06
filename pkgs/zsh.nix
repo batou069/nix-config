@@ -30,6 +30,9 @@
       nix-build = "nixos-rebuild build --flake ~/NixOS-Hyprland#lf-nix";
       nix-gc = "nix-collect-garbage";
       nix-gcd = "nix-collect-garbage -d";
+      sw = "nh os switch";
+      upd = "nh os switch --update";
+      hms = "nh home switch";
       c = "clear";
       p = "python";
       py = "python";

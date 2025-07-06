@@ -361,12 +361,12 @@ in {
       })
     '';
   };
-  security.pam.services.swaylock = {
-    text = ''
-      auth include login
-    '';
-  };
-
+ # security.pam.services.swaylock = {
+ #   text = ''
+ #     auth include login
+ #   '';
+ # };
+  security.pam.services.hyprlock = {};
   # Cachix, Optimization settings and garbage collection automation
   nix = {
     settings = {
@@ -376,6 +376,7 @@ in {
         "flakes"
       ];
       substituters = ["https://hyprland.cachix.org"];
+      trusted-substituters = ["https://hyprland.cachix.org"];
       trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
     gc = {
@@ -428,6 +429,8 @@ in {
       promptInit = "";
     };
   };
+
+  niri.enable = true;
 
   systemd.services.user-session-env = {
     script = ''

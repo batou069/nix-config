@@ -31,6 +31,16 @@
     claudia = {
       url = "github:getAsterisk/claudia/218ecfb8b2069b69e4c40734e178e2a6af9fced7";
     };
+    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
+    hypr-dynamic-cursors = {
+        url = "github:VirtCode/hypr-dynamic-cursors";
+        inputs.hyprland.follows = "hyprland"; # to make sure that the plugin is built for the correct version of hyprland
+    };
+    pyprland.url = "github:hyprland-community/pyprland";
     # catppuccin.url = "github:catppuccin/nix";
     # neovim = {
     #   url = github:neovim/neovim/contrib;
@@ -52,6 +62,8 @@
     nur,
     stylix,
     # catppuccin,
+    hyprland,
+    pyprland,
     ...
   }: let
     # Function to generate a NixOS system configuration
@@ -95,6 +107,12 @@
               };
             };
           }
+          wayland.windowManager.hyprland = {
+            enable = true;
+            # set the flake package
+            package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+            portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+          };
         ];
       };
   in {
