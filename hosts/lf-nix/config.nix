@@ -428,10 +428,9 @@ in {
       syntaxHighlighting.enable = false;
       promptInit = "";
     };
+
+    niri.enable = true;
   };
-
-  niri.enable = true;
-
   systemd.services.user-session-env = {
     script = ''
           export OPENAI_API_KEY="$(cat
@@ -466,6 +465,7 @@ in {
       nerd-fonts.im-writing
       nerd-fonts.fantasque-sans-mono
       maple-mono.NF
+      maple-mono.NF-unhinted
 
       # Icon / Symbol Fonts
       font-awesome

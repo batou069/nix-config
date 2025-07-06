@@ -10,6 +10,7 @@
     # ./firefox.nix
     # ./fzf.nix
     ./git.nix
+    ./hyprlock.nix
     ./lsd.nix
     ./nvim
     ./starship.nix
@@ -131,42 +132,41 @@
         '';
       };
     };
-    programs.niriswitcher = {
-        enable = true;
-        settings = {
-              keys = {
-                modifier = "Super";
-                switch = {
-                  next = "Tab";
-                  prev = "Shift+Tab";
-                };
-                window = {
-                    close = "q";
-                    abort = "Escape";
-                  };
-              };
-              center_on_focus = true;
-              appearance = {
-                system_theme = "dark";
-                icon_size = 64;
-              };
-              separate_workspaces = true;
-              current_output_only = false;
-              double_click_to_hide = false;
-              center_on_focus = false;
-              log_level = "WARN";
-          };
-      };
+    # programs.niriswitcher = {
+    #     enable = true;
+    #     settings = {
+    #           keys = {
+    #             modifier = "Super";
+    #             switch = {
+    #               next = "Tab";
+    #               prev = "Shift+Tab";
+    #             };
+    #             window = {
+    #                 close = "q";
+    #                 abort = "Escape";
+    #               };
+    #           };
+    #           appearance = {
+    #             system_theme = "dark";
+    #             icon_size = 64;
+    #           };
+    #           separate_workspaces = true;
+    #           current_output_only = false;
+    #           double_click_to_hide = false;
+    #           center_on_focus = false;
+    #           log_level = "WARN";
+    #       };
+    #   };
   };
 
- qt = {
-   enable = true;
-   platformTheme.name = "gtk";
-   style = {
-     package = pkgs.adwaita-qt;
-     name = "adwaita-dark";
-     };
-   };
+# qt = {
+#   enable = true;
+#   platformTheme.name = "gtk";
+#   style = {
+#     package = pkgs.adwaita-qt;
+#     name = "adwaita-dark";
+#     };
+#   };
 
   fonts.fontconfig.enable = true;
   # catppuccin = {
@@ -229,16 +229,16 @@
     vscode = {
       enable = true;
     };
-    iconTheme = {
-      enable = true;
-      package = pkgs.papirus-icon-theme;
-      dark = "Papirus-Dark";
-      light = "Papirus-Light";
-    };
-    cursor = {
-      name = "DMZ-Black";
-      size = 24;
-      package = pkgs.vanilla-dmz;
-    };
+  #   iconTheme = {
+  #     enable = true;
+  #     package = pkgs.papirus-icon-theme;
+  #     dark = "Papirus-Dark";
+  #     light = "Papirus-Light";
+  #   };
+  #  cursor = {
+  #    name = "DMZ-Black";
+  #    size = 24;
+  #    package = pkgs.vanilla-dmz;
+  #  };
   };
 }
