@@ -361,11 +361,11 @@ in {
       })
     '';
   };
- # security.pam.services.swaylock = {
- #   text = ''
- #     auth include login
- #   '';
- # };
+  # security.pam.services.swaylock = {
+  #   text = ''
+  #     auth include login
+  #   '';
+  # };
   security.pam.services.hyprlock = {};
   # Cachix, Optimization settings and garbage collection automation
   nix = {
@@ -414,7 +414,7 @@ in {
     ELECTRON_OZONE_PLATFORM_HINT = "wayland"; # Or "AUTO"
     # You might also try:
     ELECTRON_ENABLE_WAYLAND = "1";
-    FLAKE = "/home/lf/nix";
+    NH_FLAKE = "/home/lf/nix";
   };
 
   programs = {
@@ -542,7 +542,7 @@ in {
 
       monospace = {
         package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF Italic";
+        name = "Maple Mono NF";
       };
 
       emoji = {

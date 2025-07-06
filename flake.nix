@@ -129,5 +129,24 @@
         username = "lf";
       };
     };
+
+    homeConfigurations = {
+      "lf@lf-nix" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = { inherit inputs; username = "lf"; };
+        modules = [
+          inputs.stylix.homeManagerModules.stylix
+          ./pkgs/home.nix
+        ];
+      };
+      "lf@viech" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = { inherit inputs; username = "lf"; };
+        modules = [
+          inputs.stylix.homeManagerModules.stylix
+          ./pkgs/home.nix
+        ];
+      };
+    };
   };
 }
