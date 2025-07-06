@@ -506,7 +506,7 @@ in {
   stylix = {
     enable = true;
     enableReleaseChecks = true;
-    base16Scheme = ./latte.yaml;
+    base16Scheme = ./mocha.yaml;
     polarity = "dark";
     homeManagerIntegration = {
       autoImport = true;
