@@ -22,39 +22,42 @@ in {
     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
-  nixpkgs.overlays = [
-    (final: prev: {
-      unstable = import inputs.nixpkgs-unstable {
-        inherit (prev) system;
-        config.allowUnfree = true;
-      };
-      claudia = inputs.claudia.packages.${prev.system}.default;
-      # ags = inputs.ags.packages.${prev.system}.default;
-      firefox-addons = inputs.firefox-addons.packages.${prev.system};
-    })
-    (final: prev: {
-      nur =
-        prev.nur
-        // {
-          repos =
-            prev.nur.repos
-            // {
-              "7mind" =
-                prev.nur.repos."7mind"
-                // {
-                  ibkr-tws = prev.nur.repos."7mind".ibkr-tws.overrideAttrs (old: {
-                    src = prev.fetchurl {
-                      url = "https://download2.interactivebrokers.com/installers/tws/stable-standalone/tws-stable-standalone-linux-x64.sh";
-                      sha256 = "+z77sypqbN9PMMOQnJTfdDHRP5NVfTOCUBT0AaAn87Y=";
-                    };
-                  });
-                };
-            };
-        };
-    })
-  ];
-
-  nixpkgs.config.allowUnfree = true;
+  #  nixpkgs.overlays = [
+#    (final: prev: {
+#      unstable = import inputs.nixpkgs-unstable {
+#        inherit (prev) system;
+#        config.allowUnfree = true;
+#      };
+#      claudia = inputs.claudia.packages.${prev.system}.default;
+#      # ags = inputs.ags.packages.${prev.system}.default;
+#      firefox-addons = inputs.firefox-addons.packages.${prev.system};
+#    })
+#    (final: prev: {
+#      nur =
+#        prev.nur
+#        // {
+#          repos =
+#            prev.nur.repos
+#            // {
+#              "7mind" =
+#                prev.nur.repos."7mind"
+#                // {
+#                  ibkr-tws = prev.nur.repos."7mind".ibkr-tws.overrideAttrs (old: {
+#                    src = prev.fetchurl {
+#                      url = "https://download2.interactivebrokers.com/installers/tws/stable-standalone/tws-stable-standalone-linux-x64.sh";
+#                      sha256 = "+z77sypqbN9PMMOQnJTfdDHRP5NVfTOCUBT0AaAn87Y=";
+#                    };
+#                  });
+#                };
+#            };
+#        };
+#    })
+#  ];
+#
+#  nixpkgs.config.allowUnfree = true;
+#  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+#    "vscode"
+#  ];
 
   boot = {
     # kernelPackages = pkgs.linuxPackages_zen; # Performance geared

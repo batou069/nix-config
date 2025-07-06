@@ -34,6 +34,7 @@
       igrep
       unstable.ladybird
       unstable.manix
+      unstable.zed-editor
       meld
       normcap
       fd
@@ -49,7 +50,13 @@
       vimPluginsUpdater
       vimgolf
       rofi-obsidian
-      rofi-rbw
+      rofi-rbw.override
+      (oldAttrs: {
+        waylandSupport = true;
+        rbw = oldAttrs.rbw.override {
+          withPass = true;
+        };
+      })
       tradingview
       neovide
       appimage-run
@@ -177,72 +184,58 @@
     #   accent = "peach";
     #   enable = true;
     # };
+  };
+  xdg = {
+    mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "text/markdown" = "code.desktop";
+        "text/plain" = "code.desktop";
+        "text/x-csv" = "code.desktop";
+        "text/x-log" = "code.desktop";
+        "text/x-patch" = "code.desktop";
+        "text/html" = "firefox.desktop";
+        "x-scheme-handler/http" = "firefox.desktop";
+        "x-scheme-handler/https" = "firefox.desktop";
+        "x-scheme-handler/mailto" = "firefox.desktop";
+        "x-scheme-handler/vscode" = "vscode.desktop";
+        "image/jpeg" = "loupe.desktop";
+        "image/png" = "loupe.desktop";
+        "image/gif" = "loupe.desktop";
+        "image/bmp" = "loupe.desktop";
+        "image/svg+xml" = "loupe.desktop";
+        "application/pdf" = "org.kde.okular.desktop";
+        "application/xml" = "code.desktop";
+        "application/x-yaml" = "code.desktop";
+        "application/json" = "code.desktop";
+        "image/avif" = "loupe.desktop";
+        "audio/*" = ["vlc.desktop"];
+        "video/*" = ["vlc.desktop"];
+      };
+    };
+    userDirs = {
+      enable = true;
+      desktop = "$HOME/Desktop";
+      documents = "$HOME/Documents";
+      download = "$HOME/Downloads";
+      music = "$HOME/Music";
+      pictures = "$HOME/Pictures";
+      videos = "$HOME/Videos";
+    };
+    configFile = {
+      "nvim/lua" = {
+        recursive = true;
+        source = ./nvim/lua;
+      };
+      "mimeapps.list".force = true;
+    };
+  };
 
-    xdg = {
-      mimeApps = {
-        enable = true;
-        defaultApplications = {
-          "text/markdown" = "code.desktop";
-          "text/plain" = "code.desktop";
-          "text/x-csv" = "code.desktop";
-          "text/x-log" = "code.desktop";
-          "text/x-patch" = "code.desktop";
-          "text/html" = "firefox.desktop";
-          "x-scheme-handler/http" = "firefox.desktop";
-          "x-scheme-handler/https" = "firefox.desktop";
-          "x-scheme-handler/mailto" = "firefox.desktop";
-          "x-scheme-handler/vscode" = "vscode.desktop";
-          "image/jpeg" = "loupe.desktop";
-          "image/png" = "loupe.desktop";
-          "image/gif" = "loupe.desktop";
-          "image/bmp" = "loupe.desktop";
-          "image/svg+xml" = "loupe.desktop";
-          "application/pdf" = "org.kde.okular.desktop";
-          "application/xml" = "code.desktop";
-          "application/x-yaml" = "code.desktop";
-          "application/json" = "code.desktop";
-          "image/avif" = "loupe.desktop";
-          "audio/*" = ["vlc.desktop"];
-          "video/*" = ["vlc.desktop"];
-        };
-      };
-      userDirs = {
-        enable = true;
-        desktop = "$HOME/Desktop";
-        documents = "$HOME/Documents";
-        download = "$HOME/Downloads";
-        music = "$HOME/Music";
-        pictures = "$HOME/Pictures";
-        videos = "$HOME/Videos";
-      };
-      configFile = {
-        "nvim/lua" = {
-          recursive = true;
-          source = ./nvim/lua;
-        };
-        "mimeapps.list".force = true;
-      };
-    };
-    stylix.targets = {
-      neovim.enable = false;
-      waybar.enable = false;
-      rofi.enable = false;
-      hyprland.enable = false;
-      hyprlock.enable = false;
-      # vscode = {
-      #   enable = true;
-      # };
-      #   iconTheme = {
-      #     enable = true;
-      #     package = pkgs.papirus-icon-theme;
-      #     dark = "Papirus-Dark";
-      #     light = "Papirus-Light";
-      #   };
-      #  cursor = {
-      #    name = "DMZ-Black";
-      #    size = 24;
-      #    package = pkgs.vanilla-dmz;
-      #  };
-    };
+  stylix.targets = {
+    neovim.enable = false;
+    waybar.enable = false;
+    rofi.enable = false;
+    hyprland.enable = false;
+    hyprlock.enable = false;
   };
 }
