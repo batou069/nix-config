@@ -29,6 +29,7 @@ in {
       ffmpeg
       gsettings-qt
       git
+      git-credential-manager
       killall
       libappindicator
       libnotify
