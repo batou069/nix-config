@@ -3,7 +3,10 @@
     enable = true;
     settings = {
       general = {
+        disable_loading_bar = true;
+        grace = 10;
         hide_cursor = true;
+        no_fade_in = false;
       };
 
       label = {
@@ -13,17 +16,18 @@
         color = "rgba(235, 219, 178, 1.0)";
         position = "0, 600";
         halign = "center";
+        walign = "center";
 
         shadow_passes = 1;
       };
 
-      background = [
-        {
-          path = "screenshot";
-          blur_passes = 4;
-          blur_size = 12;
-        }
-      ];
+      # background = [
+      #  {
+      #    path = "screenshot";
+      #    blur_passes = 3;
+      #    blur_size = 8;
+      #  }
+      # ];
 
       input-field = [
         {

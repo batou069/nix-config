@@ -10,7 +10,7 @@
     # ./firefox.nix
     # ./fzf.nix
     ./git.nix
-    ./hyprlock.nix
+    ./hyprpanel.nix
     ./lsd.nix
     ./nvim
     ./starship.nix
@@ -34,7 +34,6 @@
       igrep
       unstable.ladybird
       unstable.manix
-      unstable.zed-editor
       meld
       normcap
       fd
@@ -50,12 +49,7 @@
       vimPluginsUpdater
       vimgolf
       rofi-obsidian
-      (rofi-rbw.override (oldAttrs: {
-        waylandSupport = true;
-        rbw = oldAttrs.rbw.override {
-          withPass = true;
-        };
-      }))
+      rofi-rbw
       tradingview
       neovide
       appimage-run
@@ -72,10 +66,7 @@
       keepassxc
       keepmenu
       git-credential-keepassxc
-      helix
-      # evil-helix
-      wtype
-      libnotify
+
       papirus-icon-theme
       pcmanfm-qt
       (python312.withPackages (
@@ -119,7 +110,6 @@
       D = "$HOME/dotfiles";
       N = "$HOME/nix";
       DL = "$HOME/Downloads";
-
       TERM = "xterm-256color";
       VISUAL = "nvim";
       EDITOR = "nvim";
@@ -142,48 +132,15 @@
         '';
       };
     };
-
-    # programs.niriswitcher = {
-    #     enable = true;
-    #     settings = {
-    #           keys = {
-    #             modifier = "Super";
-    #             switch = {
-    #               next = "Tab";
-    #               prev = "Shift+Tab";
-    #             };
-    #             window = {
-    #                 close = "q";
-    #                 abort = "Escape";
-    #               };
-    #           };
-    #           appearance = {
-    #             system_theme = "dark";
-    #             icon_size = 64;
-    #           };
-    #           separate_workspaces = true;
-    #           current_output_only = false;
-    #           double_click_to_hide = false;
-    #           center_on_focus = false;
-    #           log_level = "WARN";
-    #       };
-    #   };
-
-    # qt = {
-    #   enable = true;
-    #   platformTheme.name = "gtk";
-    #   style = {
-    #     package = pkgs.adwaita-qt;
-    #     name = "adwaita-dark";
-    #     };
-    #   };
-
-    # catppuccin = {
-    #   flavor = "mocha";
-    #   accent = "peach";
-    #   enable = true;
-    # };
   };
+
+  fonts.fontconfig.enable = true;
+  # catppuccin = {
+  #   flavor = "mocha";
+  #   accent = "peach";
+  #   enable = true;
+  # };
+
   xdg = {
     mimeApps = {
       enable = true;
@@ -229,12 +186,27 @@
       "mimeapps.list".force = true;
     };
   };
-
-  stylix.targets = {
-    neovim.enable = false;
-    waybar.enable = false;
-    rofi.enable = false;
-    hyprland.enable = false;
-    hyprlock.enable = false;
+  stylix = {
+    targets = {
+      neovim.enable = false;
+      waybar.enable = false;
+      wofi.enable = false;
+      hyprland.enable = false;
+      hyprlock.enable = false;
+      vscode = {
+        enable = true;
+      };
+    };
+    iconTheme = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
+    };
+    cursor = {
+      name = "DMZ-Black";
+      size = 24;
+      package = pkgs.vanilla-dmz;
+    };
   };
 }
