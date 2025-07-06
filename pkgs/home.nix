@@ -48,6 +48,7 @@
       vimPluginsUpdater
       vimgolf
       rofi-obsidian
+      rofi-rbw
       tradingview
       neovide
       appimage-run
@@ -61,6 +62,12 @@
       glow
       gum
       mpd
+      keepassxc
+      keepmenu
+      git-credential-keepassxc
+
+      papirus-icon-theme
+      pcmanfm-qt
       (python312.withPackages (
         ps:
           with ps; [
@@ -88,6 +95,7 @@
             # aiohttp
             # NetscapeBookmarksFileParser
             scipy
+            aiofiles
           ]
       ))
     ];
@@ -123,7 +131,42 @@
         '';
       };
     };
+    programs.niriswitcher = {
+        enable = true;
+        settings = {
+              keys = {
+                modifier = "Super";
+                switch = {
+                  next = "Tab";
+                  prev = "Shift+Tab";
+                };
+                window = {
+                    close = "q";
+                    abort = "Escape";
+                  };
+              };
+              center_on_focus = true;
+              appearance = {
+                system_theme = "dark";
+                icon_size = 64;
+              };
+              separate_workspaces = true;
+              current_output_only = false;
+              double_click_to_hide = false;
+              center_on_focus = false;
+              log_level = "WARN";
+          };
+      };
   };
+
+ qt = {
+   enable = true;
+   platformTheme.name = "gtk";
+   style = {
+     package = pkgs.adwaita-qt;
+     name = "adwaita-dark";
+     };
+   };
 
   fonts.fontconfig.enable = true;
   # catppuccin = {
@@ -178,10 +221,24 @@
     };
   };
   stylix.targets = {
-    waybar.enable = true;
-    hyprland.enable = true;
+    neovim.enable = false;
+    waybar.enable = false;
+    wofi.enable = false;
+    hyprland.enable = false;
+    hyprlock.enable = false;
     vscode = {
       enable = true;
+    };
+    iconTheme = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
+    };
+    cursor = {
+      name = "DMZ-Black";
+      size = 24;
+      package = pkgs.vanilla-dmz;
     };
   };
 }
