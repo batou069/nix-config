@@ -8,7 +8,7 @@
     ./vscode.nix
     ./bat.nix
     # ./firefox.nix
-    ./fzf.nix
+    # ./fzf.nix
     ./git.nix
     ./lsd.nix
     ./nvim
@@ -176,11 +176,11 @@
       "mimeapps.list".force = true;
     };
   };
-  # stylix.targets = {
-  #   waybar.enable = true;
-  #   hyprland.enable = true;
-  #   vscode = {
-  #     enable = true;
-  #   };
-  # };
+  stylix.targets = {
+    waybar.enable = true;
+    hyprland.enable = true;
+    vscode = {
+      enable = true;
+    };
+  };
 }
