@@ -23,41 +23,41 @@ in {
   ];
 
   #  nixpkgs.overlays = [
-#    (final: prev: {
-#      unstable = import inputs.nixpkgs-unstable {
-#        inherit (prev) system;
-#        config.allowUnfree = true;
-#      };
-#      claudia = inputs.claudia.packages.${prev.system}.default;
-#      # ags = inputs.ags.packages.${prev.system}.default;
-#      firefox-addons = inputs.firefox-addons.packages.${prev.system};
-#    })
-#    (final: prev: {
-#      nur =
-#        prev.nur
-#        // {
-#          repos =
-#            prev.nur.repos
-#            // {
-#              "7mind" =
-#                prev.nur.repos."7mind"
-#                // {
-#                  ibkr-tws = prev.nur.repos."7mind".ibkr-tws.overrideAttrs (old: {
-#                    src = prev.fetchurl {
-#                      url = "https://download2.interactivebrokers.com/installers/tws/stable-standalone/tws-stable-standalone-linux-x64.sh";
-#                      sha256 = "+z77sypqbN9PMMOQnJTfdDHRP5NVfTOCUBT0AaAn87Y=";
-#                    };
-#                  });
-#                };
-#            };
-#        };
-#    })
-#  ];
-#
-#  nixpkgs.config.allowUnfree = true;
-#  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-#    "vscode"
-#  ];
+  #    (final: prev: {
+  #      unstable = import inputs.nixpkgs-unstable {
+  #        inherit (prev) system;
+  #        config.allowUnfree = true;
+  #      };
+  #      claudia = inputs.claudia.packages.${prev.system}.default;
+  #      # ags = inputs.ags.packages.${prev.system}.default;
+  #      firefox-addons = inputs.firefox-addons.packages.${prev.system};
+  #    })
+  #    (final: prev: {
+  #      nur =
+  #        prev.nur
+  #        // {
+  #          repos =
+  #            prev.nur.repos
+  #            // {
+  #              "7mind" =
+  #                prev.nur.repos."7mind"
+  #                // {
+  #                  ibkr-tws = prev.nur.repos."7mind".ibkr-tws.overrideAttrs (old: {
+  #                    src = prev.fetchurl {
+  #                      url = "https://download2.interactivebrokers.com/installers/tws/stable-standalone/tws-stable-standalone-linux-x64.sh";
+  #                      sha256 = "+z77sypqbN9PMMOQnJTfdDHRP5NVfTOCUBT0AaAn87Y=";
+  #                    };
+  #                  });
+  #                };
+  #            };
+  #        };
+  #    })
+  #  ];
+  #
+  #  nixpkgs.config.allowUnfree = true;
+  #  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+  #    "vscode"
+  #  ];
 
   boot = {
     # kernelPackages = pkgs.linuxPackages_zen; # Performance geared
@@ -490,18 +490,15 @@ in {
     fontconfig = {
       defaultFonts = {
         serif = [
-          "Noto Serif CJK JP"
-          "Noto Serif"
+          "Maple Mono NF SemiBold"
         ];
 
         sansSerif = [
-          "Noto Sans CJK JP"
-          "Noto Sans"
+          "Maple Mono NF Italic"
         ];
 
         monospace = [
-          "Noto Sans Mono CJK JP"
-          "Noto Sans Mono"
+          "Maple Mono NF Light Italic"
         ];
       };
 
@@ -532,20 +529,20 @@ in {
       serif = {
         # package = pkgs.aleo-fonts;
         # name = "Aleo";
-        package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF Italic";
+        package = pkgs.maple-mono.NF-unhinted;
+        name = "Maple Mono NF Light Italic";
       };
 
       sansSerif = {
         # package = pkgs.noto-fonts-cjk-sans;
         # name = "Noto Sans CJK JP";
-        package = pkgs.maple-mono.NF;
+        package = pkgs.maple-mono.NF-unhinted;
         name = "Maple Mono NF Italic";
       };
 
       monospace = {
-        package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF";
+        package = pkgs.maple-mono.NF-unhinted;
+        name = "Maple Mono NF SemiBold";
       };
 
       emoji = {

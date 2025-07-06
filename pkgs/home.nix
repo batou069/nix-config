@@ -50,13 +50,12 @@
       vimPluginsUpdater
       vimgolf
       rofi-obsidian
-      rofi-rbw.override
-      (oldAttrs: {
+      (rofi-rbw.override (oldAttrs: {
         waylandSupport = true;
         rbw = oldAttrs.rbw.override {
           withPass = true;
         };
-      })
+      }))
       tradingview
       neovide
       appimage-run

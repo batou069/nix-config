@@ -37,8 +37,8 @@
       inputs.hyprland.follows = "hyprland";
     };
     hypr-dynamic-cursors = {
-        url = "github:VirtCode/hypr-dynamic-cursors";
-        inputs.hyprland.follows = "hyprland"; # to make sure that the plugin is built for the correct version of hyprland
+      url = "github:VirtCode/hypr-dynamic-cursors";
+      inputs.hyprland.follows = "hyprland"; # to make sure that the plugin is built for the correct version of hyprland
     };
     pyprland.url = "github:hyprland-community/pyprland";
     # catppuccin.url = "github:catppuccin/nix";
@@ -64,15 +64,17 @@
     claudia,
     firefox-addons,
     ...
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = import nixpkgs {
+  }: let
+    # Define a function to create pkgs for a given system
+    mkPkgs = system:
+      import nixpkgs {
         inherit system;
         config = {
           allowUnfree = true;
-          allowUnfreePredicate = pkg: builtins.elem (nixpkgs.lib.getName pkg) [
-            "vscode"
-          ];
+          allowUnfreePredicate = pkg:
+            builtins.elem (nixpkgs.lib.getName pkg) [
+              "vscode"
+            ];
         };
         overlays = [
           (final: prev: {
@@ -83,97 +85,119 @@
             claudia = inputs.claudia.packages.${prev.system}.default;
             firefox-addons = inputs.firefox-addons.packages.${prev.system};
           })
+          inputs.nur.overlays.default
           (final: prev: {
-            nur =
-              prev.nur
-              // {
-                repos =
-                  prev.nur.repos
-                  // {
-                    "7mind" =
-                      prev.nur.repos."7mind"
-                      // {
-                        ibkr-tws = prev.nur.repos."7mind".ibkr-tws.overrideAttrs (old: {
-                          src = prev.fetchurl {
-                            url = "https://download2.interactivebrokers.com/installers/tws/stable-standalone/tws-stable-standalone-linux-x64.sh";
-                            sha256 = "+z77sypqbN9PMMOQnJTfdDHRP5NVfTOCUBT0AaAn87Y=";
-                          };
-                        });
-                      };
-                  };
+            ibkr-tws = prev.nur.repos."7mind".ibkr-tws.overrideAttrs (old: {
+              src = prev.fetchurl {
+                url = "https://download2.interactivebrokers.com/installers/tws/stable-standalone/tws-stable-standalone-linux-x64.sh";
+                sha256 = "sha256-+z77sypqbN9PMMOQnJTfdDHRP5NVfTOCUBT0AaAn87Y=";
               };
+            });
           })
         ];
       };
-      lib = nixpkgs.lib;
-      # Function to generate a NixOS system configuration
-      mkNixosSystem = {
-        host,
-        username,
-      }:
-        lib.nixosSystem {
-          # Pass all flake inputs to modules via specialArgs.
-          # This is the standard way to make them available where needed.
-          specialArgs = {inherit inputs username host system pkgs lib;};
 
-          modules = [
-            # Now, import all necessary modules.
-            # They can access the inputs via the `inputs` argument
-            # that specialArgs provides.
-            disko.nixosModules.default
-            sops-nix.nixosModules.sops
-            nur.modules.nixos.default
-            stylix.nixosModules.stylix
-            # Your custom host and user configurations
-            ./hosts/${host}/config.nix
-            ./hosts/${host}/sops.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "backup";
-                # Pass flake inputs to home-manager modules as well
-                extraSpecialArgs = {inherit inputs username system pkgs lib;};
-                users.${username} = {
-                  imports = [
-                    ./pkgs/home.nix
-                  ];
-                };
+    # Function to generate a NixOS system configuration
+    mkNixosSystem = {
+      system,
+      host,
+      username,
+      pkgs,
+      lib,
+      hm, # Add hm here
+    }:
+      lib.nixosSystem {
+        specialArgs = {
+          inherit inputs username host system hm; # Inherit hm here
+        };
+
+        modules = [
+          # Correctly pass pkgs to NixOS modules
+          nixpkgs.nixosModules.readOnlyPkgs
+          {
+            nixpkgs.pkgs = pkgs;
+          }
+          disko.nixosModules.default
+          inputs.sops-nix.nixosModules.sops
+          inputs.nur.modules.nixos.default
+          stylix.nixosModules.stylix
+          ./hosts/${host}/config.nix
+          ./hosts/${host}/sops.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "backup";
+              extraSpecialArgs = {
+                inherit inputs username system pkgs lib;
               };
-            }
-          ];
-        };
-    in {
-      nixosConfigurations = {
-        "lf-nix" = mkNixosSystem {
-          host = "lf-nix";
-          username = "lf";
-        };
-
-        "viech" = mkNixosSystem {
-          host = "viech";
-          username = "lf";
-        };
+              users.${username} = {
+                imports = [
+                  ./pkgs/home.nix
+                ];
+              };
+            };
+          }
+        ];
       };
 
-      homeConfigurations = {
-        "lf@lf-nix" = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs lib;
-          extraSpecialArgs = { inherit inputs username system; };
-          modules = [
-            inputs.stylix.homeModules.stylix
-            ./pkgs/home.nix
-          ];
+    # Function to generate a Home Manager configuration
+    mkHomeConfiguration = {
+      system,
+      username,
+      pkgs,
+      lib,
+    }:
+      home-manager.lib.homeManagerConfiguration {
+        inherit pkgs lib;
+        extraSpecialArgs = {
+          inherit inputs system username;
+          hm = home-manager.lib; # Pass home-manager's lib as 'hm'
         };
-        "lf@viech" = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs lib;
-          extraSpecialArgs = { inherit inputs username system; };
-          modules = [
-            inputs.stylix.homeModules.stylix
-            ./pkgs/home.nix
-          ];
-        };
+        modules = [
+          inputs.stylix.homeModules.stylix
+          ./pkgs/home.nix
+        ];
       };
-    });
+  in {
+    nixosConfigurations = {
+      "lf-nix" = mkNixosSystem {
+        system = "x86_64-linux";
+        pkgs = mkPkgs "x86_64-linux";
+        lib = nixpkgs.lib;
+        hm = home-manager.lib;
+        host = "lf-nix";
+        username = "lf";
+      };
+
+      "viech" = mkNixosSystem {
+        system = "x86_64-linux";
+        pkgs = mkPkgs "x86_64-linux";
+        lib = nixpkgs.lib;
+        hm = home-manager.lib;
+        host = "viech";
+        username = "lf";
+      };
+    };
+
+    homeConfigurations = {
+      "lf@lf-nix" = mkHomeConfiguration {
+        system = "x86_64-linux";
+        pkgs = mkPkgs "x86_64-linux";
+        lib = nixpkgs.lib;
+        username = "lf";
+      };
+      "lf@viech" = mkHomeConfiguration {
+        system = "x86_64-linux";
+        pkgs = mkPkgs "x86_64-linux";
+        lib = nixpkgs.lib;
+        username = "lf";
+      };
+    };
+
+    # Add a 'packages' output for general packages, if needed by other tools or for consistency
+    packages.x86_64-linux = mkPkgs "x86_64-linux";
+    defaultPackage.x86_64-linux = self.packages.x86_64-linux.hello; # Example default package
+  };
 }
