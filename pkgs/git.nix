@@ -1,4 +1,5 @@
 {
+  pkgs,
   ...
 }: {
   # Configure Git
@@ -8,6 +9,7 @@
     userEmail = "laurentf84@gmail.com";
     # hooks = {pre-commit = ./pre-commit-script};
     extraConfig = {
+      push = { autoSetupRemote = true; };
       # Configure Meld as the default diff tool
       diff = {
         tool = "meld";
@@ -17,6 +19,10 @@
           cmd = ''meld "$LOCAL" "$REMOTE"'';
         };
       };
+      credential.helper = "${
+        pkgs.git.override { withLibsecret = true; }
+      }/bin/git-credential-libsecret";
+
       # Create a Git alias to use PathPicker with difftool
       alias = {
         diffpick = "!sh -c 'git diff --name-only | fpp --no-file-checks | xargs -r git difftool'";

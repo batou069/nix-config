@@ -119,6 +119,7 @@
           keys.txt
           example_config/
           example_config/*
+          secrets.pt.yaml
         '';
       };
     };
