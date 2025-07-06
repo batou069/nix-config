@@ -66,7 +66,10 @@
       keepassxc
       keepmenu
       git-credential-keepassxc
-
+      helix
+      # evil-helix
+      wtype
+      libnotify
       papirus-icon-theme
       pcmanfm-qt
       (python312.withPackages (
@@ -110,6 +113,7 @@
       D = "$HOME/dotfiles";
       N = "$HOME/nix";
       DL = "$HOME/Downloads";
+
       TERM = "xterm-256color";
       VISUAL = "nvim";
       EDITOR = "nvim";
@@ -132,6 +136,7 @@
         '';
       };
     };
+
     # programs.niriswitcher = {
     #     enable = true;
     #     settings = {
@@ -157,88 +162,87 @@
     #           log_level = "WARN";
     #       };
     #   };
-  };
 
-# qt = {
-#   enable = true;
-#   platformTheme.name = "gtk";
-#   style = {
-#     package = pkgs.adwaita-qt;
-#     name = "adwaita-dark";
-#     };
-#   };
+    # qt = {
+    #   enable = true;
+    #   platformTheme.name = "gtk";
+    #   style = {
+    #     package = pkgs.adwaita-qt;
+    #     name = "adwaita-dark";
+    #     };
+    #   };
 
-  fonts.fontconfig.enable = true;
-  # catppuccin = {
-  #   flavor = "mocha";
-  #   accent = "peach";
-  #   enable = true;
-  # };
+    # catppuccin = {
+    #   flavor = "mocha";
+    #   accent = "peach";
+    #   enable = true;
+    # };
 
-  xdg = {
-    mimeApps = {
-      enable = true;
-      defaultApplications = {
-        "text/markdown" = "code.desktop";
-        "text/plain" = "code.desktop";
-        "text/x-csv" = "code.desktop";
-        "text/x-log" = "code.desktop";
-        "text/x-patch" = "code.desktop";
-        "text/html" = "firefox.desktop";
-        "x-scheme-handler/http" = "firefox.desktop";
-        "x-scheme-handler/https" = "firefox.desktop";
-        "x-scheme-handler/mailto" = "firefox.desktop";
-        "x-scheme-handler/vscode" = "vscode.desktop";
-        "image/jpeg" = "loupe.desktop";
-        "image/png" = "loupe.desktop";
-        "image/gif" = "loupe.desktop";
-        "image/bmp" = "loupe.desktop";
-        "image/svg+xml" = "loupe.desktop";
-        "application/pdf" = "org.kde.okular.desktop";
-        "application/xml" = "code.desktop";
-        "application/x-yaml" = "code.desktop";
-        "application/json" = "code.desktop";
-        "image/avif" = "loupe.desktop";
-        "audio/*" = ["vlc.desktop"];
-        "video/*" = ["vlc.desktop"];
+    xdg = {
+      mimeApps = {
+        enable = true;
+        defaultApplications = {
+          "text/markdown" = "code.desktop";
+          "text/plain" = "code.desktop";
+          "text/x-csv" = "code.desktop";
+          "text/x-log" = "code.desktop";
+          "text/x-patch" = "code.desktop";
+          "text/html" = "firefox.desktop";
+          "x-scheme-handler/http" = "firefox.desktop";
+          "x-scheme-handler/https" = "firefox.desktop";
+          "x-scheme-handler/mailto" = "firefox.desktop";
+          "x-scheme-handler/vscode" = "vscode.desktop";
+          "image/jpeg" = "loupe.desktop";
+          "image/png" = "loupe.desktop";
+          "image/gif" = "loupe.desktop";
+          "image/bmp" = "loupe.desktop";
+          "image/svg+xml" = "loupe.desktop";
+          "application/pdf" = "org.kde.okular.desktop";
+          "application/xml" = "code.desktop";
+          "application/x-yaml" = "code.desktop";
+          "application/json" = "code.desktop";
+          "image/avif" = "loupe.desktop";
+          "audio/*" = ["vlc.desktop"];
+          "video/*" = ["vlc.desktop"];
+        };
+      };
+      userDirs = {
+        enable = true;
+        desktop = "$HOME/Desktop";
+        documents = "$HOME/Documents";
+        download = "$HOME/Downloads";
+        music = "$HOME/Music";
+        pictures = "$HOME/Pictures";
+        videos = "$HOME/Videos";
+      };
+      configFile = {
+        "nvim/lua" = {
+          recursive = true;
+          source = ./nvim/lua;
+        };
+        "mimeapps.list".force = true;
       };
     };
-    userDirs = {
-      enable = true;
-      desktop = "$HOME/Desktop";
-      documents = "$HOME/Documents";
-      download = "$HOME/Downloads";
-      music = "$HOME/Music";
-      pictures = "$HOME/Pictures";
-      videos = "$HOME/Videos";
+    stylix.targets = {
+      neovim.enable = false;
+      waybar.enable = false;
+      rofi.enable = false;
+      hyprland.enable = false;
+      hyprlock.enable = false;
+      # vscode = {
+      #   enable = true;
+      # };
+      #   iconTheme = {
+      #     enable = true;
+      #     package = pkgs.papirus-icon-theme;
+      #     dark = "Papirus-Dark";
+      #     light = "Papirus-Light";
+      #   };
+      #  cursor = {
+      #    name = "DMZ-Black";
+      #    size = 24;
+      #    package = pkgs.vanilla-dmz;
+      #  };
     };
-    configFile = {
-      "nvim/lua" = {
-        recursive = true;
-        source = ./nvim/lua;
-      };
-      "mimeapps.list".force = true;
-    };
-  };
-  stylix.targets = {
-    neovim.enable = false;
-    waybar.enable = false;
-    wofi.enable = false;
-    hyprland.enable = false;
-    hyprlock.enable = false;
-    vscode = {
-      enable = true;
-    };
-  #   iconTheme = {
-  #     enable = true;
-  #     package = pkgs.papirus-icon-theme;
-  #     dark = "Papirus-Dark";
-  #     light = "Papirus-Light";
-  #   };
-  #  cursor = {
-  #    name = "DMZ-Black";
-  #    size = 24;
-  #    package = pkgs.vanilla-dmz;
-  #  };
   };
 }
