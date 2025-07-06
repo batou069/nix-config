@@ -6,8 +6,9 @@
     # Define your VS Code settings here
     profiles.default = {
       userSettings = {
-        "editor.fontFamily" = "'Maple Mono NF Italic', monospace";
-        "editor.fontLigatures" = "'calt'"; # 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero', 'onum'";;
+        # "editor.fontFamily" = "FantasqueSansM Nerd Font Mono Italic";
+        # "editor.fontFamily" = "Maple Mono NF Italic";
+        "editor.fontLigatures" = "'calt', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'zero', 'onum'";
         "editor.tokenColorCustomizations" = {
           "textMateRules" = [
             {
