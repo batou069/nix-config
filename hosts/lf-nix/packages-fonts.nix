@@ -22,6 +22,7 @@ in {
       baobab
       btrfs-progs
       clang
+      mcp-server-fetch
 
       cpufrequtils
       duf # Utility For Viewing Disk Usage In Terminal
@@ -134,7 +135,6 @@ in {
       bc
       curl
       glib #for gsettings to work
-      # sof-firmware
       fastfetch
       jq
       nwg-look
@@ -153,7 +153,8 @@ in {
     ++ [
       #   python-packages # Add the python environment
       r-with-packages # Add the R environment
-    ];
+    ]
+    ++ (import ../../pkgs/mcp.nix {inherit pkgs;});
 
   programs = {
     hyprland = {
@@ -163,7 +164,8 @@ in {
       xwayland.enable = true;
       withUWSM = true;
     };
-    waybar.enable = true;
+    hyprlock.enable = true;
+    waybar.enable = false;
     thunar = {
       enable = true;
       # thunar.

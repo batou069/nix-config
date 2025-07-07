@@ -6,18 +6,11 @@
   programs.hyprpanel = {
     enable = true;
     package = inputs.hyprpanel.packages.${pkgs.system}.default;
+    dontAssertNotificationDaemons = true;
+    systemd.enable = true;
     # Configure bar layouts for monitors.
     # See 'https://hyprpanel.com/configuration/panel.html'.
     # Default: null
-    layout = {
-      "bar.layouts" = {
-        "0" = {
-          left = ["dashboard" "workspaces"];
-          middle = ["media"];
-          right = ["volume" "systray" "notifications"];
-        };
-      };
-    };
 
     # Configure and theme almost all options from the GUI.
     # See 'https://hyprpanel.com/configuration/settings.html'.
