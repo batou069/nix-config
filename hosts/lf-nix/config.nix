@@ -23,6 +23,7 @@ in {
   ];
 
   nixpkgs.overlays = [
+    inputs.mcp-servers-nix.overlays.default
     (final: prev: {
       unstable = import inputs.nixpkgs-unstable {
         inherit (prev) system;
@@ -61,17 +62,28 @@ in {
     kernelPackages = pkgs.linuxPackages_latest; # Best Balance
     # kernelPackages = pkgs.linuxPackages_testing; # Bleeding edge
 
+    # blacklistedKernelModules = [
+    #   "snd_soc_avs"
+    # ];
+
     kernelParams = [
+      # "snd-intel-dspcfg.dsp_driver=0"
+      # "snd-intel-dspcfg.dsp_driver=1"
+      # "snd-intel-dspcfg.dsp_driver=2"
       "snd_intel_dspcfg.dsp_driver=3"
       "systemd.mask=systemd-vconsole-setup.service"
       "systemd.mask=dev-tpmrm0.device" #this is to mask that stupid 1.5 mins systemd bug
       "nowatchdog"
-      "modprobe.blacklist=sp5100_tco" #watchdog for AMD
+      # "modprobe.blacklist=sp5100_tco" #watchdog for AMD
       "modprobe.blacklist=iTCO_wdt" #watchdog for Intel
       "vt.default_red=48,231,166,229,140,244,129,181,98,231,166,229,140,244,129,165"
       "vt.default_grn=52,130,209,200,170,184,200,191,104,130,209,200,170,184,200,173"
       "vt.default_blu=70,132,137,144,238,228,190,226,128,132,137,144,238,228,190,206"
     ];
+
+    extraModprobeConfig = ''
+      options snd-hda-intel model=dell-headset-multi
+    '';
 
     initrd = {
       availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod" "sdhci_pci"];
@@ -192,7 +204,7 @@ in {
       wireplumber.enable = true;
     };
 
-    # pulseaudio.enable = false; #unstable
+    pulseaudio.enable = false; #unstable
     udev.enable = true;
     envfs.enable = true;
     dbus.enable = true;
@@ -312,7 +324,6 @@ in {
 
   # Extra Logitech Support
   hardware = {
-    firmware = [pkgs.sof-firmware];
     logitech.wireless.enable = true;
     logitech.wireless.enableGraphical = true;
   };
@@ -361,11 +372,11 @@ in {
       })
     '';
   };
- # security.pam.services.swaylock = {
- #   text = ''
- #     auth include login
- #   '';
- # };
+  # security.pam.services.swaylock = {
+  #   text = ''
+  #     auth include login
+  #   '';
+  # };
   security.pam.services.hyprlock = {};
   # Cachix, Optimization settings and garbage collection automation
   nix = {
@@ -404,9 +415,9 @@ in {
 
   console.keyMap = "${keyboardLayout}";
 
-  environment.systemPackages = with pkgs; [
-    pulseaudio
-  ];
+  # environment.systemPackages = with pkgs; [
+  #   pulseaudio
+  # ];
 
   # For Electron apps to use wayland
   environment.sessionVariables = {
@@ -414,7 +425,7 @@ in {
     ELECTRON_OZONE_PLATFORM_HINT = "wayland"; # Or "AUTO"
     # You might also try:
     ELECTRON_ENABLE_WAYLAND = "1";
-    FLAKE = "/home/lf/nix";
+    NH_FLAKE = "/home/lf/nix";
   };
 
   programs = {
@@ -430,7 +441,7 @@ in {
     };
   };
 
-#  niri.enable = true;
+  #  niri.enable = true;
 
   systemd.services.user-session-env = {
     script = ''

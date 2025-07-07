@@ -49,7 +49,12 @@
       vimPluginsUpdater
       vimgolf
       rofi-obsidian
-      rofi-rbw
+      rofi-rbw-wayland
+      wtype
+      rbw
+      pinentry-rofi
+      pinentry
+      alsa-ucm-conf # maybe this fixed sound issue?
       tradingview
       neovide
       appimage-run
@@ -66,9 +71,10 @@
       keepassxc
       keepmenu
       git-credential-keepassxc
-
+      libnotify
       papirus-icon-theme
       pcmanfm-qt
+      zed-editor
       (python312.withPackages (
         ps:
           with ps; [

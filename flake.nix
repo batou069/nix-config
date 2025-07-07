@@ -7,11 +7,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix.url = "github:nix-community/stylix/release-25.05";
-    # ags = {
-    #   # url = "github:aylur/ags/v1";
-    #   url = "github:aylur/ags";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    ags = {
+      # url = "github:aylur/ags/v1";
+      url = "github:aylur/ags";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     firefox-addons = {
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -41,6 +41,7 @@
       inputs.hyprland.follows = "hyprland"; # to make sure that the plugin is built for the correct version of hyprland
     };
     pyprland.url = "github:hyprland-community/pyprland";
+    mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
     # catppuccin.url = "github:catppuccin/nix";
     # neovim = {
     #   url = github:neovim/neovim/contrib;
@@ -65,6 +66,7 @@
     sops-nix,
     nur,
     stylix,
+    mcp-servers-nix,
     # catppuccin,
     hyprland,
     pyprland,
