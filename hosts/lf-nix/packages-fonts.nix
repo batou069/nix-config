@@ -131,7 +131,6 @@ in {
       nh
     ])
     ++ (with pkgs.unstable; [
-      #   gemini-cli
       bc
       curl
       glib #for gsettings to work
