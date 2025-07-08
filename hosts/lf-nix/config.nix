@@ -6,6 +6,7 @@
   options,
   lib,
   inputs,
+  nixpkgs-unstable,
   # system,
   ...
 }: let
@@ -345,7 +346,7 @@ in {
       settings = {
         General = {
           Enable = "Source,Sink,Media,Socket";
-          Experimental = true;
+          Experimental = false;
         };
       };
     };

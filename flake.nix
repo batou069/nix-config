@@ -99,13 +99,13 @@
           # catppuccin.nixosModules.catppuccin
           home-manager.nixosModules.home-manager
           # Pass the final pkgs set to Home Manager modules.
-          ({ pkgs, ... }: {
+          ({ pkgs, nixpkgs-unstable, ... }: {
             home-manager = {
               useGlobalPkgs = false;
               useUserPackages = true;
               backupFileExtension = "backup";
               # Pass final pkgs and other inputs to Home Manager modules.
-              extraSpecialArgs = { inherit inputs username system pkgs; };
+              extraSpecialArgs = { inherit inputs username system pkgs nixpkgs-unstable; };
               users.${username} = {
                 imports = [
                   ./pkgs/home.nix
