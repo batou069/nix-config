@@ -121,6 +121,7 @@
       friendly-snippets
 
       # Editor
+      undotree
       neo-tree-nvim
       grug-far-nvim
       flash-nvim
@@ -145,6 +146,28 @@
       nvim-treesitter.withAllGrammars
       nvim-treesitter-textobjects
       nvim-ts-autotag
+      (nvim-treesitter.withPlugins (
+               p: with p; [
+                 bash
+                 comment
+                 dockerfile
+                 html
+                 javascript
+                 json
+                 lua
+                 python
+                 regex
+                 rust
+                 sql
+                 toml
+                 vim
+                 vimdoc
+                 yaml
+                 markdown
+                 markdown_inline
+                 nix
+               ]
+             ))
 
       # UI
       bufferline-nvim
@@ -221,6 +244,9 @@
       # Terraform Extra
       # telescope-terraform-doc-nvim
       # telescope-terraform-nvim
+      telescope-nvim
+      telescope-fzf-native-nvim
+      telescope-ui-select-nvim
 
       # LSP Extra
       neoconf-nvim
@@ -254,6 +280,7 @@
       # LSP
       nvim-lightbulb # lightbulb for quick actions
       nvim-code-action-menu # code action menu
+      lspkind-nvim
     ];
 
     extraPackages = with pkgs; [
@@ -276,6 +303,18 @@
       # Custom
       editorconfig-checker
       shellcheck
+
+      pyright
+      nil
+      lua-language-server
+      zls
+      bash-language-server
+      yaml-language-server
+      vscode-langservers-extracted # eslint, json
+      nodePackages_latest.dockerfile-language-server-nodejs
+
+      ripgrep
+      alejandra
     ];
 
     extraLuaConfig = ''

@@ -9,9 +9,11 @@
     ./bat.nix
     # ./firefox.nix
     # ./fzf.nix
+    ./gemini-cli.nix
     ./git.nix
     ./hyprpanel.nix
     ./lsd.nix
+    ./mcp.nix
     ./nvim
     ./starship.nix
     ./television.nix
@@ -34,6 +36,8 @@
       igrep
       unstable.ladybird
       unstable.manix
+      unstable.rmpc
+      unstable.mpd
       meld
       normcap
       fd
