@@ -103,6 +103,8 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               backupFileExtension = "backup";
+              # Pass the NixOS pkgs to home-manager
+              pkgs = config.nixpkgs.pkgs;
               # Pass flake inputs to home-manager modules as well
               extraSpecialArgs = {inherit inputs username system;};
               users.${username} = {

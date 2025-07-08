@@ -9,11 +9,11 @@
     ./bat.nix
     # ./firefox.nix
     # ./fzf.nix
-    ./gemini-cli.nix
+ #   ./gemini-cli.nix
     ./git.nix
     ./hyprpanel.nix
     ./lsd.nix
-    ./mcp.nix
+  #   ./mcp.nix
     ./nvim
     ./starship.nix
     ./television.nix
@@ -34,6 +34,7 @@
       fpp
       # ags
       igrep
+      unstable.gemini-cli
       unstable.ladybird
       unstable.manix
       unstable.rmpc
@@ -71,7 +72,6 @@
       nixdoc
       glow
       gum
-      mpd
       keepassxc
       keepmenu
       git-credential-keepassxc
