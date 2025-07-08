@@ -34,7 +34,6 @@
       fpp
       # ags
       igrep
-      (import ./gemini-cli.nix)
       # unstable.gemini-cli
       unstable.ladybird
       unstable.manix
