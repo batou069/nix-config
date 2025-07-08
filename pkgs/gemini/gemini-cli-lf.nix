@@ -1,11 +1,11 @@
 { pkgs, config, lib, cfg, ... }:
 
 let
-	duplicacy-web = pkgs.callPackage ./package.nix { inherit pkgs lib; };
+	gemini-cli-custom = pkgs.callPackage ./package.nix { inherit pkgs lib; };
 in
  {
 	environment.systemPackages = [
-		duplicacy-web
+		gemini-cli-custom
 	];
 
 	# Install systemd service
