@@ -9,7 +9,7 @@
     ./bat.nix
     # ./firefox.nix
     # ./fzf.nix
-    ./gemini-cli.nix
+    # ./gemini-cli.nix is a package, not a module
     ./git.nix
     ./hyprpanel.nix
     ./lsd.nix
@@ -34,7 +34,8 @@
       fpp
       # ags
       igrep
-      #   ./gemini-cli.nix
+      (import ./gemini-cli.nix)
+      # unstable.gemini-cli
       unstable.ladybird
       unstable.manix
       unstable.rmpc
@@ -48,6 +49,7 @@
       # ripgrep-all
       alejandra
       unstable.pre-commit
+      nodejs # Provides npm
       kdePackages.okular
       vgrep # User-friendly pager for grep/git-grep/ripgrep
       xonsh # Python-ish, BASHwards-compatible shell
