@@ -131,7 +131,7 @@ in {
       nh
     ])
     ++ (with pkgs.unstable; [
-      gemini-cli
+      #   gemini-cli
       bc
       curl
       glib #for gsettings to work
@@ -154,7 +154,7 @@ in {
       #   python-packages # Add the python environment
       r-with-packages # Add the R environment
     ]
-    ++ (import ../../pkgs/mcp.nix {inherit pkgs;});
+;
 
   programs = {
     hyprland = {
