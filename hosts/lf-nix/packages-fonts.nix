@@ -5,6 +5,10 @@
     ];
   };
 in {
+
+ 	imports = [
+	    ../../pkgs/gemini/gemini-cli-lf.nix
+	];
   nixpkgs.config.allowUnfree = true;
 
   # nix.extraOptions = ''
