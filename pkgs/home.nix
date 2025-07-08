@@ -9,7 +9,7 @@
     ./bat.nix
     # ./firefox.nix
     # ./fzf.nix
- #   ./gemini-cli.nix
+    ./gemini-cli.nix
     ./git.nix
     ./hyprpanel.nix
     ./lsd.nix
@@ -34,7 +34,7 @@
       fpp
       # ags
       igrep
-      unstable.gemini-cli
+      #   ./gemini-cli.nix
       unstable.ladybird
       unstable.manix
       unstable.rmpc

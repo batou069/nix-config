@@ -98,15 +98,14 @@
           ./hosts/${host}/sops.nix
           # catppuccin.nixosModules.catppuccin
           home-manager.nixosModules.home-manager
-          {
+          # Pass the final pkgs set to Home Manager modules.
+          ({ pkgs, ... }: {
             home-manager = {
-              useGlobalPkgs = true;
+              useGlobalPkgs = false;
               useUserPackages = true;
               backupFileExtension = "backup";
-              # Pass the NixOS pkgs to home-manager
-              pkgs = config.nixpkgs.pkgs;
-              # Pass flake inputs to home-manager modules as well
-              extraSpecialArgs = {inherit inputs username system;};
+              # Pass final pkgs and other inputs to Home Manager modules.
+              extraSpecialArgs = { inherit inputs username system pkgs; };
               users.${username} = {
                 imports = [
                   ./pkgs/home.nix
@@ -114,7 +113,7 @@
                 ];
               };
             };
-          }
+          })
         ];
       };
   in {
