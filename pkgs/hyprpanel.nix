@@ -43,6 +43,7 @@
           };
         };
       };
+      bar.clock.format = "%D | %H:%M";
       menus.dashboard.directories.enabled = true;
       menus.dashboard.stats.enable_gpu = false;
 

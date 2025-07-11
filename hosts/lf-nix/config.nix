@@ -99,8 +99,8 @@ in {
       # "snd-intel-dspcfg.dsp_driver=0"
       # "snd-intel-dspcfg.dsp_driver=1"
       # "snd-intel-dspcfg.dsp_driver=2"
-      # "snd-intel-dspcfg.dsp_driver=3"
-      # "sof-transport-ipc=3"
+      "snd-intel-dspcfg.dsp_driver=3"
+      "sof-transport-ipc=3"
       "systemd.mask=systemd-vconsole-setup.service"
       "systemd.mask=dev-tpmrm0.device" #this is to mask that stupid 1.5 mins systemd bug
       "nowatchdog"
@@ -112,7 +112,7 @@ in {
     ];
 
     extraModprobeConfig = ''
-      options snd-hda-intel model=dell-vostro
+      options snd_sof_intel_hda_common dmic_num=4
       options btusb rtk_enable=1
     '';
 
@@ -566,7 +566,7 @@ in {
   stylix = {
     enable = true;
     enableReleaseChecks = true;
-    base16Scheme = ./schemes/base16/google-dark.yaml;
+    base16Scheme = ./schemes/phd.yaml;
     polarity = "dark";
     homeManagerIntegration = {
       autoImport = true;
