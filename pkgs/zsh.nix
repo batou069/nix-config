@@ -97,7 +97,7 @@
           [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
               source "$BASE16_SHELL/profile_helper.sh"
 
-      base16_default
+      # base16_default
     '';
   };
 }

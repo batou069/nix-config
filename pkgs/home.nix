@@ -4,19 +4,21 @@
   ...
 }: {
   imports = [
-    ./cli.nix
-    ./vscode.nix
     ./bat.nix
+    ./cli.nix
     # ./firefox.nix      # not yet ready
     # ./fzf.nix          # replaced by television
     ./git.nix
     ./hyprpanel.nix
+    ./hyprlock.nix
     ./lsd.nix
-    #   ./mcp.nix
+    ./mpd.nix
+    ./niriswitcher.nix
     ./nvim
     ./starship.nix
     ./television.nix
     # ./waybar.nix
+    ./vscode.nix
     ./zsh.nix
   ];
 
@@ -84,6 +86,7 @@
       zed-editor # Code Editor
       pnpm # npm package manager
       git-filter-repo
+      sof-tools
       (python312.withPackages (
         ps:
           with ps; [

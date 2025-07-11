@@ -14,7 +14,7 @@
         };
       };
       appearance = {
-        system_theme = "dark";
+        # system_theme = "dark";
         icon_size = 64;
       };
       separate_workspaces = true;
