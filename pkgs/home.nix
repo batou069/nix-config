@@ -6,6 +6,7 @@
   imports = [
     ./bat.nix
     ./cli.nix
+    ./emacs.nix
     # ./firefox.nix      # not yet ready
     # ./fzf.nix          # replaced by television
     ./git.nix
@@ -13,7 +14,7 @@
     ./hyprlock.nix
     ./lsd.nix
     ./mpd.nix
-    ./niriswitcher.nix
+    # ./niriswitcher.nix
     ./nvim
     ./starship.nix
     ./television.nix
@@ -41,7 +42,7 @@
       unstable.ladybird
       unstable.manix
       unstable.rmpc
-      unstable.mpd
+      #      unstable.mpd
       meld
       normcap
       fd
@@ -65,6 +66,8 @@
       pinentry
       alsa-ucm-conf # maybe this fixed sound issue?
       tradingview
+      # niriswitcher
+      emacs-pgtk
       neovide
       appimage-run
       unstable.home-manager

@@ -1,14 +1,17 @@
-{pkgs, inputs, ...}: let
+{
+  pkgs,
+  inputs,
+  ...
+}: let
   r-with-packages = pkgs.rWrapper.override {
     packages = with pkgs.rPackages; [
       IRkernel
     ];
   };
 in {
-
- 	imports = [
+  imports = [
     ../../pkgs/gemini/gemini-cli-lf.nix
-	];
+  ];
   nixpkgs.config.allowUnfree = true;
 
   # nix.extraOptions = ''
@@ -27,7 +30,7 @@ in {
       btrfs-progs
       clang
       mcp-server-fetch
-
+      niri
       cpufrequtils
       duf # Utility For Viewing Disk Usage In Terminal
       findutils
@@ -103,14 +106,14 @@ in {
       fx
       yq-go
       figlet
-      ghostty    # Terminal
-      uv         # Python Package Manager & more
-      tmux       # Terminal Multiplexer
-      gedit      # Editor Gui
-      vlc        # Video Player
+      ghostty # Terminal
+      uv # Python Package Manager & more
+      tmux # Terminal Multiplexer
+      gedit # Editor Gui
+      vlc # Video Player
       obsidian
-      foot       # terminal
-      calibre    # ebooks manager
+      foot # terminal
+      calibre # ebooks manager
       # nyxt
       # qutebrowser
       rstudioWrapper
@@ -126,8 +129,8 @@ in {
       # FROM ZaneyOS
       appimage-run # Needed For AppImage Support
       hyprpicker # Color Picker
-      grimblast    # Screenshots
-      nix-init     # Screenshots
+      grimblast # Screenshots
+      nix-init # Screenshots
       lshw # Detailed Hardware Information
       ncdu # Disk Usage Analyzer With Ncurses Interface
       picard # For Changing Music Metadata & Getting Cover Art
@@ -159,8 +162,7 @@ in {
     ++ [
       #   python-packages # Add the python environment
       r-with-packages # Add the R environment
-    ]
-;
+    ];
 
   programs = {
     hyprland = {

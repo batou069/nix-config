@@ -17,21 +17,24 @@
 
     kitty = {
       enable = true;
-      # font = {
-      # name = "Maple Mono NF";
-      cursor_shape = "beam";
-      cursor_beam_thickness = 1.5;
-      cursor_shape_unfocused = "hollow";
-      underline_hyperlinks = "always";
-      copy_on_select = "clipboard";
-      clear_selection_on_clipboard_loss = "yes";
-      strip_trailing_spaces = "smart";
-      enable_audio_bell = "yes";
-      hide_window_decorations = "yes";
-      tab_bar_style = "powerline";
-      tab_powerline_style = "slanted";
-      tab_activity_symbol = "(X)";
-
+      shellIntegration = {
+        enableZshIntegration = true;
+        enableFishIntegration = true;
+      };
+      settings = {
+        cursor_shape = "beam";
+        cursor_beam_thickness = 1.5;
+        cursor_shape_unfocused = "hollow";
+        underline_hyperlinks = "always";
+        copy_on_select = "clipboard";
+        clear_selection_on_clipboard_loss = "yes";
+        strip_trailing_spaces = "smart";
+        enable_audio_bell = "yes";
+        hide_window_decorations = "yes";
+        tab_bar_style = "powerline";
+        tab_powerline_style = "slanted";
+        tab_activity_symbol = "(X)";
+      };
       # };
     };
 
