@@ -1,0 +1,38 @@
+{
+  "bar": {
+    "launcher": {
+      "autoDetectIcon": true
+    },
+    "workspaces": {
+      "show_icons": true
+    }
+  },
+  "menus": {
+    "clock": {
+      "time": {
+        "hideSeconds": true,
+        "military": true
+      },
+      "weather": {
+        "unit": "metric"
+      }
+    },
+    "dashboard": {
+      "directories": {
+        "enabled": false
+      },
+      "stats": {
+        "enable_gpu": true
+      }
+    }
+  },
+  "theme": {
+    "bar": {
+      "transparent": true
+    },
+    "font": {
+      "name": "CaskaydiaCove NF",
+      "size": "16px"
+    }
+  }
+}

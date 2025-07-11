@@ -13,15 +13,14 @@
   gitUpdater,
   ...
 }:
-
 buildNpmPackage (finalAttrs: {
   pname = "gemini-cli";
-  version = "0.1.9-nightly.250708.137ffec3";
+  version = "0.1.11";
 
   src = fetchFromGitHub {
     owner = "google-gemini";
     repo = "gemini-cli";
-    rev = "821abfc456cb4664f8e7cfdc5856b1dd6564fecd";
+    rev = "d1596cedadae4306adc4bd073daf645fe1327fd7";
     hash = "sha256-2w28N6Fhm6k3wdTYtKH4uLPBIOdELd/aRFDs8UMWMmU=";
   };
 
@@ -31,9 +30,9 @@ buildNpmPackage (finalAttrs: {
   };
 
   postPatch = ''
-    sed -i 's/"version": "0.1.5"/"version": "${finalAttrs.version}"/' package.json
-    sed -i 's/"version": "0.1.5"/"version": "${finalAttrs.version}"/' packages/cli/package.json
-    sed -i 's/"version": "0.1.5"/"version": "${finalAttrs.version}"/' packages/core/package.json
+    for file in package.json packages/cli/package.json packages/core/package.json; do
+      substituteInPlace $file --replace-fail '"version": "0.1.5"' '"version": "${finalAttrs.version}"'
+    done
   '';
 
   preBuild = ''
@@ -56,22 +55,17 @@ buildNpmPackage (finalAttrs: {
     cp -r packages/core $out/share/gemini-cli/node_modules/@google/gemini-cli-core
 
     ln -s $out/share/gemini-cli/node_modules/@google/gemini-cli/dist/index.js $out/bin/gemini
+    chmod +x $out/bin/gemini
     runHook postInstall
   '';
 
-
-   postInstall = ''
-     chmod +x "$out/bin/gemini"
-   '';
-
-
-   passthru.updateScript = gitUpdater { };
+  passthru.updateScript = gitUpdater {};
 
   meta = {
     description = "AI agent that brings the power of Gemini directly into your terminal";
     homepage = "https://github.com/google-gemini/gemini-cli";
     license = lib.licenses.asl20;
-    maintainers = with lib.maintainers; [ donteatoreo ];
+    maintainers = with lib.maintainers; [donteatoreo];
     platforms = lib.platforms.all;
     mainProgram = "gemini";
   };

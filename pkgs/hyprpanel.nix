@@ -8,6 +8,7 @@
     package = inputs.hyprpanel.packages.${pkgs.system}.default;
     dontAssertNotificationDaemons = true;
     systemd.enable = true;
+
     # Configure bar layouts for monitors.
     # See 'https://hyprpanel.com/configuration/panel.html'.
     # Default: null
@@ -26,14 +27,29 @@
         };
         weather.unit = "metric";
       };
-
-      menus.dashboard.directories.enabled = false;
-      menus.dashboard.stats.enable_gpu = true;
+      layout = {
+        "bar.layouts" = {
+          "*" = {
+            left = ["dashboard" "workspaces" "windowtitle"];
+            middle = ["cava" "media"];
+            right = [
+              "volume"
+              "network"
+              "bluetooth"
+              "systray"
+              "clock"
+              "notifications"
+            ];
+          };
+        };
+      };
+      menus.dashboard.directories.enabled = true;
+      menus.dashboard.stats.enable_gpu = false;
 
       theme.bar.transparent = true;
 
       theme.font = {
-        name = "CaskaydiaCove NF";
+        name = "FantaqsqueSansM Nerd Font Propo Regular";
         size = "16px";
       };
     };

@@ -7,9 +7,7 @@
     enable = true;
     userName = "Laurent Flaster";
     userEmail = "laurentf84@gmail.com";
-    # hooks = {pre-commit = ./pre-commit-script};
     extraConfig = {
-      push = { autoSetupRemote = true; };
       # Configure Meld as the default diff tool
       diff = {
         tool = "meld";
@@ -47,6 +45,26 @@
           gbdD = "git branch -D";
           gu = "git reset HEAD --mixed";
         };
+    color = {
+      ui = "always";
+      branch = "always";
+      interactive = "always";
+      status = "always";
     };
+    column = {
+      ui = "auto";
+    };
+    commit = {
+      verbose = true;
+    };
+    push = {
+      autoSetupRemote = true;
+      default = "simple";
+    };
+    rebase = {
+      autosquash = true;
+      autostash = true;
+    };
+  };
   };
 }

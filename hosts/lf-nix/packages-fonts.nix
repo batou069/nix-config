@@ -1,4 +1,4 @@
-{pkgs, ...}: let
+{pkgs, inputs, ...}: let
   r-with-packages = pkgs.rWrapper.override {
     packages = with pkgs.rPackages; [
       IRkernel
@@ -47,7 +47,7 @@ in {
 
       (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
       # ranger
-
+      inputs.zen-browser.packages."${system}".twilight-official
       # Hyprland Stuff
       ags
       # inputs.ags.packages.${pkgs.system}.default
@@ -101,30 +101,33 @@ in {
       stow # Manage dotfiles symlinking
       gnome-font-viewer
       fx
-      yq-go # Note: The package is named yq-go
+      yq-go
       figlet
-      ghostty
-      uv
-      tmux
-      gedit
-      vlc
+      ghostty    # Terminal
+      uv         # Python Package Manager & more
+      tmux       # Terminal Multiplexer
+      gedit      # Editor Gui
+      vlc        # Video Player
       obsidian
-      foot
-      calibre
+      foot       # terminal
+      calibre    # ebooks manager
       # nyxt
       # qutebrowser
       rstudioWrapper
+      nix-init # create pkg from url
+      vulnix # vulnerability scanner
 
       lazycli
       lazydocker
       lazyjournal
       bitwarden-menu
-      chromedriver
-      google-chrome
+      chromium
       lagrange
       # FROM ZaneyOS
       appimage-run # Needed For AppImage Support
       hyprpicker # Color Picker
+      grimblast    # Screenshots
+      nix-init     # Screenshots
       lshw # Detailed Hardware Information
       ncdu # Disk Usage Analyzer With Ncurses Interface
       picard # For Changing Music Metadata & Getting Cover Art

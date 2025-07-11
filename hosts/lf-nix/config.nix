@@ -34,44 +34,73 @@ in {
       # ags = inputs.ags.packages.${prev.system}.default;
       firefox-addons = inputs.firefox-addons.packages.${prev.system};
     })
-    (final: prev: {
-      nur =
-        prev.nur
-        // {
-          repos =
-            prev.nur.repos
-            // {
-              "7mind" =
-                prev.nur.repos."7mind"
-                // {
-                  ibkr-tws = prev.nur.repos."7mind".ibkr-tws.overrideAttrs (old: {
-                    src = prev.fetchurl {
-                      url = "https://download2.interactivebrokers.com/installers/tws/stable-standalone/tws-stable-standalone-linux-x64.sh";
-                      sha256 = "+z77sypqbN9PMMOQnJTfdDHRP5NVfTOCUBT0AaAn87Y=";
-                    };
-                  });
-                };
-            };
-        };
-    })
+    #     (final: prev: {
+    #       nur =
+    #         prev.nur
+    #         // {
+    #           repos =
+    #             prev.nur.repos
+    #             // {
+    #               k3a =
+    #                 prev.nur.repos.k3a
+    #                 // {
+    #                   ib-tws = prev.nur.repos.k3a.ib-tws.overrideAttrs (old: {
+    #                     buildInputs = (old.buildInputs or []) ++ [ prev.openjfx pkgs.bash pkgs.findutils ];
+    #                     installPhase = ''
+    #                       runHook preInstall
+    #                       # create main startup script
+    #                       mkdir -p $out/bin
+    #                       cat > $out/bin/ib-tws <<EOF
+    # #!${pkgs.bash}/bin/sh
+    # # get script name
+    # PROG=\$(basename "\$0")
+    # # Load system-wide settings and per-user overrides
+    # IB_CONFIG_DIR="\$HOME/.\$PROG"
+    # JAVA_GC="-Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70"
+    # JAVA_UI_FLAGS="-Dswing.aatext=TRUE -Dawt.useSystemAAFontSettings=on -Dsun.awt.nopixfmt=true -Dsun.java2d.noddraw=true -Dswing.boldMetal=false -Dsun.locale.formatasdefault=true"
+    # JAVA_LOCALE_FLAGS="-Dsun.locale.formatasdefault=true"
+    # JAVA_FLAGS="\$JAVA_GC \$JAVA_UI_FLAGS \$JAVA_LOCALE_FLAGS --add-opens=java.desktop/javax.swing=ALL-UNNAMED \$JAVA_EXTRA_FLAGS"
+    # [ -f "\$HOME/.config/\$PROG.conf" ] && . "\$HOME/.config/\$PROG.conf"
+    # CLASS="jclient.LoginFrame"
+    # [ "\$PROG" = "ib-gw" ] && CLASS="ibgateway.GWClient"
+    # cd "$out/share/${old.pname}/jars"
+    # "${prev.jdk17}/bin/java" -cp "*" \$JAVA_FLAGS \$CLASS \$IB_CONFIG_DIR
+    # EOF
+    #                       chmod +x $out/bin/ib-tws
+
+    #                       # create symlink for the gateway
+    #                       ln -s $out/bin/ib-tws "$out/bin/ib-gw"
+
+    #                       # copy files
+    #                       mkdir -p $out/share/${old.pname}
+    #                       cp -R jars $out/share/${old.pname}
+    #                       install -Dm644 .install4j/tws.png $out/share/pixmaps/${old.pname}.png
+
+    #                       # Copy JavaFX jars to where the application expects them
+    #                       find ${prev.openjfx} -name "*.jar" -exec cp {} $out/share/${old.pname}/jars/ \;
+
+    #                       runHook postInstall
+    #                     '';
+    #                   });
+    #                 };
+    #             };
+    #         };
+    #     })
   ];
 
   nixpkgs.config.allowUnfree = true;
 
   boot = {
-    # kernelPackages = pkgs.linuxPackages_zen; # Performance geared
-    kernelPackages = pkgs.linuxPackages_latest; # Best Balance
+    kernelPackages = pkgs.linuxPackages_zen; # Performance geared
+    # kernelPackages = pkgs.linuxPackages_latest; # Best Balance
     # kernelPackages = pkgs.linuxPackages_testing; # Bleeding edge
-
-    # blacklistedKernelModules = [
-    #   "snd_soc_avs"
-    # ];
 
     kernelParams = [
       # "snd-intel-dspcfg.dsp_driver=0"
       # "snd-intel-dspcfg.dsp_driver=1"
       # "snd-intel-dspcfg.dsp_driver=2"
-      "snd_intel_dspcfg.dsp_driver=3"
+      # "snd-intel-dspcfg.dsp_driver=3"
+      # "sof-transport-ipc=3"
       "systemd.mask=systemd-vconsole-setup.service"
       "systemd.mask=dev-tpmrm0.device" #this is to mask that stupid 1.5 mins systemd bug
       "nowatchdog"
@@ -83,8 +112,20 @@ in {
     ];
 
     extraModprobeConfig = ''
-      options snd-hda-intel model=dell-headset-multi
+      options snd-hda-intel model=dell-vostro
+      options btusb rtk_enable=1
     '';
+
+    #   options available for the snd_hda_intel driver:
+    #  * `auto`: This is the default setting. The driver attempts to automatically detect the hardware configuration. It's the baseline and the first thing to
+    #    try if you haven't.
+    #  * `dell-headset-multi`: This is the option you've already tried. It's designed for modern Dell laptops that have a single 4-pin audio jack that can
+    #    handle both a headset and a microphone.
+    #  * `dell-vostro`: Since you have a Dell Vostro laptop, this is a very strong candidate to try. It's specifically tailored for Vostro models.
+    #  * `headset-mic`: A more generic version of dell-headset-multi, for non-Dell laptops with a single combined headset/microphone jack. It's less likely to
+    #    be better than the Dell-specific ones, but it's an option.
+    #  * `laptop-amic` / `laptop-dmic`: These are generic options for laptops with analog (amic) or digital (dmic) microphones. Modern laptops often have
+    #    digital microphone arrays, so laptop-dmic could be relevant if the issue is primarily with the internal microphone.
 
     initrd = {
       availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod" "sdhci_pci"];
@@ -329,6 +370,8 @@ in {
     logitech.wireless.enableGraphical = true;
   };
 
+  hardware.enableRedistributableFirmware = true;
+
   #  hardware.graphics = {
   #    enable = true;
   #  };
@@ -346,7 +389,7 @@ in {
       settings = {
         General = {
           Enable = "Source,Sink,Media,Socket";
-          Experimental = false;
+          Experimental = true;
         };
       };
     };
@@ -433,11 +476,11 @@ in {
     # Zsh configuration
     zsh = {
       enable = true;
-      enableCompletion = false;
+      enableCompletion = true;
       ohMyZsh.enable = false;
 
-      autosuggestions.enable = false;
-      syntaxHighlighting.enable = false;
+      autosuggestions.enable = true;
+      syntaxHighlighting.enable = true;
       promptInit = "";
     };
   };
@@ -455,7 +498,7 @@ in {
     '';
   };
 
-  environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
+  # environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
   # qt.platformTheme.name = "kvantum";
   # qt.style = "kvantum";
   fonts = {
@@ -478,6 +521,8 @@ in {
       nerd-fonts.im-writing
       nerd-fonts.fantasque-sans-mono
       maple-mono.NF
+      recursive
+      cascadia-code
 
       # Icon / Symbol Fonts
       font-awesome
@@ -521,7 +566,7 @@ in {
   stylix = {
     enable = true;
     enableReleaseChecks = true;
-    base16Scheme = ./mocha.yaml;
+    base16Scheme = ./schemes/base16/google-dark.yaml;
     polarity = "dark";
     homeManagerIntegration = {
       autoImport = true;
@@ -529,7 +574,11 @@ in {
     };
     targets.nixvim.enable = false;
     # targets.firefox.profileNames = ["default"];
-
+    cursor = lib.mkDefault {
+      name = "catppuccin-mocha-blue-cursors";
+      package = pkgs.catppuccin-cursors.mochaBlue;
+      size = 24;
+    };
     opacity = {
       applications = 0.95;
       desktop = 0.95;
