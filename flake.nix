@@ -51,26 +51,30 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    doom-emacs = {
+      url = "github:nix-community/nix-doom-emacs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs =
-    inputs@{
-      self,
-      nixpkgs,
-      nixpkgs-unstable,
-      home-manager,
-      # ags,
-      disko,
-      sops-nix,
-      nur,
-      stylix,
-      mcp-servers-nix,
-      # catppuccin,
-      hyprland,
-      pyprland,
-      flake-parts,
-      ...
-    }:
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    nixpkgs-unstable,
+    home-manager,
+    # ags,
+    disko,
+    sops-nix,
+    nur,
+    stylix,
+    mcp-servers-nix,
+    # catppuccin,
+    hyprland,
+    pyprland,
+    flake-parts,
+    doom-emacs,
+    ...
+  }:
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
       perSystem = {pkgs, ...}: {
@@ -151,6 +155,7 @@
                     imports = [
                       ./pkgs/home.nix
                       # catppuccin.homeManagerModules.catppuccin
+                      doom-emacs.hmModule
                     ];
                   };
                 };

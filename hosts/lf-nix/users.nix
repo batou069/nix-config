@@ -21,6 +21,7 @@
         "input"
         "audio"
         "docker"
+        "mpd"
       ];
     };
     defaultUserShell = pkgs.zsh;
@@ -28,14 +29,14 @@
 
   #  environment.shells = with pkgs; [ zsh ];
   # environment.systemPackages = with pkgs; [
-    # lsd
-    # bat
+  # lsd
+  # bat
   #  fd
-    # fzf
-    # ripgrep
-   # grip-grab
-   # repgrep
-   # ripgrep-all
+  # fzf
+  # ripgrep
+  # grip-grab
+  # repgrep
+  # ripgrep-all
   #   ];
   systemd.user.services.install-pre-commit = {
     description = "Install pre-commit hooks for dotfiles";
