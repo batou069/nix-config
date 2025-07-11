@@ -7,13 +7,12 @@
     ./cli.nix
     ./vscode.nix
     ./bat.nix
-    # ./firefox.nix
-    # ./fzf.nix
-    # ./gemini-cli.nix is a package, not a module
+    # ./firefox.nix      # not yet ready
+    # ./fzf.nix          # replaced by television
     ./git.nix
     ./hyprpanel.nix
     ./lsd.nix
-  #   ./mcp.nix
+    #   ./mcp.nix
     ./nvim
     ./starship.nix
     ./television.nix
@@ -34,6 +33,8 @@
       fpp
       # ags
       igrep
+      base16-shell-preview
+      base16-schemes
       # unstable.gemini-cli
       unstable.ladybird
       unstable.manix
@@ -53,9 +54,9 @@
       vgrep # User-friendly pager for grep/git-grep/ripgrep
       xonsh # Python-ish, BASHwards-compatible shell
       vimPluginsUpdater
-      vimgolf
+      vimgolf # Interactive Vim golf game, train you vim skills
       rofi-obsidian
-      rofi-rbw-wayland
+      rofi-rbw-wayland # Rofi-frontend for Bitwarden
       wtype
       rbw
       pinentry-rofi
@@ -65,21 +66,24 @@
       neovide
       appimage-run
       unstable.home-manager
-      codex
+      codex # Claude Assistant CLI
       claudia
-      statix
-      nur.repos.novel2430.zen-browser-bin
-      nur.repos."7mind".ibkr-tws
+      statix # Lints and suggestions for the Nix programming language
+      # nur.repos.novel2430.zen-browser-bin   # Zen Browser
+      # nur.repos."7mind".ibkr-tws     # Interactive Brokers TWS
+      nur.repos.k3a.ib-tws
       nixdoc
-      glow
-      gum
-      keepassxc
-      keepmenu
-      git-credential-keepassxc
+      glow # Beautiful terminal markdown viewer
+      gum # Terminal-based GUI toolkit
+      keepassxc # Password manager
+      keepmenu # Menu for KeePassXC
+      git-credential-keepassxc # Credential helper for Git
       libnotify
       papirus-icon-theme
       pcmanfm-qt
-      zed-editor
+      zed-editor # Code Editor
+      pnpm # npm package manager
+      git-filter-repo
       (python312.withPackages (
         ps:
           with ps; [
@@ -108,6 +112,7 @@
             # NetscapeBookmarksFileParser
             scipy
             aiofiles
+            duckduckgo-search
           ]
       ))
     ];
@@ -127,6 +132,8 @@
       OPENAI_API_KEY = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
       GEMINI_API_KEY = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
       ANTHROPIC_API_KEY = "$(cat /run/secrets/api_keys/anthropic 2>/dev/null || echo '')";
+      NIXOS_OZONE_WL = 1;
+      BASE16_SHELL = "$HOME/.config/base16-shell";
     };
 
     file = {
@@ -198,6 +205,8 @@
     };
   };
   stylix = {
+    enable = true;
+    autoEnable = true;
     targets = {
       neovim.enable = false;
       waybar.enable = false;
@@ -207,6 +216,11 @@
       vscode = {
         enable = true;
       };
+      kitty = {
+        enable = true;
+        variant256Colors = true;
+      };
+      font-packages.enable = true;
     };
     iconTheme = {
       enable = true;
@@ -218,6 +232,12 @@
       name = "DMZ-Black";
       size = 24;
       package = pkgs.vanilla-dmz;
+    };
+    opacity = {
+      applications = 0.95;
+      desktop = 0.95;
+      popups = 1.0;
+      terminal = 0.95;
     };
   };
 }

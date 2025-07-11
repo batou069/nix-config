@@ -12,7 +12,7 @@
       label = {
         text = "$TIME";
         font_size = 96;
-        font_family = "Maple Mono NF";
+        font_family = "Maple Mono NF Propo";
         color = "rgba(235, 219, 178, 1.0)";
         position = "0, 600";
         halign = "center";

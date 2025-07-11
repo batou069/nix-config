@@ -42,93 +42,135 @@
     };
     pyprland.url = "github:hyprland-community/pyprland";
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
-    # catppuccin.url = "github:catppuccin/nix";
-    # neovim = {
-    #   url = github:neovim/neovim/contrib;
-    # };
-    # gemini-cli = {
-    #   url = "github:novel2430/gemini-cli";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
     hyprpanel = {
       url = "github:Jas-SinghFSU/HyprPanel";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
-
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    nixpkgs-unstable,
-    home-manager,
-    # ags,
-    disko,
-    sops-nix,
-    nur,
-    stylix,
-    mcp-servers-nix,
-    # catppuccin,
-    hyprland,
-    pyprland,
-    ...
-  }: let
-    # Function to generate a NixOS system configuration
-    mkNixosSystem = {
-      system,
-      host,
-      username,
-    }:
-      nixpkgs.lib.nixosSystem {
-        # Pass all flake inputs to modules via specialArgs.
-        # This is the standard way to make them available where needed.
-        specialArgs = {inherit inputs username host system;};
-
-        modules = [
-          # Now, import all necessary modules.
-          # They can access the inputs via the `inputs` argument
-          # that specialArgs provides.
-          disko.nixosModules.default
-          sops-nix.nixosModules.sops # Corrected module name
-          # nur.nixosModules.nur
-          nur.modules.nixos.default
-          # nur.legacyPackages."${system}".repos.7mind.ibkr-tws
-          stylix.nixosModules.stylix
-          # Your custom host and user configurations
-          ./hosts/${host}/config.nix
-          ./hosts/${host}/sops.nix
-          # catppuccin.nixosModules.catppuccin
-          home-manager.nixosModules.home-manager
-          # Pass the final pkgs set to Home Manager modules.
-          ({ pkgs, nixpkgs-unstable, ... }: {
-            home-manager = {
-              useGlobalPkgs = false;
-              useUserPackages = true;
-              backupFileExtension = "backup";
-              # Pass final pkgs and other inputs to Home Manager modules.
-              extraSpecialArgs = { inherit inputs username system pkgs nixpkgs-unstable; };
-              users.${username} = {
-                imports = [
-                  ./pkgs/home.nix
-                  # catppuccin.homeManagerModules.catppuccin
-                ];
-              };
-            };
-          })
-        ];
-      };
-  in {
-    nixosConfigurations = {
-      "lf-nix" = mkNixosSystem {
-        system = "x86_64-linux";
-        host = "lf-nix";
-        username = "lf";
-      };
-
-      "viech" = mkNixosSystem {
-        system = "x86_64-linux";
-        host = "viech";
-        username = "lf";
-      };
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
+
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      home-manager,
+      # ags,
+      disko,
+      sops-nix,
+      nur,
+      stylix,
+      mcp-servers-nix,
+      # catppuccin,
+      hyprland,
+      pyprland,
+      flake-parts,
+      ...
+    }:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = ["x86_64-linux"];
+      perSystem = {pkgs, ...}: {
+        packages = {
+          mcp = mcp-servers-nix.lib.mkConfig pkgs {
+            programs = {
+              filesystem = {
+                enable = true;
+                args = ["/home/lf/nix"];
+              };
+              fetch.enable = true;
+            };
+            settings = {
+              # claude.enable = false;
+              servers = {
+                mcp-obsidian-brain = {
+                  command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
+                  args = [
+                    "-y"
+                    "mcp-obsidian"
+                    "/home/lf/Obsidian/Brain"
+                  ];
+                };
+                mcp-obsidian-laurent = {
+                  command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
+                  args = [
+                    "-y"
+                    "mcp-obsidian"
+                    "/home/lf/Obsidian/Laurent"
+                  ];
+                };
+              };
+            };
+          };
+        };
+      };
+
+      flake = let
+        # Function to generate a NixOS system configuration
+        mkNixosSystem = {
+          system,
+          host,
+          username,
+        }:
+          nixpkgs.lib.nixosSystem {
+            # Pass all flake inputs to modules via specialArgs.
+            # This is the standard way to make them available where needed.
+            specialArgs = {inherit inputs username host system;};
+
+            modules = [
+              # Now, import all necessary modules.
+              # They can access the inputs via the `inputs` argument
+              # that specialArgs provides.
+              disko.nixosModules.default
+              sops-nix.nixosModules.sops # Corrected module name
+              # nur.nixosModules.nur
+              nur.modules.nixos.default
+              # nur.legacyPackages."${system}".repos.7mind.ibkr-tws
+              stylix.nixosModules.stylix
+              # Your custom host and user configurations
+              ./hosts/${host}/config.nix
+              ./hosts/${host}/sops.nix
+              # catppuccin.nixosModules.catppuccin
+              home-manager.nixosModules.home-manager
+              # Pass the final pkgs set to Home Manager modules.
+              ({
+                pkgs,
+                nixpkgs-unstable,
+                ...
+              }: {
+                home-manager = {
+                  useGlobalPkgs = false;
+                  useUserPackages = true;
+                  backupFileExtension = "backup";
+                  # Pass final pkgs and other inputs to Home Manager modules.
+                  extraSpecialArgs = {inherit inputs username system pkgs nixpkgs-unstable;};
+                  users.${username} = {
+                    imports = [
+                      ./pkgs/home.nix
+                      # catppuccin.homeManagerModules.catppuccin
+                    ];
+                  };
+                };
+              })
+            ];
+          };
+      in {
+        nixosConfigurations = {
+          "lf-nix" = mkNixosSystem {
+            system = "x86_64-linux";
+            host = "lf-nix";
+            username = "lf";
+          };
+
+          "viech" = mkNixosSystem {
+            system = "x86_64-linux";
+            host = "viech";
+            username = "lf";
+          };
+        };
+      };
+    };
 }
