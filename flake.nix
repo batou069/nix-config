@@ -3,8 +3,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:nix-community/home-manager/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix.url = "github:nix-community/stylix";
     ags = {
@@ -142,9 +142,6 @@
               stylix.nixosModules.stylix
               ./hosts/${host}/config.nix
               ./hosts/${host}/sops.nix
-              {
-                services.desktopManager.gnome.enable = false;
-              }
               home-manager.nixosModules.home-manager
               ({
                 pkgs,
