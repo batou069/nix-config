@@ -21,7 +21,7 @@
         "input"
         "audio"
         "docker"
-        "mpd"
+        # "mpd"
       ];
     };
     defaultUserShell = pkgs.zsh;

@@ -14,23 +14,15 @@ in {
   ];
   nixpkgs.config.allowUnfree = true;
 
-  # nix.extraOptions = ''
-  #   plugin-files = ${pkgs.nix-doc}/lib/libnix_doc_plugin.so
-  # '';
-
   environment.systemPackages =
     (with pkgs; [
       # System Packages
-      # home-manager
       alsa-utils
-
       isd # interactively interact with systemd
-      erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
       baobab
       btrfs-progs
       clang
       mcp-server-fetch
-      niri
       cpufrequtils
       duf # Utility For Viewing Disk Usage In Terminal
       findutils
@@ -48,7 +40,7 @@ in {
       xdg-utils
       linux-firmware
 
-      (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
+      # (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
       # ranger
       inputs.zen-browser.packages."${system}".twilight-official
       # Hyprland Stuff
@@ -139,6 +131,8 @@ in {
       # Dev Stuff
       nixd
       nh
+      python312Packages.ipykernel
+      python312Packages.kaggle
     ])
     ++ (with pkgs.unstable; [
       bc
@@ -189,11 +183,11 @@ in {
     };
     virt-manager.enable = false;
 
-    steam = {
-      enable = true;
-      remotePlay.openFirewall = true;
-      dedicatedServer.openFirewall = false;
-    };
+    # steam = {
+    #   enable = true;
+    #   remotePlay.openFirewall = true;
+    #   dedicatedServer.openFirewall = false;
+    # };
     firefox.enable = true;
     dconf.enable = true;
     seahorse.enable = true;
@@ -210,11 +204,11 @@ in {
     enable = true;
     wlr.enable = false;
     extraPortals = [
+      pkgs.xdg-desktop-portal-hyprland
       pkgs.xdg-desktop-portal-gtk
     ];
     configPackages = [
-      pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal
+      pkgs.xdg-desktop-portal-hyprland
     ];
   };
 }

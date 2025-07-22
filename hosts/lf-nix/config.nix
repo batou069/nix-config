@@ -6,8 +6,6 @@
   options,
   lib,
   inputs,
-  nixpkgs-unstable,
-  # system,
   ...
 }: let
   inherit (import ./variables.nix) keyboardLayout;
@@ -34,71 +32,16 @@ in {
       # ags = inputs.ags.packages.${prev.system}.default;
       firefox-addons = inputs.firefox-addons.packages.${prev.system};
     })
-    #     (final: prev: {
-    #       nur =
-    #         prev.nur
-    #         // {
-    #           repos =
-    #             prev.nur.repos
-    #             // {
-    #               k3a =
-    #                 prev.nur.repos.k3a
-    #                 // {
-    #                   ib-tws = prev.nur.repos.k3a.ib-tws.overrideAttrs (old: {
-    #                     buildInputs = (old.buildInputs or []) ++ [ prev.openjfx pkgs.bash pkgs.findutils ];
-    #                     installPhase = ''
-    #                       runHook preInstall
-    #                       # create main startup script
-    #                       mkdir -p $out/bin
-    #                       cat > $out/bin/ib-tws <<EOF
-    # #!${pkgs.bash}/bin/sh
-    # # get script name
-    # PROG=\$(basename "\$0")
-    # # Load system-wide settings and per-user overrides
-    # IB_CONFIG_DIR="\$HOME/.\$PROG"
-    # JAVA_GC="-Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70"
-    # JAVA_UI_FLAGS="-Dswing.aatext=TRUE -Dawt.useSystemAAFontSettings=on -Dsun.awt.nopixfmt=true -Dsun.java2d.noddraw=true -Dswing.boldMetal=false -Dsun.locale.formatasdefault=true"
-    # JAVA_LOCALE_FLAGS="-Dsun.locale.formatasdefault=true"
-    # JAVA_FLAGS="\$JAVA_GC \$JAVA_UI_FLAGS \$JAVA_LOCALE_FLAGS --add-opens=java.desktop/javax.swing=ALL-UNNAMED \$JAVA_EXTRA_FLAGS"
-    # [ -f "\$HOME/.config/\$PROG.conf" ] && . "\$HOME/.config/\$PROG.conf"
-    # CLASS="jclient.LoginFrame"
-    # [ "\$PROG" = "ib-gw" ] && CLASS="ibgateway.GWClient"
-    # cd "$out/share/${old.pname}/jars"
-    # "${prev.jdk17}/bin/java" -cp "*" \$JAVA_FLAGS \$CLASS \$IB_CONFIG_DIR
-    # EOF
-    #                       chmod +x $out/bin/ib-tws
-
-    #                       # create symlink for the gateway
-    #                       ln -s $out/bin/ib-tws "$out/bin/ib-gw"
-
-    #                       # copy files
-    #                       mkdir -p $out/share/${old.pname}
-    #                       cp -R jars $out/share/${old.pname}
-    #                       install -Dm644 .install4j/tws.png $out/share/pixmaps/${old.pname}.png
-
-    #                       # Copy JavaFX jars to where the application expects them
-    #                       find ${prev.openjfx} -name "*.jar" -exec cp {} $out/share/${old.pname}/jars/ \;
-
-    #                       runHook postInstall
-    #                     '';
-    #                   });
-    #                 };
-    #             };
-    #         };
-    #     })
   ];
 
   nixpkgs.config.allowUnfree = true;
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_zen; # Performance geared
-    # kernelPackages = pkgs.linuxPackages_latest; # Best Balance
+    # kernelPackages = pkgs.linuxPackages_zen; # Performance geared
+    kernelPackages = pkgs.linuxPackages_latest; # Best Balance
     # kernelPackages = pkgs.linuxPackages_testing; # Bleeding edge
 
     kernelParams = [
-      # "snd-intel-dspcfg.dsp_driver=0"
-      # "snd-intel-dspcfg.dsp_driver=1"
-      # "snd-intel-dspcfg.dsp_driver=2"
       "snd-intel-dspcfg.dsp_driver=3"
       "sof-transport-ipc=3"
       "systemd.mask=systemd-vconsole-setup.service"
@@ -114,18 +57,9 @@ in {
     extraModprobeConfig = ''
       options snd_sof_intel_hda_common dmic_num=4
       options btusb rtk_enable=1
+      options rtw88_core disable_lps_deep=Y
+      options rtw88_pci disable_aspm=Y
     '';
-
-    #   options available for the snd_hda_intel driver:
-    #  * `auto`: This is the default setting. The driver attempts to automatically detect the hardware configuration. It's the baseline and the first thing to
-    #    try if you haven't.
-    #  * `dell-headset-multi`: This is the option you've already tried. It's designed for modern Dell laptops that have a single 4-pin audio jack that can
-    #    handle both a headset and a microphone.
-    #  * `dell-vostro`: Since you have a Dell Vostro laptop, this is a very strong candidate to try. It's specifically tailored for Vostro models.
-    #  * `headset-mic`: A more generic version of dell-headset-multi, for non-Dell laptops with a single combined headset/microphone jack. It's less likely to
-    #    be better than the Dell-specific ones, but it's an option.
-    #  * `laptop-amic` / `laptop-dmic`: These are generic options for laptops with analog (amic) or digital (dmic) microphones. Modern laptops often have
-    #    digital microphone arrays, so laptop-dmic could be relevant if the issue is primarily with the internal microphone.
 
     initrd = {
       availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod" "sdhci_pci"];
@@ -133,15 +67,15 @@ in {
     };
     extraModulePackages = [];
     # Needed For Some Steam Games
-    kernel.sysctl = {
-      "vm.max_map_count" = 2147483642;
-    };
+    # kernel.sysctl = {
+    #   "vm.max_map_count" = 2147483642;
+    # };
 
     ## BOOT LOADERS: NOTE USE ONLY 1. either systemd or grub
     # Bootloader SystemD
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
-    loader.timeout = 5;
+    loader.timeout = 10;
 
     # Make /tmp a tmpfs
     tmp = {
@@ -207,25 +141,13 @@ in {
       };
     };
 
-    # unison = {
-    #   enable = true;
-    #   profiles = {
-    #     org = {
-    #       src = "/home/moredhel/org";
-    #       dest = "/home/moredhel/org.backup";
-    #       extraArgs = "-batch -watch -ui text -repeat 60 -fat";
-    #     };
-    #   };
-    # };
-
     greetd = {
       enable = true;
       vt = 1;
       settings = {
         default_session = {
           user = username;
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet
-          --time --cmd Hyprland";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time";
         };
       };
     };
@@ -277,14 +199,6 @@ in {
     #  ];
     #};
 
-    #avahi = {
-    #  enable = true;
-    #  nssmdns4 = true;
-    #  openFirewall = true;
-    #};
-
-    #ipp-usb.enable = true;
-
     syncthing = {
       enable = true;
       user = "${username}";
@@ -293,57 +207,6 @@ in {
     };
   };
 
-  # systemd.services = {
-  #    # Service to clone your private GitLab repository
-  #    initial-clone-gitlab = {
-  #      description = "Initial clone of private GitLab repository";
-  #      wants = [ "network-online.target" ];
-  #      after = [ "network-online.target" ];
-  #      # ADD THIS BLOCK: Make commands available to the script
-  #      path = [
-  #        pkgs.gitFull      # Provides 'git'
-  #        pkgs.util-linux   # Provides 'runuser'
-  #      ];
-  #      script = ''
-  #        if [ ! -d "/home/${username}/git/laurent.flaster" ]; then
-  #          mkdir -p /home/${username}/git
-  #          chown ${username} /home/${username}/git
-  #          runuser -u ${username} -- git clone https://git.infinitylabs.co.il/ilrd/ramat-gan/ai3/laurent.flaster.git /home/${username}/git/laurent.flaster
-  #        fi
-  #      '';
-  #      serviceConfig = {
-  #        Type = "oneshot";
-  #        RemainAfterExit = true;
-  #        User = "root";
-  #      };
-  #    };
-
-  # Service to clone your Obsidian Brain repository
-  #   initial-clone-brain = {
-  #     description = "Initial clone of Obsidian Brain repository";
-  #     wants = ["network-online.target"];
-  #     after = ["network-online.target"];
-  #     # ADD THIS BLOCK: Make commands available to the script
-  #     path = [
-  #       pkgs.gitFull # Provides 'git'
-  #       pkgs.util-linux # Provides 'runuser'
-  #     ];
-  #     script = ''
-  #       if [ ! -d "/home/${username}/Obsidian/brain" ]; then
-  #         mkdir -p /home/${username}/Obsidian
-  #         chown ${username} /home/${username}/Obsidian
-  #         runuser -u ${username} -- git clone https://github.com/batou069/brain.git /home/${username}/Obsidian/brain
-  #       fi
-  #     '';
-  #     serviceConfig = {
-  #       Type = "oneshot";
-  #       RemainAfterExit = true;
-  #       User = "root";
-  #       PrivateTmp = false;
-  #       ProtectHome = false;
-  #     };
-  #   };
-  # };
   # zram
   zramSwap = {
     enable = true;
@@ -358,12 +221,6 @@ in {
     cpuFreqGovernor = "schedutil";
   };
 
-  #hardware.sane = {
-  #  enable = true;
-  #  extraBackends = [ pkgs.sane-airscan ];
-  #  disabledDefaultBackends = [ "escl" ];
-  #};
-
   # Extra Logitech Support
   hardware = {
     logitech.wireless.enable = true;
@@ -371,10 +228,6 @@ in {
   };
 
   hardware.enableRedistributableFirmware = true;
-
-  #  hardware.graphics = {
-  #    enable = true;
-  #  };
 
   hardware.graphics = {
     enable = true;
@@ -416,11 +269,6 @@ in {
       })
     '';
   };
-  # security.pam.services.swaylock = {
-  #   text = ''
-  #     auth include login
-  #   '';
-  # };
   security.pam.services.hyprlock = {};
   # Cachix, Optimization settings and garbage collection automation
   nix = {
@@ -459,10 +307,6 @@ in {
 
   console.keyMap = "${keyboardLayout}";
 
-  # environment.systemPackages = with pkgs; [
-  #   pulseaudio
-  # ];
-
   # For Electron apps to use wayland
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1"; # Enable Wayland Ozone platform for Electron apps
@@ -483,9 +327,8 @@ in {
       syntaxHighlighting.enable = true;
       promptInit = "";
     };
+    niri.enable = true;
   };
-
-  #  niri.enable = true;
 
   systemd.services.user-session-env = {
     script = ''
@@ -499,8 +342,6 @@ in {
   };
 
   # environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
-  # qt.platformTheme.name = "kvantum";
-  # qt.style = "kvantum";
   fonts = {
     enableDefaultPackages = false;
     packages = with pkgs; [
@@ -520,7 +361,7 @@ in {
       victor-mono
       nerd-fonts.im-writing
       nerd-fonts.fantasque-sans-mono
-      maple-mono.NF
+      unstable.maple-mono.NF
       recursive
       cascadia-code
 
@@ -541,32 +382,33 @@ in {
       # Niche/Specific Fonts
       minecraftia
     ];
-    fontconfig = {
+    /*
+       fontconfig = {
       defaultFonts = {
         serif = [
-          "Noto Serif CJK JP"
+          "Maple Mono NF Italic"
           "Noto Serif"
         ];
 
-        sansSerif = [
-          "Noto Sans CJK JP"
-          "Noto Sans"
+        sansserif = [
+          "Maple Mono NF Italic"
         ];
 
         monospace = [
-          "Noto Sans Mono CJK JP"
-          "Noto Sans Mono"
+          "Maple Mono NF Italic"
+          "Cascadia Code NF"
         ];
       };
 
       allowBitmaps = false;
     };
+    */
   };
 
   stylix = {
     enable = true;
     enableReleaseChecks = true;
-    base16Scheme = ./schemes/phd.yaml;
+    base16Scheme = ./schemes/gruvbox-dark-soft.yaml;
     polarity = "dark";
     homeManagerIntegration = {
       autoImport = true;
@@ -580,10 +422,10 @@ in {
       size = 24;
     };
     opacity = {
-      applications = 0.95;
-      desktop = 0.95;
+      applications = 1.0;
+      desktop = 1.0;
       popups = 1.0;
-      terminal = 0.95;
+      terminal = 1.0;
     };
     # overlays.enable = true;
     fonts = {
@@ -591,19 +433,19 @@ in {
         # package = pkgs.aleo-fonts;
         # name = "Aleo";
         package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF Italic";
+        name = "Maple Mono NF";
       };
 
       sansSerif = {
         # package = pkgs.noto-fonts-cjk-sans;
         # name = "Noto Sans CJK JP";
         package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF Italic";
+        name = "Maple Mono NF";
       };
 
       monospace = {
         package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF Italic";
+        name = "Maple Mono NF";
       };
 
       emoji = {
@@ -612,10 +454,10 @@ in {
       };
 
       sizes = {
-        applications = 13;
+        applications = 11;
         desktop = 10;
-        popups = 12;
-        terminal = 14;
+        popups = 11;
+        terminal = 11;
       };
     };
   };

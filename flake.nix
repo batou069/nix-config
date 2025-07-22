@@ -3,10 +3,10 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    stylix.url = "github:nix-community/stylix/release-25.05";
+    stylix.url = "github:nix-community/stylix";
     ags = {
       # url = "github:aylur/ags/v1";
       url = "github:aylur/ags";
@@ -51,10 +51,14 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    doom-emacs = {
-      url = "github:nix-community/nix-doom-emacs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # emacs-overlay = {
+    #   url = "github:nix-community/emacs-overlay";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+    # doom-emacs = {
+    #   url = "github:nix-community/nix-doom-emacs";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
   outputs = inputs @ {
@@ -72,43 +76,49 @@
     hyprland,
     pyprland,
     flake-parts,
-    doom-emacs,
+    # doom-emacs,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
-      perSystem = {pkgs, ...}: {
+      perSystem = {pkgs, ...}: let
+        pkgs-unfree = import inputs.nixpkgs {
+          system = pkgs.system;
+          config.allowUnfree = true;
+        };
+      in {
         packages = {
-          mcp = mcp-servers-nix.lib.mkConfig pkgs {
-            programs = {
-              filesystem = {
-                enable = true;
-                args = ["/home/lf/nix"];
-              };
-              fetch.enable = true;
-            };
-            settings = {
-              # claude.enable = false;
-              servers = {
-                mcp-obsidian-brain = {
-                  command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-                  args = [
-                    "-y"
-                    "mcp-obsidian"
-                    "/home/lf/Obsidian/Brain"
-                  ];
-                };
-                mcp-obsidian-laurent = {
-                  command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-                  args = [
-                    "-y"
-                    "mcp-obsidian"
-                    "/home/lf/Obsidian/Laurent"
-                  ];
-                };
-              };
-            };
-          };
+          vscode-fhs = pkgs-unfree.vscode-fhs;
+          # mcp = mcp-servers-nix.lib.mkConfig pkgs {
+          #   programs = {
+          #     filesystem = {
+          #       enable = true;
+          #       args = ["/home/lf/nix"];
+          #     };
+          #     fetch.enable = true;
+          #   };
+          #   settings = {
+          #     # claude.enable = false;
+          #     servers = {
+          #       mcp-obsidian-brain = {
+          #         command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
+          #         args = [
+          #           "-y"
+          #           "mcp-obsidian"
+          #           "/home/lf/Obsidian/Brain"
+          #         ];
+          #       };
+          #       mcp-obsidian-laurent = {
+          #         command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
+          #         args = [
+          #           "-y"
+          #           "mcp-obsidian"
+          #           "/home/lf/Obsidian/Laurent"
+          #         ];
+          #       };
+          #     };
+          #   };
+          # };
         };
       };
 
@@ -125,21 +135,13 @@
             specialArgs = {inherit inputs username host system;};
 
             modules = [
-              # Now, import all necessary modules.
-              # They can access the inputs via the `inputs` argument
-              # that specialArgs provides.
               disko.nixosModules.default
-              sops-nix.nixosModules.sops # Corrected module name
-              # nur.nixosModules.nur
+              sops-nix.nixosModules.sops
               nur.modules.nixos.default
-              # nur.legacyPackages."${system}".repos.7mind.ibkr-tws
               stylix.nixosModules.stylix
-              # Your custom host and user configurations
               ./hosts/${host}/config.nix
               ./hosts/${host}/sops.nix
-              # catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
-              # Pass the final pkgs set to Home Manager modules.
               ({
                 pkgs,
                 nixpkgs-unstable,
@@ -149,13 +151,11 @@
                   useGlobalPkgs = false;
                   useUserPackages = true;
                   backupFileExtension = "backup";
-                  # Pass final pkgs and other inputs to Home Manager modules.
+                  enableNixpkgsReleaseCheck = false;
                   extraSpecialArgs = {inherit inputs username system pkgs nixpkgs-unstable;};
                   users.${username} = {
                     imports = [
                       ./pkgs/home.nix
-                      # catppuccin.homeManagerModules.catppuccin
-                      doom-emacs.hmModule
                     ];
                   };
                 };

@@ -14,7 +14,7 @@
   in {
 
   nixpkgs.config.allowUnfree = true;
-  
+
   environment.systemPackages = (with pkgs; [
   # System Packages
     bc
@@ -25,11 +25,11 @@
     cpufrequtils
     duf
     findutils
-    ffmpeg   
+    ffmpeg
     glib #for gsettings to work
     gsettings-qt
     git
-    killall  
+    killall
     libappindicator
     libnotify
     openssl #required by Rainbow borders
@@ -42,7 +42,7 @@
     fastfetch
     (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
     #ranger
-      
+
     # Hyprland Stuff
     # Buuild AGS v1 from source
     inputs.ags.packages.${pkgs.system}.default
@@ -55,7 +55,7 @@
     grim
     gtk-engine-murrine #for gtk themes
     hypridle
-    imagemagick 
+    imagemagick
     inxi
     jq
     kitty
@@ -63,7 +63,7 @@
     networkmanagerapplet
     nwg-displays
     nwg-look
-    nvtopPackages.full	 
+    nvtopPackages.full
     pamixer
     pavucontrol
     playerctl
@@ -123,18 +123,18 @@ fonts.fonts = with pkgs; [
      ];
    ];
   };
-  
+
   programs = {
 	  hyprland = {
       enable = true;
      	  #package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland; #hyprland-git
 		    #portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland; #xdph-git
-     	  
+
         portalPackage = pkgs.xdg-desktop-portal-hyprland; # xdph none git
   	  xwayland.enable = true;
     };
 
-	
+
 	  waybar.enable = true;
 	  hyprlock.enable = true;
 	  firefox.enable = true;
@@ -150,16 +150,16 @@ fonts.fonts = with pkgs; [
 		  thunar-volman
 		  tumbler
   	  ];
-	
+
     virt-manager.enable = false;
-    
+
     #steam = {
     #  enable = true;
     #  gamescopeSession.enable = true;
     #  remotePlay.openFirewall = true;
     #  dedicatedServer.openFirewall = true;
     #};
-    
+
     xwayland.enable = true;
 
     dconf.enable = true;
@@ -170,7 +170,7 @@ fonts.fonts = with pkgs; [
       enable = true;
       enableSSHSupport = true;
     };
-	
+
   };
 
   # Extra Portal Configuration
