@@ -135,12 +135,16 @@
             specialArgs = {inherit inputs username host system;};
 
             modules = [
+              ./modules/workaround.nix
               disko.nixosModules.default
               sops-nix.nixosModules.sops
               nur.modules.nixos.default
               stylix.nixosModules.stylix
               ./hosts/${host}/config.nix
               ./hosts/${host}/sops.nix
+              {
+                services.desktopManager.gnome.enable = false;
+              }
               home-manager.nixosModules.home-manager
               ({
                 pkgs,

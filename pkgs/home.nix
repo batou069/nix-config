@@ -14,7 +14,7 @@
     # ./hyprlock.nix
     ./lsd.nix
     # ./mpd.nix
-    ./niriswitcher.nix
+    # ./niriswitcher.nix
     ./nvim
     ./starship.nix
     ./television.nix
