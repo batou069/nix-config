@@ -43,14 +43,14 @@
           };
         };
       };
-      bar.clock.format = "%a %e | %H:%M";
+      bar.clock.format = "%e | %H:%M";
       menus.dashboard.directories.enabled = true;
       menus.dashboard.stats.enable_gpu = false;
 
       theme.bar.transparent = true;
 
       theme.font = {
-        name = "FantaqsqueSansM Nerd Font Propo Regular";
+        name = "Maple Mono NF";
         size = "16px";
       };
     };

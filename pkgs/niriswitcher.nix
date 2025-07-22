@@ -1,6 +1,7 @@
-{...}: {
+{pkgs, ...}: {
   programs.niriswitcher = {
     enable = true;
+    package = pkgs.unstable.niriswitcher;
     settings = {
       keys = {
         modifier = "Super";

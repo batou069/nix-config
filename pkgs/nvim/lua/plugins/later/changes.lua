@@ -49,20 +49,7 @@ return {
   {
     "nvim-neotest/neotest-python",
   },
-  {
-    "mfussenegger/nvim-dap-python",
-    keys = {
-      { "<leader>dPt", function() require('dap-python').test_method() end, desc = "Debug Method", ft = "python" },
-      { "<leader>dPc", function() require('dap-python').test_class() end, desc = "Debug Class", ft = "python" },
-    },
-    config = function()
-      if vim.fn.has("win32") == 1 then
-        require("dap-python").setup(LazyVim.get_pkg_path("debugpy", "/venv/Scripts/pythonw.exe"))
-      else
-        require("dap-python").setup(LazyVim.get_pkg_path("debugpy", "/venv/bin/python"))
-      end
-    end,
-  },
+,
   {
     "nvim-neotest/neotest",
     optional = true,
@@ -82,7 +69,6 @@ return {
   -- LSP & Autocompletion
   {
     "hrsh7th/nvim-cmp",
-    dependencies = { "R-nvim/cmp-r" },
     opts = function(_, opts)
       local has_words_before = function()
         unpack = unpack or table.unpack
@@ -90,9 +76,7 @@ return {
         return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
       end
       local cmp = require("cmp")
-      opts.sources = cmp.config.sources(vim.list_extend(opts.sources or {}, {
-        { name = "cmp_r" },
-      }))
+      opts.sources = cmp.config.sources(vim.list_extend(opts.sources or {}, {}))
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
@@ -131,12 +115,6 @@ return {
       })
     end,
   },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      auto_install = false,
-      ensure_installed = {},
-    },
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -227,10 +205,8 @@ return {
     },
     dependencies = { "kristijanhusak/vim-dadbod-completion" },
   },
-  { "R-nvim/cmp-r" },
   {
     "mason-org/mason.nvim",
     opts = { ensure_installed = { "markdownlint-cli2", "markdown-toc", "sqlfluff" } },
   },
-};
 }

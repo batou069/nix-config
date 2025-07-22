@@ -6,20 +6,20 @@
   imports = [
     ./bat.nix
     ./cli.nix
-    ./emacs.nix
+    # ./emacs.nix
     # ./firefox.nix      # not yet ready
     # ./fzf.nix          # replaced by television
     ./git.nix
     ./hyprpanel.nix
-    ./hyprlock.nix
+    # ./hyprlock.nix
     ./lsd.nix
-    ./mpd.nix
-    # ./niriswitcher.nix
+    # ./mpd.nix
+    ./niriswitcher.nix
     ./nvim
     ./starship.nix
     ./television.nix
     # ./waybar.nix
-    ./vscode.nix
+    #   ./vscode.nix
     ./zsh.nix
   ];
 
@@ -33,15 +33,20 @@
 
     # User-specific packages
     packages = with pkgs; [
+      blender
+      pyprland
       fpp
       # ags
       igrep
       base16-shell-preview
       base16-schemes
       # unstable.gemini-cli
-      unstable.ladybird
       unstable.manix
       unstable.rmpc
+      rtaudio
+      erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
+      unstable.opencode
+      cmake
       #      unstable.mpd
       meld
       normcap
@@ -49,7 +54,7 @@
       igrep
       # ripgrep
       repgrep
-      # ripgrep-all
+      ripgrep-all
       alejandra
       unstable.pre-commit
       nodejs # Provides npm
@@ -66,7 +71,6 @@
       pinentry
       alsa-ucm-conf # maybe this fixed sound issue?
       tradingview
-      # niriswitcher
       emacs-pgtk
       neovide
       appimage-run
@@ -107,7 +111,7 @@
             python-dotenv
             regex
             # tabulate
-            ipykernel
+            # ipykernel
             # selenium
             # beautifulsoup4
             # pika
@@ -119,6 +123,10 @@
             scipy
             aiofiles
             duckduckgo-search
+            scikit-image
+            imageio
+            pywavelets
+            debugpy
           ]
       ))
     ];
@@ -140,6 +148,8 @@
       ANTHROPIC_API_KEY = "$(cat /run/secrets/api_keys/anthropic 2>/dev/null || echo '')";
       NIXOS_OZONE_WL = 1;
       BASE16_SHELL = "$HOME/.config/base16-shell";
+      TERM_ITALICS = "true";
+      BAT_THEME = "base16";
     };
 
     file = {
@@ -215,35 +225,35 @@
     autoEnable = true;
     targets = {
       neovim.enable = false;
-      waybar.enable = false;
+      # waybar.enable = false;
       wofi.enable = false;
       hyprland.enable = false;
       hyprlock.enable = false;
-      vscode = {
-        enable = true;
-      };
+      # vscode = {
+      #   enable = true;
+      # };
       kitty = {
         enable = true;
         variant256Colors = true;
       };
       font-packages.enable = true;
     };
-    iconTheme = {
-      enable = true;
-      package = pkgs.papirus-icon-theme;
-      dark = "Papirus-Dark";
-      light = "Papirus-Light";
-    };
-    cursor = {
-      name = "DMZ-Black";
-      size = 24;
-      package = pkgs.vanilla-dmz;
-    };
-    opacity = {
-      applications = 0.95;
-      desktop = 0.95;
-      popups = 1.0;
-      terminal = 0.95;
-    };
+    # iconTheme = {
+    # enable = true;
+    # package = pkgs.papirus-icon-theme;
+    # dark = "Papirus-Dark";
+    # light = "Papirus-Light";
+    # };
+    # cursor = {
+    # name = "DMZ-Black";
+    # size = 24;
+    # package = pkgs.vanilla-dmz;
+    # };
+    # opacity = {
+    # applications = 0.95;
+    # desktop = 0.95;
+    # popups = 1.0;
+    # terminal = 0.95;
+    # };
   };
 }

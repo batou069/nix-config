@@ -1,8 +1,15 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    autosuggestion.enable = true;
+    autosuggestion = {
+      enable = true;
+      highlight = "fg=#777777";
+    };
     history = {
       append = true;
       share = true;
@@ -26,13 +33,13 @@
       L = "| less -R";
     };
     shellAliases = {
-      nix-update = "sudo nixos-rebuild switch --flake ~/NixOS-Hyprland#lf-nix";
-      nix-build = "nixos-rebuild build --flake ~/NixOS-Hyprland#lf-nix";
+      nhs = "nh os switch $N";
       nix-gc = "nix-collect-garbage";
       nix-gcd = "nix-collect-garbage -d";
       sw = "nh os switch";
       upd = "nh os switch --update";
       hms = "nh home switch";
+      g = "git";
       c = "clear";
       p = "python";
       py = "python";
@@ -54,6 +61,7 @@
       treesize = "ncdu";
       lastmod = "find . -type f -not -path '*/\.*' -exec ls -lrt {} +";
       deadnix = "nix run github:astro/deadnix";
+      "-" = "cd -";
 
       # zf = "z '$(zoxide query -l | fzf --preview 'ls --color {}' --preview-window '70%:wrap' --border-label='Dir Jump')'";
       # gv = "git grep --line-number . | fzf --delimiter : --nth 3.. --bind 'enter:become(nvim {1} +{2})' --border-label='Git Grep'";
@@ -67,9 +75,16 @@
     };
     syntaxHighlighting = {
       enable = true;
+      highlighters = [
+        "main"
+        "brackets"
+        "pattern"
+        "cursor"
+      ];
     };
     # fROM initContent:         export PATH="$HOME/.nix-profile/bin:/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin:$PATH"
     initContent = ''
+                    . ${pkgs.fzf}/share/fzf/completion.zsh
                     yt() {fabric -y "$1" --transcript}
 
                     mkcd() { mkdir -p "$1" && cd "$1" }

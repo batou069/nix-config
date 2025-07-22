@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  programs.doom-emacs = {
+  programs.emacs = {
     enable = true;
 
     # Recommended: Use emacs-pgtk for the best Wayland/graphical experience
