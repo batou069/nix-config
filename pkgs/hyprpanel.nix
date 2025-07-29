@@ -29,6 +29,30 @@
       };
       layout = {
         "bar.layouts" = {
+          "1" = {
+            left = ["dashboard" "workspaces" "windowtitle"];
+            middle = ["cava" "media"];
+            right = [
+              "volume"
+              "network"
+              "bluetooth"
+              "systray"
+              "clock"
+              "notifications"
+            ];
+          };
+          "2" = {
+            left = ["dashboard" "workspaces" "windowtitle"];
+            middle = ["cava" "media"];
+            right = [
+              "volume"
+              "network"
+              "bluetooth"
+              "systray"
+              "clock"
+              "notifications"
+            ];
+          };
           "*" = {
             left = ["dashboard" "workspaces" "windowtitle"];
             middle = ["cava" "media"];
@@ -51,7 +75,7 @@
 
       theme.font = {
         name = "Maple Mono NF";
-        size = "16px";
+        size = "14px";
       };
     };
   };
