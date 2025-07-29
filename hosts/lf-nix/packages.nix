@@ -183,11 +183,11 @@ in {
     };
     virt-manager.enable = false;
 
-    # steam = {
-    #   enable = true;
-    #   remotePlay.openFirewall = true;
-    #   dedicatedServer.openFirewall = false;
-    # };
+    steam = {
+      enable = true;
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = false;
+    };
     firefox.enable = true;
     dconf.enable = true;
     seahorse.enable = true;

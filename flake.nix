@@ -6,10 +6,10 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    stylix.url = "github:nix-community/stylix";
+    stylix.url = "github:nix-community/stylix/release-25.05";
     ags = {
-      # url = "github:aylur/ags/v1";
-      url = "github:aylur/ags";
+      url = "github:aylur/ags/v1";
+      # url = "github:aylur/ags";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     firefox-addons = {
@@ -42,10 +42,11 @@
     };
     pyprland.url = "github:hyprland-community/pyprland";
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
-    hyprpanel = {
-      url = "github:Jas-SinghFSU/HyprPanel";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # hyprpanel = {
+    #   url = "github:Jas-SinghFSU/HyprPanel";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     flake-parts.url = "github:hercules-ci/flake-parts";
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
@@ -64,19 +65,13 @@
   outputs = inputs @ {
     self,
     nixpkgs,
-    nixpkgs-unstable,
     home-manager,
     # ags,
     disko,
     sops-nix,
     nur,
     stylix,
-    mcp-servers-nix,
-    # catppuccin,
-    hyprland,
-    pyprland,
     flake-parts,
-    # doom-emacs,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -89,53 +84,19 @@
       in {
         packages = {
           vscode-fhs = pkgs-unfree.vscode-fhs;
-          # mcp = mcp-servers-nix.lib.mkConfig pkgs {
-          #   programs = {
-          #     filesystem = {
-          #       enable = true;
-          #       args = ["/home/lf/nix"];
-          #     };
-          #     fetch.enable = true;
-          #   };
-          #   settings = {
-          #     # claude.enable = false;
-          #     servers = {
-          #       mcp-obsidian-brain = {
-          #         command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-          #         args = [
-          #           "-y"
-          #           "mcp-obsidian"
-          #           "/home/lf/Obsidian/Brain"
-          #         ];
-          #       };
-          #       mcp-obsidian-laurent = {
-          #         command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-          #         args = [
-          #           "-y"
-          #           "mcp-obsidian"
-          #           "/home/lf/Obsidian/Laurent"
-          #         ];
-          #       };
-          #     };
-          #   };
-          # };
         };
       };
 
       flake = let
-        # Function to generate a NixOS system configuration
         mkNixosSystem = {
           system,
           host,
           username,
         }:
           nixpkgs.lib.nixosSystem {
-            # Pass all flake inputs to modules via specialArgs.
-            # This is the standard way to make them available where needed.
             specialArgs = {inherit inputs username host system;};
 
             modules = [
-              ./modules/workaround.nix
               disko.nixosModules.default
               sops-nix.nixosModules.sops
               nur.modules.nixos.default
@@ -152,7 +113,6 @@
                   useGlobalPkgs = false;
                   useUserPackages = true;
                   backupFileExtension = "backup";
-                  enableNixpkgsReleaseCheck = false;
                   extraSpecialArgs = {inherit inputs username system pkgs nixpkgs-unstable;};
                   users.${username} = {
                     imports = [

@@ -10,7 +10,7 @@
     # ./firefox.nix      # not yet ready
     # ./fzf.nix          # replaced by television
     ./git.nix
-    ./hyprpanel.nix
+    # ./hyprpanel.nix
     # ./hyprlock.nix
     ./lsd.nix
     # ./mpd.nix
@@ -18,7 +18,7 @@
     ./nvim
     ./starship.nix
     ./television.nix
-    # ./waybar.nix
+    ./waybar.nix
     #   ./vscode.nix
     ./zsh.nix
   ];
@@ -45,7 +45,7 @@
       unstable.rmpc
       rtaudio
       erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
-      unstable.opencode
+      #      unstable.opencode
       cmake
       #      unstable.mpd
       meld
@@ -74,11 +74,10 @@
       emacs-pgtk
       neovide
       appimage-run
-      unstable.home-manager
       codex # Claude Assistant CLI
       claudia
       statix # Lints and suggestions for the Nix programming language
-      # nur.repos.novel2430.zen-browser-bin   # Zen Browser
+      nur.repos.novel2430.zen-browser-bin   # Zen Browser
       # nur.repos."7mind".ibkr-tws     # Interactive Brokers TWS
       nur.repos.k3a.ib-tws
       nixdoc
@@ -122,7 +121,7 @@
             # NetscapeBookmarksFileParser
             scipy
             aiofiles
-            duckduckgo-search
+            # duckduckgo-search
             scikit-image
             imageio
             pywavelets
@@ -229,9 +228,9 @@
       wofi.enable = false;
       hyprland.enable = false;
       hyprlock.enable = false;
-      # vscode = {
-      #   enable = true;
-      # };
+      vscode = {
+        enable = true;
+      };
       kitty = {
         enable = true;
         variant256Colors = true;

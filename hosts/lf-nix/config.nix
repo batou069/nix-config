@@ -13,7 +13,7 @@ in {
   imports = [
     ./hardware.nix
     ./users.nix
-    ./packages-fonts.nix
+    ./packages.nix
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
@@ -29,7 +29,7 @@ in {
         config.allowUnfree = true;
       };
       claudia = inputs.claudia.packages.${prev.system}.default;
-      # ags = inputs.ags.packages.${prev.system}.default;
+      ags = inputs.ags.packages.${prev.system}.default;
       firefox-addons = inputs.firefox-addons.packages.${prev.system};
     })
   ];
@@ -49,9 +49,9 @@ in {
       "nowatchdog"
       # "modprobe.blacklist=sp5100_tco" #watchdog for AMD
       "modprobe.blacklist=iTCO_wdt" #watchdog for Intel
-      "vt.default_red=48,231,166,229,140,244,129,181,98,231,166,229,140,244,129,165"
-      "vt.default_grn=52,130,209,200,170,184,200,191,104,130,209,200,170,184,200,173"
-      "vt.default_blu=70,132,137,144,238,228,190,226,128,132,137,144,238,228,190,206"
+      # "vt.default_red=48,231,166,229,140,244,129,181,98,231,166,229,140,244,129,165"
+      # "vt.default_grn=52,130,209,200,170,184,200,191,104,130,209,200,170,184,200,173"
+      # "vt.default_blu=70,132,137,144,238,228,190,226,128,132,137,144,238,228,190,206"
     ];
 
     extraModprobeConfig = ''
@@ -67,9 +67,9 @@ in {
     };
     extraModulePackages = [];
     # Needed For Some Steam Games
-    # kernel.sysctl = {
-    #   "vm.max_map_count" = 2147483642;
-    # };
+    kernel.sysctl = {
+      "vm.max_map_count" = 2147483642;
+    };
 
     ## BOOT LOADERS: NOTE USE ONLY 1. either systemd or grub
     # Bootloader SystemD
@@ -408,7 +408,7 @@ in {
   stylix = {
     enable = true;
     enableReleaseChecks = true;
-    base16Scheme = ./schemes/gruvbox-dark-soft.yaml;
+    base16Scheme = ./schemes/catppuccin-frappe.yaml;
     polarity = "dark";
     homeManagerIntegration = {
       autoImport = true;
@@ -422,10 +422,10 @@ in {
       size = 24;
     };
     opacity = {
-      applications = 1.0;
-      desktop = 1.0;
-      popups = 1.0;
-      terminal = 1.0;
+      applications = 1.5;
+      desktop = 1.5;
+      popups = 1.5;
+      terminal = 1.5;
     };
     # overlays.enable = true;
     fonts = {
@@ -444,7 +444,7 @@ in {
       };
 
       monospace = {
-        package = pkgs.maple-mono.NF;
+        #        package = pkgs.maple-mono.NF;
         name = "Maple Mono NF";
       };
 
@@ -455,9 +455,9 @@ in {
 
       sizes = {
         applications = 11;
-        desktop = 10;
+        desktop = 12;
         popups = 11;
-        terminal = 11;
+        terminal = 14;
       };
     };
   };
