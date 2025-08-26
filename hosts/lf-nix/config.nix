@@ -22,20 +22,26 @@ in {
   ];
 
   nixpkgs.overlays = [
+    inputs.neovim-nightly-overlay.overlays.default
     inputs.mcp-servers-nix.overlays.default
     (final: prev: {
       unstable = import inputs.nixpkgs-unstable {
         inherit (prev) system;
         config.allowUnfree = true;
       };
+    })
+    # Second overlay: Add your other packages and jupyter-ai.
+    # This one can now safely access `final.unstable`.
+    (final: prev: {
       claudia = inputs.claudia.packages.${prev.system}.default;
       ags = inputs.ags.packages.${prev.system}.default;
       firefox-addons = inputs.firefox-addons.packages.${prev.system};
+      
     })
   ];
 
   nixpkgs.config.allowUnfree = true;
-
+  security.sudo.wheelNeedsPassword = false; # Allow sudo without password for wheel group
   boot = {
     # kernelPackages = pkgs.linuxPackages_zen; # Performance geared
     kernelPackages = pkgs.linuxPackages_latest; # Best Balance
@@ -204,6 +210,7 @@ in {
       user = "${username}";
       dataDir = "/home/${username}";
       configDir = "/home/${username}/.config/syncthing";
+      relay.enable = true;
     };
   };
 
@@ -303,17 +310,24 @@ in {
     rootless.enable = false;
     autoPrune.enable = true;
     enableOnBoot = true;
+    extraPackages = [pkgs.docker-buildx];
   };
 
   console.keyMap = "${keyboardLayout}";
 
   # For Electron apps to use wayland
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1"; # Enable Wayland Ozone platform for Electron apps
-    ELECTRON_OZONE_PLATFORM_HINT = "wayland"; # Or "AUTO"
-    # You might also try:
-    ELECTRON_ENABLE_WAYLAND = "1";
-    NH_FLAKE = "/home/lf/nix";
+  environment = {
+    sessionVariables = {
+      NIXOS_OZONE_WL = "1"; # Enable Wayland Ozone platform for Electron apps
+      ELECTRON_OZONE_PLATFORM_HINT = "wayland"; # Or "AUTO"
+      # You might also try:
+      ELECTRON_ENABLE_WAYLAND = "1";
+      NH_FLAKE = "/home/lf/nix";
+      # variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
+    };
+    variables = {
+      FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
+    };
   };
 
   programs = {
@@ -341,7 +355,6 @@ in {
     '';
   };
 
-  # environment.variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
   fonts = {
     enableDefaultPackages = false;
     packages = with pkgs; [
@@ -370,7 +383,7 @@ in {
       fira-code-symbols
       material-icons
       powerline-fonts
-      symbola
+      # symbola
 
       # Noto Fonts
       noto-fonts
@@ -417,8 +430,8 @@ in {
     targets.nixvim.enable = false;
     # targets.firefox.profileNames = ["default"];
     cursor = lib.mkDefault {
-      name = "catppuccin-mocha-blue-cursors";
-      package = pkgs.catppuccin-cursors.mochaBlue;
+      name = "catppuccin-mocha-peach-cursors";
+      package = pkgs.catppuccin-cursors.mochaPeach;
       size = 24;
     };
     opacity = {
@@ -454,10 +467,10 @@ in {
       };
 
       sizes = {
-        applications = 11;
-        desktop = 12;
-        popups = 11;
-        terminal = 14;
+        applications = 9;
+        desktop = 9;
+        popups = 9;
+        terminal = 9;
       };
     };
   };

@@ -2,8 +2,8 @@
   programs.fzf = {
     enable = true;
     package = pkgs.fzf;
-    enableZshIntegration = true;
-    enableFishIntegration = true;
+    # enableZshIntegration = true;
+    # enableFishIntegration = true;
     defaultCommand = "fd --type f --hidden --follow --exclude .git"; # Matches _fzf_compgen_path
     defaultOptions = [
       "--preview='bat --style=numbers --color=always --line-range :500 {}'"

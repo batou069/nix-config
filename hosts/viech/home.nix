@@ -42,7 +42,7 @@
     fira-code-symbols
     material-icons
     powerline-fonts
-    symbola
+    # symbola
 
     # Noto Fonts
     noto-fonts
@@ -54,6 +54,7 @@
     # Niche/Specific Fonts
     minecraftia
 
+    syncthing
     eza
     fd
     # ripgrep

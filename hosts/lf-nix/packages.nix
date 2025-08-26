@@ -6,6 +6,20 @@
   r-with-packages = pkgs.rWrapper.override {
     packages = with pkgs.rPackages; [
       IRkernel
+      tidyverse
+      lubridate
+      modelr
+      caTools
+      psych
+      devtools
+      sandwich
+      lemon
+      gridExtra
+      arm
+      broom
+      boot
+      RcppEigen
+      lme4
     ];
   };
 in {
@@ -39,13 +53,14 @@ in {
       xdg-user-dirs
       xdg-utils
       linux-firmware
+      d2
 
       # (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
       # ranger
-      inputs.zen-browser.packages."${system}".twilight-official
+      # inputs.zen-browser.packages."${system}".twilight-official
       # Hyprland Stuff
-      ags
-      # inputs.ags.packages.${pkgs.system}.default
+      #ags
+      inputs.ags.packages.${pkgs.system}.default
       nix-your-shell
       btop
       brightnessctl # for brightness control
@@ -108,7 +123,6 @@ in {
       calibre # ebooks manager
       # nyxt
       # qutebrowser
-      rstudioWrapper
       nix-init # create pkg from url
       vulnix # vulnerability scanner
 
@@ -131,8 +145,6 @@ in {
       # Dev Stuff
       nixd
       nh
-      python312Packages.ipykernel
-      python312Packages.kaggle
     ])
     ++ (with pkgs.unstable; [
       bc
@@ -150,15 +162,24 @@ in {
       twingate
       hyprls
       lazygit
+      pipx
       lm_sensors # Used For Getting Hardware Temps
       sof-firmware
     ])
     ++ [
-      #   python-packages # Add the python environment
       r-with-packages # Add the R environment
     ];
 
   programs = {
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+      enableZshIntegration = true;
+      enableFishIntegration = true;
+      enableBashIntegration = true;
+      enableXonshIntegration = true;
+    };
+
     hyprland = {
       enable = true;
       # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -166,8 +187,9 @@ in {
       xwayland.enable = true;
       withUWSM = true;
     };
+    xonsh.enable = true;
     hyprlock.enable = true;
-    waybar.enable = false;
+    waybar.enable = true;
     thunar = {
       enable = true;
       # thunar.

@@ -2,13 +2,17 @@
   pkgs,
   username,
   ...
-}: {
+}: let
+  customWaybar = pkgs.waybar.overrideAttrs (oldAttrs: {
+    mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];
+  });
+in {
   imports = [
     ./bat.nix
     ./cli.nix
     # ./emacs.nix
     # ./firefox.nix      # not yet ready
-    # ./fzf.nix          # replaced by television
+    ./fzf.nix # replaced by television
     ./git.nix
     # ./hyprpanel.nix
     # ./hyprlock.nix
@@ -18,10 +22,12 @@
     ./nvim
     ./starship.nix
     ./television.nix
-    ./waybar.nix
+    #   ./waybar.nix
     #   ./vscode.nix
     ./zsh.nix
   ];
+
+  programs.hyprpanel.enable = false;
 
   # Home Manager version
   home = {
@@ -33,6 +39,11 @@
 
     # User-specific packages
     packages = with pkgs; [
+      #       jupyter-kernel
+      #       jupyter
+      jupyter-all
+      #       jupyter-kernel
+      customWaybar
       blender
       pyprland
       fpp
@@ -60,7 +71,7 @@
       nodejs # Provides npm
       kdePackages.okular
       vgrep # User-friendly pager for grep/git-grep/ripgrep
-      xonsh # Python-ish, BASHwards-compatible shell
+      # xonsh # Python-ish, BASHwards-compatible shell
       vimPluginsUpdater
       vimgolf # Interactive Vim golf game, train you vim skills
       rofi-obsidian
@@ -77,9 +88,9 @@
       codex # Claude Assistant CLI
       claudia
       statix # Lints and suggestions for the Nix programming language
-      nur.repos.novel2430.zen-browser-bin   # Zen Browser
+      # nur.repos.novel2430.zen-browser-bin # Zen Browser
       # nur.repos."7mind".ibkr-tws     # Interactive Brokers TWS
-      nur.repos.k3a.ib-tws
+      # nur.repos.k3a.ib-tws
       nixdoc
       glow # Beautiful terminal markdown viewer
       gum # Terminal-based GUI toolkit
@@ -93,41 +104,9 @@
       pnpm # npm package manager
       git-filter-repo
       sof-tools
-      (python312.withPackages (
-        ps:
-          with ps; [
-            requests
-            pyquery
-            jupyterlab
-            jupyter
-            matplotlib
-            numpy
-            pandas
-            pillow
-            plotly
-            pytest
-            # seaborn
-            python-dotenv
-            regex
-            # tabulate
-            # ipykernel
-            # selenium
-            # beautifulsoup4
-            # pika
-            # pymongo
-            # lxml
-            # redis
-            # aiohttp
-            # NetscapeBookmarksFileParser
-            scipy
-            aiofiles
-            # duckduckgo-search
-            scikit-image
-            imageio
-            pywavelets
-            debugpy
-          ]
-      ))
+      fabric-ai
+      faiss # Command line tool for interacting with Generative AI models
+      (callPackage ./ipython-ai.nix {})
     ];
 
     sessionVariables = {
@@ -144,11 +123,14 @@
       EDITOR = "nvim";
       OPENAI_API_KEY = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
       GEMINI_API_KEY = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
+      GOOGLE_API_KEY = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
       ANTHROPIC_API_KEY = "$(cat /run/secrets/api_keys/anthropic 2>/dev/null || echo '')";
       NIXOS_OZONE_WL = 1;
       BASE16_SHELL = "$HOME/.config/base16-shell";
       TERM_ITALICS = "true";
       BAT_THEME = "base16";
+      PAGER = "less";
+      LESS = "-R";
     };
 
     file = {
@@ -164,6 +146,7 @@
           secrets.pt.yaml
         '';
       };
+      ".ipython/extensions/custom_gemini_provider.py".source = ./custom-gemini-provider.py;
     };
   };
 
@@ -224,7 +207,7 @@
     autoEnable = true;
     targets = {
       neovim.enable = false;
-      # waybar.enable = false;
+      waybar.enable = false;
       wofi.enable = false;
       hyprland.enable = false;
       hyprlock.enable = false;

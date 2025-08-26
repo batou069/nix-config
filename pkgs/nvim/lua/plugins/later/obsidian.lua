@@ -24,16 +24,16 @@ return {
 
   log_level = vim.log.levels.INFO,
 
-  daily_notes = {
-    -- Optional, if you keep daily notes in a separate directory.
-    folder = "Tracking/Daily",
-    -- Optional, if you want to change the date format for the ID of daily notes.
-    date_format = "YYYY-MM-DD",
-    -- Optional, default tags to add to each new daily note created.
-    default_tags = { "daily-notes" },
-    -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
-    template = nil,
-  },
+  -- daily_notes = {
+  --   -- Optional, if you keep daily notes in a separate directory.
+  --   folder = "Tracking/Daily",
+  --   -- Optional, if you want to change the date format for the ID of daily notes.
+  --   date_format = "YYYY-MM-DD",
+  --   -- Optional, default tags to add to each new daily note created.
+  --   default_tags = { "daily-notes" },
+  --   -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
+  --   template = nil,
+  -- },
 
   completion = {
     nvim_cmp = true,

@@ -13,8 +13,8 @@
     history = {
       append = true;
       share = true;
-      findNoDups = true;
-      saveNoDups = true;
+      # findNoDups = true;
+      # saveNoDups = true;
       ignoreAllDups = true;
       ignoreDups = true;
       ignoreSpace = true;
@@ -73,19 +73,22 @@
       ".." = "cd ..";
       "..." = "cd ../..";
     };
-    syntaxHighlighting = {
-      enable = true;
-      highlighters = [
-        "main"
-        "brackets"
-        "pattern"
-        "cursor"
-      ];
-    };
-    # fROM initContent:         export PATH="$HOME/.nix-profile/bin:/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin:$PATH"
+    # syntaxHighlighting = {
+    #   enable = true;
+    #   highlighters = [
+    #     "main"
+    #     "brackets"
+    #     "pattern"
+    #     "cursor"
+    #   ];
+    # };
+
+    #. ${pkgs.fzf}/share/fzf/completion.zsh
     initContent = ''
-                    . ${pkgs.fzf}/share/fzf/completion.zsh
                     yt() {fabric -y "$1" --transcript}
+                    if command -v nix-your-shell > /dev/null; then
+                      nix-your-shell zsh | source /dev/stdin
+                    fi
 
                     mkcd() { mkdir -p "$1" && cd "$1" }
                     rgn() { rg --line-number --no-heading "$@" | awk -F: '{print $1 " [" $2 "]"}' | fzf --border-label 'Ripgrep Search' --delimiter ' \[' --nth 1 --preview 'bat --style=plain --color=always {1} --line-range $(({2}-5)): --highlight-line {2}' --preview-window 'right,70%,border-left' --border-label 'Ripgrep Search' --bind 'enter:become(nvim {1} +{2})' }
@@ -113,6 +116,22 @@
               source "$BASE16_SHELL/profile_helper.sh"
 
       # base16_default
+      autoload -U compinit; compinit
+      source ~/repos/fzf-tab/fzf-tab.plugin.zsh
     '';
+    plugins = [
+      {
+        name = "zsh-fzf-tab";
+        src = pkgs.zsh-fzf-tab;
+      }
+      {
+        name = "zsh-fzf-history-search";
+        src = pkgs.zsh-fzf-history-search;
+      }
+      {
+        name = "zsh-fast-syntax-highlighting";
+        src = pkgs.zsh-fast-syntax-highlighting;
+      }
+    ];
   };
 }

@@ -3,11 +3,11 @@
   "mcpServers": {
     "nixos": {
       "command": "nix",
-      "args": ["run", "github:utensils/mcp-nixos", "--"]
-    },
-    "playwright": {
-      "command": "/etc/profiles/per-user/lf/bin/npx",
-      "args": ["@playwright/mcp@latest"]
+      "args": [
+        "run",
+        "github:utensils/mcp-nixos",
+        "--"
+      ]
     },
     "filesystem": {
       "command": "/etc/profiles/per-user/lf/bin/npx",
@@ -18,25 +18,6 @@
         "/home/lf/git",
         "/nix"
       ]
-    },
-    "memory": {
-      "command": "/etc/profiles/per-user/lf/bin/npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"]
-    },
-    "sequential-thinking": {
-      "command": "/etc/profiles/per-user/lf/bin/npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    },
-    "duckduckgo-search": {
-      "command": "/etc/profiles/per-user/lf/bin/npx",
-      "args": ["-y", "duckduckgo-mcp-server"]
-    },
-    "tavily-mcp": {
-      "command": "/etc/profiles/per-user/lf/bin/npx",
-      "args": ["-y", "tavily-mcp@0.1.2"],
-      "env": {
-        "TAVILY_API_KEY": "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"
-      }
     }
   }
 }
