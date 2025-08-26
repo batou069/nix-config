@@ -1,7 +1,3 @@
 {
-  "editor.fontFamily": "'Maple Mono NF Italic', Consolas, monospace",
-  "editor.fontLigatures": true,
-  "editor.fontSize": 16,
-  "vscode_custom_css.imports": [
-    "file:///home/lf/.config/Code/style.css"
+  "python.defaultInterpreterPath": "/etc/profiles/per-user/lf/bin/python3"
 }

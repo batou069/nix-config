@@ -117,7 +117,7 @@ fonts.fonts = with pkgs; [
       powerline-fonts
       roboto
       roboto-mono
-      symbola
+        #      symbola
       terminus_font
       victor-mono
      ];

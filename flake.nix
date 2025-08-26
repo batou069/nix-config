@@ -6,6 +6,10 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-your-shell = {
+      url = "github:MercuryTechnologies/nix-your-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     stylix.url = "github:nix-community/stylix/release-25.05";
     ags = {
       url = "github:aylur/ags/v1";
@@ -46,11 +50,37 @@
     #   url = "github:Jas-SinghFSU/HyprPanel";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     flake-parts.url = "github:hercules-ci/flake-parts";
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    #plugins list
+    avante-nvim = {
+      url = "github:yetone/avante.nvim";
+      flake = false;
+    };
+    minuet-ai-nvim = {
+      url = "github:milanglacier/minuet-ai.nvim";
+      flake = false;
+    };
+    blink-cmp.url = "github:saghen/blink.cmp";
+    vim-translator = {
+      url = "github:voldikss/vim-translator";
+      flake = false;
+    };
+    none-ls-nvim = {
+      url = "github:nvimtools/none-ls.nvim";
+      flake = false;
+    };
+    nui-nvim = {
+      url = "github:MunifTanjim/nui.nvim";
+      flake = false;
     };
     # emacs-overlay = {
     #   url = "github:nix-community/emacs-overlay";
@@ -66,7 +96,7 @@
     self,
     nixpkgs,
     home-manager,
-    # ags,
+    ags,
     disko,
     sops-nix,
     nur,

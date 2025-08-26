@@ -1,0 +1,102 @@
+{ pkgs }:
+
+let
+  # Path to the dedicated config file for ipython-ai
+  # This will be copied into the derivation.
+  ipython_ai_config_file = ./ipython_ai_config.py;
+
+  # Path to the custom provider file
+  # This will also be copied into the derivation.
+  custom_gemini_provider_file = ./custom-gemini-provider.py;
+
+  # The core script logic that sets up the venv and runs ipython
+  ipython-ai-script = pkgs.writeShellScriptBin "ipython-ai-unwrapped" ''
+    #!/usr/bin/env bash
+    set -e
+    VENV_DIR="$HOME/.cache/ipython-ai-venv"
+
+    if [ ! -f "$VENV_DIR/nix-setup-complete" ]; then
+      echo "Setting up Python virtual environment for IPython-AI..."
+      python -m venv "$VENV_DIR"
+
+      "$VENV_DIR/bin/pip" install --no-cache-dir \
+        'ipython' \
+        'google-generativeai' \
+        'langchain-google-genai' \
+        'prompt_toolkit' \
+        # 'line-profiler' \
+        # 'memory-profiler' \
+        # 'pyquery' \
+        # 'imbalanced-learn' \
+        # 'scipy' \
+        # 'requests' \
+        # 'rich' \
+        # 'polars' \
+        # 'matplotlib' \
+        # 'seaborn' \
+        # 'tsfresh' \
+        # 'prophet' \
+        # 'jupyterlab' \
+        # 'jupyter' \
+        # 'pillow' \
+        # 'pygments' \
+        # 'opencv-python' \
+        # 'plotly' \
+        # 'pytest' \
+        # 'python-dotenv' \
+        # 'cycler' \
+        # 'regex' \
+        # 'pyqtgraph' \
+        # 'statsmodels' \
+        # 'tabulate' \
+        # 'ipykernel' \
+        # 'aiofiles' \
+        # 'kaggle' \
+        # 'scikit-image' \
+        # 'scikit-learn' \
+        # 'imageio' \
+        # 'debugpy' \
+        # 'numpy' \
+        # 'pandas' \
+        # 'sqlalchemy'
+
+      touch "$VENV_DIR/nix-setup-complete"
+      echo "Setup complete."
+    fi
+
+    # Copy config and provider files into the venv for easier access
+    cp ${ipython_ai_config_file} "$VENV_DIR/ipython_ai_config.py"
+    cp ${custom_gemini_provider_file} "$VENV_DIR/custom_gemini_provider.py"
+
+    # Execute IPython as a module using the venv's specific python interpreter,
+    # and pass it the dedicated config file.
+    # The config file is now relative to the venv.
+    exec "$VENV_DIR/bin/python" -m IPython --config="$VENV_DIR/ipython_ai_config.py" "$@"
+  '';
+
+  # The packages needed at runtime by the script and the python packages
+  runtimePackages = with pkgs; [
+    python312
+    python312Packages.pip
+    python312Packages.virtualenv
+    cmake
+    ninja
+    gcc
+    git
+    stdenv.cc.cc.lib
+  ];
+
+in
+# Create the final wrapped executable
+(pkgs.symlinkJoin {
+  name = "ipython-ai";
+  paths = [
+    ipython-ai-script
+  ];
+  nativeBuildInputs = [ pkgs.makeWrapper ];
+  postBuild = ''
+    makeWrapper $out/bin/ipython-ai-unwrapped $out/bin/ipython-ai \
+      --prefix PATH : "${pkgs.lib.makeBinPath runtimePackages}" \
+      --prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath runtimePackages}"
+  '';
+})
