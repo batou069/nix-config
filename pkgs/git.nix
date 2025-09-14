@@ -16,6 +16,7 @@
         meld = {
           cmd = ''meld "$LOCAL" "$REMOTE"'';
         };
+        prompt = false;
       };
       credential.helper = "${
         pkgs.git.override { withLibsecret = true; }
@@ -25,25 +26,30 @@
       alias = {
         diffpick = "!sh -c 'git diff --name-only | fpp --no-file-checks | xargs -r git difftool'";
       };
+      core = {
+        pager = "delta";
+      };
+      interactive = {
+        diffFilter = "delta --color-only";
+      };
       aliases = {
-          ga = "git add";
-          g = "git";
-          gp = "git push -u origin";
-          gpl = "git pull";
-          gdc = "git diff --cached";
-          gd = "git diff";
-          gsh = "git show";
-          gl = "git log";
-          ggraph = "git log --oneline --decorate --graph --all";
-          gcom = "git commit -m";
-          gst = "git status";
-          gb ="git branch";
-          gco = "git checkout";
-          gcb = "git checkout -b";
-          gbm = "git merge";
-          gbd = "git branch -d";
-          gbdD = "git branch -D";
-          gu = "git reset HEAD --mixed";
+          a = "add";
+          p = "push -u origin";
+          pl = "pull";
+          dc = "diff --cached";
+          d = "diff";
+          sh = "show";
+          l = "log";
+          graph = "log --oneline --decorate --graph --all";
+          com = "commit -m";
+          st = "status";
+          b ="branch";
+          co = "checkout";
+          cob = "checkout -b";
+          mrg = "merge";
+          bd = "branch -d";
+          bD = "branch -D";
+          # gu = "git reset HEAD --mixed";
         };
     color = {
       ui = "always";
@@ -64,6 +70,13 @@
     rebase = {
       autosquash = true;
       autostash = true;
+    };
+    delta = {
+      features = "side-by-side line-numbers decorations";
+      syntax-theme = "GitHub";
+      "commit-decoration-style" = "bold yellow box ul";
+      "file-decoration-style" = "none";
+      "file-style" = "bold yellow ul";
     };
   };
   };

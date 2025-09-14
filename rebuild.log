@@ -1,0 +1,4 @@
+warning: Git tree '/home/lf/nix' is dirty
+building the system configuration...
+warning: Git tree '/home/lf/nix' is dirty
+error: creating symlink '/nix/var/nix/profiles/system-379-link.tmp-5366-678949541' -> '/nix/store/20ldpcjcnicf5g4sv2kj5i6njvmkdjsm-nixos-system-lf-nix-25.05.20250925.25e53aa': Permission denied

@@ -30,6 +30,15 @@ in {
 
   environment.systemPackages =
     (with pkgs; [
+      # games
+      dreamchess
+      lc0
+      unstable.stockfish
+
+      smassh
+      pastel
+      catppuccin-plymouth
+      cargo-seek
       # System Packages
       alsa-utils
       isd # interactively interact with systemd
@@ -41,13 +50,14 @@ in {
       duf # Utility For Viewing Disk Usage In Terminal
       findutils
       ffmpeg
+      pkg-config
       gsettings-qt
       git
       git-credential-manager
       killall
       libappindicator
       libnotify
-      openssl #required by Rainbow borders
+      openssl # required by Rainbow borders
       pciutils
       wget
       xdg-user-dirs
@@ -69,7 +79,7 @@ in {
       loupe
       gnome-system-monitor
       grim
-      gtk-engine-murrine #for gtk themes
+      gtk-engine-murrine # for gtk themes
       hypridle
       imagemagick
       inxi
@@ -78,7 +88,7 @@ in {
       manix
       mediainfo
 
-      libsForQt5.qtstyleplugin-kvantum #kvantum
+      libsForQt5.qtstyleplugin-kvantum # kvantum
       networkmanagerapplet
       nwg-displays
       nvtopPackages.full
@@ -89,7 +99,7 @@ in {
       libsForQt5.qt5ct
       kdePackages.qt6ct
       kdePackages.qtwayland
-      kdePackages.qtstyleplugin-kvantum #kvantum
+      kdePackages.qtstyleplugin-kvantum # kvantum
       rofi-wayland
       slurp
       swappy
@@ -114,7 +124,7 @@ in {
       yq-go
       figlet
       ghostty # Terminal
-      uv # Python Package Manager & more
+      # uv # Python Package Manager & more
       tmux # Terminal Multiplexer
       gedit # Editor Gui
       vlc # Video Player
@@ -149,7 +159,7 @@ in {
     ++ (with pkgs.unstable; [
       bc
       curl
-      glib #for gsettings to work
+      glib # for gsettings to work
       fastfetch
       jq
       nwg-look
@@ -179,7 +189,6 @@ in {
       enableBashIntegration = true;
       enableXonshIntegration = true;
     };
-
     hyprland = {
       enable = true;
       # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -187,7 +196,7 @@ in {
       xwayland.enable = true;
       withUWSM = true;
     };
-    xonsh.enable = true;
+    # xonsh.enable = false;
     hyprlock.enable = true;
     waybar.enable = true;
     thunar = {

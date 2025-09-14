@@ -37,6 +37,7 @@ python312Packages.buildPythonPackage rec {
     ipython
     watchdog
     importlib-metadata
+    torch
   ];
   # This hook runs before the main build starts.
   # We navigate into the magics sub-directory and install it first.

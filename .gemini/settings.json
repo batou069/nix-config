@@ -18,6 +18,13 @@
         "/home/lf/git",
         "/nix"
       ]
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
     }
   }
 }

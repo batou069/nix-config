@@ -9,6 +9,9 @@ let
   # This will also be copied into the derivation.
   custom_gemini_provider_file = ./custom-gemini-provider.py;
 
+  # Path to the dummy provider file
+  dummy_provider_file = ./dummy_provider.py;
+
   # The core script logic that sets up the venv and runs ipython
   ipython-ai-script = pkgs.writeShellScriptBin "ipython-ai-unwrapped" ''
     #!/usr/bin/env bash
@@ -20,53 +23,68 @@ let
       python -m venv "$VENV_DIR"
 
       "$VENV_DIR/bin/pip" install --no-cache-dir \
+	'tensorboard' \
+	'torchvision' \
+      	'torch' \
+        'optuna' \
         'ipython' \
         'google-generativeai' \
         'langchain-google-genai' \
         'prompt_toolkit' \
-        # 'line-profiler' \
-        # 'memory-profiler' \
-        # 'pyquery' \
-        # 'imbalanced-learn' \
-        # 'scipy' \
-        # 'requests' \
-        # 'rich' \
-        # 'polars' \
-        # 'matplotlib' \
-        # 'seaborn' \
-        # 'tsfresh' \
-        # 'prophet' \
-        # 'jupyterlab' \
-        # 'jupyter' \
-        # 'pillow' \
-        # 'pygments' \
-        # 'opencv-python' \
-        # 'plotly' \
-        # 'pytest' \
-        # 'python-dotenv' \
-        # 'cycler' \
-        # 'regex' \
-        # 'pyqtgraph' \
-        # 'statsmodels' \
-        # 'tabulate' \
-        # 'ipykernel' \
-        # 'aiofiles' \
-        # 'kaggle' \
-        # 'scikit-image' \
-        # 'scikit-learn' \
-        # 'imageio' \
-        # 'debugpy' \
-        # 'numpy' \
-        # 'pandas' \
-        # 'sqlalchemy'
+        'jupyter-ai-magics' \
+        'jupyter-ai' \
+        'langchain-core' \
+        'line-profiler' \
+        'memory-profiler' \
+        'pyquery' \
+        'imbalanced-learn' \
+        'scipy' \
+        'requests' \
+        'rich' \
+        'polars' \
+        'matplotlib' \
+        'seaborn' \
+        'tsfresh' \
+        'prophet' \
+        'jupyterlab' \
+        'jupyter' \
+        'pillow' \
+        'pygments' \
+        'opencv-python' \
+        'plotly' \
+        'pytest' \
+        'python-dotenv' \
+        'cycler' \
+        'regex' \
+        'pyqtgraph' \
+        'statsmodels' \
+        'tabulate' \
+        'ipykernel' \
+        'aiofiles' \
+        'kaggle' \
+        'scikit-image' \
+        'scikit-learn' \
+        'imageio' \
+        'debugpy' \
+        'numpy' \
+        'pandas' \
+        'sqlalchemy'
 
       touch "$VENV_DIR/nix-setup-complete"
       echo "Setup complete."
     fi
 
-    # Copy config and provider files into the venv for easier access
-    cp ${ipython_ai_config_file} "$VENV_DIR/ipython_ai_config.py"
-    cp ${custom_gemini_provider_file} "$VENV_DIR/custom_gemini_provider.py"
+    # Create package directory inside venv
+    mkdir -p "$VENV_DIR/my_providers"
+    touch "$VENV_DIR/my_providers/__init__.py"
+
+    # Copy config and provider files into the venv with correct permissions
+      install -m 644 ${ipython_ai_config_file} "$VENV_DIR/ipython_ai_config.py"
+      install -m 644 ${custom_gemini_provider_file} "$VENV_DIR/my_providers/custom_gemini_provider.py"
+      install -m 644 ${dummy_provider_file} "$VENV_DIR/my_providers/dummy_provider.py"
+
+    # Add the venv root to PYTHONPATH so my_providers can be found
+    export PYTHONPATH="$VENV_DIR:$PYTHONPATH"
 
     # Execute IPython as a module using the venv's specific python interpreter,
     # and pass it the dedicated config file.

@@ -1,8 +1,8 @@
 -- lua/plugins/comment-box.lua
 return {
-  "LudoPinelli/comment-box.nvim",
-  event = "VeryLazy", -- Or "BufReadPost", "BufNewFile" if you want it sooner
-  dependencies = { "nvim-lua/plenary.nvim" },
+  -- "LudoPinelli/comment-box.nvim",
+  -- event = "VeryLazy", -- Or "BufReadPost", "BufNewFile" if you want it sooner
+  -- dependencies = { "nvim-lua/plenary.nvim" },
   keys = {
     {
       "<localleader>cb",
