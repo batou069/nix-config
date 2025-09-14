@@ -51,7 +51,7 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.05";
+      url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
@@ -92,8 +92,40 @@
     };
   };
 
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    home-manager,
+    ags,
+    claudia,
+    disko,
+    sops-nix,
+    nur,
+    stylix,
+    nix-your-shell,
+    firefox-addons,
+    treefmt-nix,
+    hyprland,
+    hyprland-plugins,
+    flake-parts,
+    flake-utils,
+    nixvim,
+    doom-emacs,
+    emacs-overlay,
+    nui-nvim,
+    none-ls-nvim,
+    vim-translator,
+    blink-cmp,
+    minuet-ai-nvim,
+    avante-nvim,
+    zen-browser,
+    neovim-nightly-overlay,
+    mcp-servers-nix,
+    pyprland,
+    hypr-dynamic-cursors,
+    ...
+  }:
+    flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
       perSystem = {pkgs, ...}: let
         pkgs-unfree = import inputs.nixpkgs {
@@ -112,17 +144,17 @@
           host,
           username,
         }:
-          inputs.nixpkgs.lib.nixosSystem {
+          nixpkgs.lib.nixosSystem {
             specialArgs = {inherit inputs username host system;};
 
             modules = [
-              inputs.disko.nixosModules.default
-              inputs.sops-nix.nixosModules.sops
-              inputs.nur.modules.nixos.default
-              inputs.stylix.nixosModules.stylix
+              disko.nixosModules.default
+              sops-nix.nixosModules.sops
+              nur.modules.nixos.default
+              stylix.nixosModules.stylix
               ./hosts/${host}/config.nix
               ./hosts/${host}/sops.nix
-              inputs.home-manager.nixosModules.home-manager
+              home-manager.nixosModules.home-manager
               ({
                 pkgs,
                 nixpkgs-unstable,

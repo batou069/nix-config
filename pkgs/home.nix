@@ -1,15 +1,85 @@
 {
   pkgs,
   username,
+  lib,
+  inputs,
   ...
 }: let
+  pythonEnv = pkgs.python312.withPackages (ps:
+    with ps; [
+      black
+      ruff
+      ruff_format
+      isort
+      # faiss
+      alive-progress
+      spacy
+      nltk
+      huggingface-hub
+      torchvision
+      torchaudio
+      diffusers
+      transformers
+      tokenizers
+      accelerate
+      imageio
+      imageio-ffmpeg
+      easydict
+      ftfy
+      addict
+      beautifulsoup4
+      tensorboard
+      torchvision
+      deepface
+      facenet-pytorch
+      torch
+      tsfresh
+      optuna
+      pyquery
+      imbalanced-learn
+      scipy
+      requests
+      rich
+      polars
+      pandas
+      numpy
+      matplotlib
+      pymilvus
+      scann
+      pygame
+      jupyterlab
+      jupyter
+      pillow
+      opencv-python
+      tqdm
+      plotly
+      pytest
+      imageio
+      seaborn
+      python-dotenv
+      regex
+      tabulate
+      ipykernel
+      aiofiles
+      pip
+      scikit-learn
+      scikit-image
+      debugpy
+      sqlalchemy
+      pkgs.pyprland
+      google-auth-oauthlib
+      google-auth-httplib2
+      google-api-python-client
+    ]);
   customWaybar = pkgs.waybar.overrideAttrs (oldAttrs: {
     mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];
   });
 in {
   imports = [
+    inputs.nixvim.homeManagerModules.nixvim
     ./bat.nix
     ./cli.nix
+    ./nixvim
     # ./emacs.nix
     # ./firefox.nix      # not yet ready
     ./fzf.nix # replaced by television
@@ -19,16 +89,29 @@ in {
     ./lsd.nix
     # ./mpd.nix
     # ./niriswitcher.nix
-    ./nvim
+    # ./nvim
     ./starship.nix
     ./television.nix
     #   ./waybar.nix
     #   ./vscode.nix
     ./zsh.nix
   ];
+  programs = {
+    ruff = {
+      enable = true;
+      settings = {};
+    };
+    hyprpanel.enable = false;
+    uv.enable = true;
+    nixvim = {
+      enable = true;
+      vimAlias = true;
 
-  programs.hyprpanel.enable = false;
-
+      # Import the main nixvim module
+      # imports = [];
+    };
+  };
+  services.tldr-update.enable = true;
   # Home Manager version
   home = {
     stateVersion = "24.11";
@@ -37,76 +120,72 @@ in {
     username = username;
     homeDirectory = "/home/${username}";
 
-    # User-specific packages
-    packages = with pkgs; [
-      #       jupyter-kernel
-      #       jupyter
-      jupyter-all
-      #       jupyter-kernel
+    packages = [
+      pythonEnv
+      # jupyter
+      # jupyter-all # Jupyter Notebook and JupyterLab with popular extensions///
       customWaybar
-      blender
-      pyprland
-      fpp
+      pkgs.blender # 3D creation suite
+      pkgs.fpp
       # ags
-      igrep
-      base16-shell-preview
-      base16-schemes
-      # unstable.gemini-cli
-      unstable.manix
-      unstable.rmpc
-      rtaudio
-      erdtree # You can think of erdtree as a little bit of du, tree, find, wc and ls.
-      #      unstable.opencode
-      cmake
-      #      unstable.mpd
-      meld
-      normcap
-      fd
-      igrep
+      pkgs.igrep # Improved grep with context and file filtering
+      pkgs.base16-shell-preview # Set of shell scripts to change terminal colors using
+      pkgs.base16-schemes # Collection of base16 color schemes
+      pkgs.unstable.manix
+      pkgs.unstable.rmpc
+      pkgs.rtaudio # Real-time audio I/O library
+      pkgs.erdtree # Visualize directory structure as a tree
+      # unstable.opencode
+      pkgs.cmake
+      # unstable.mpd
+      pkgs.meld
+      pkgs.normcap
+      pkgs.fd
       # ripgrep
-      repgrep
-      ripgrep-all
-      alejandra
-      unstable.pre-commit
-      nodejs # Provides npm
-      kdePackages.okular
-      vgrep # User-friendly pager for grep/git-grep/ripgrep
+      pkgs.repgrep # A more powerful ripgrep with additional features
+      pkgs.ripgrep-all
+      pkgs.alejandra
+      pkgs.unstable.pre-commit
+      pkgs.nodejs # Provides npm
+      pkgs.kdePackages.okular
+      pkgs.vgrep # User-friendly pager for grep/git-grep/ripgrep
       # xonsh # Python-ish, BASHwards-compatible shell
-      vimPluginsUpdater
-      vimgolf # Interactive Vim golf game, train you vim skills
-      rofi-obsidian
-      rofi-rbw-wayland # Rofi-frontend for Bitwarden
-      wtype
-      rbw
-      pinentry-rofi
-      pinentry
-      alsa-ucm-conf # maybe this fixed sound issue?
-      tradingview
-      emacs-pgtk
-      neovide
-      appimage-run
-      codex # Claude Assistant CLI
-      claudia
-      statix # Lints and suggestions for the Nix programming language
+      pkgs.vimPluginsUpdater
+      pkgs.vimgolf # Interactive Vim golf game, train you vim skills
+      pkgs.rofi-obsidian # Rofi plugin to quickly open Obsidian notes
+      pkgs.rofi-rbw-wayland # Rofi-frontend for Bitwarden
+      pkgs.wtype
+      pkgs.rbw
+      pkgs.pinentry-rofi
+      pkgs.pinentry
+      pkgs.alsa-ucm-conf # maybe this fixed sound issue?
+      pkgs.tradingview
+      pkgs.emacs-pgtk
+      pkgs.neovide
+      pkgs.appimage-run
+      pkgs.codex # Claude Assistant CLI
+      pkgs.claudia
+      pkgs.tealdeer
+      pkgs.statix # Lints and suggestions for the Nix programming language
       # nur.repos.novel2430.zen-browser-bin # Zen Browser
       # nur.repos."7mind".ibkr-tws     # Interactive Brokers TWS
-      # nur.repos.k3a.ib-tws
-      nixdoc
-      glow # Beautiful terminal markdown viewer
-      gum # Terminal-based GUI toolkit
-      keepassxc # Password manager
-      keepmenu # Menu for KeePassXC
-      git-credential-keepassxc # Credential helper for Git
-      libnotify
-      papirus-icon-theme
-      pcmanfm-qt
-      zed-editor # Code Editor
-      pnpm # npm package manager
-      git-filter-repo
-      sof-tools
-      fabric-ai
-      faiss # Command line tool for interacting with Generative AI models
-      (callPackage ./ipython-ai.nix {})
+      pkgs.nur.repos.k3a.ib-tws
+      pkgs.nixdoc
+      pkgs.glow # Beautiful terminal markdown viewer
+      pkgs.gum # Terminal-based GUI toolkit
+      pkgs.keepassxc # Password manager
+      pkgs.keepmenu # Menu for KeePassXC
+      pkgs.git-credential-keepassxc # Credential helper for Git
+      pkgs.libnotify
+      pkgs.papirus-icon-theme
+      pkgs.pcmanfm-qt
+      pkgs.zed-editor # Code Editor
+      pkgs.pnpm # npm package manager
+      pkgs.git-filter-repo
+      pkgs.sof-tools
+      pkgs.fabric-ai
+      pkgs.faiss # Command line tool for interacting with Generative AI models
+      (pkgs.callPackage ./ipython-ai.nix {}).out
     ];
 
     sessionVariables = {
@@ -147,6 +226,45 @@ in {
         '';
       };
       ".ipython/extensions/custom_gemini_provider.py".source = ./custom-gemini-provider.py;
+    };
+
+    activation = {
+      updateVSCodePythonPath = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        set -e # Exit immediately if a command exits with a non-zero status.
+        python_path="${pkgs.python312}/bin/python3"
+        settings_file="$HOME/.config/Code/User/settings.json"
+        tmp_file="$settings_file.tmp"
+
+        printf "Ensuring VSCode Python path is set to: %s\n" "$python_path" >&2
+
+        # Ensure the directory exists
+        mkdir -p "$(dirname "$settings_file")"
+
+        # Create an empty JSON object if the file doesn't exist
+        if [ ! -f "$settings_file" ]; then
+          printf "{}\n" > "$settings_file"
+          printf "Created empty settings file: %s\n" "$settings_file" >&2
+        fi
+
+        # Use jq to update the file, handling errors
+        if ${pkgs.jq}/bin/jq \
+          --arg path "$python_path" \
+          '.["python.defaultInterpreterPath"] = $path' \
+          "$settings_file" > "$tmp_file"; then
+          # Check if the content has actually changed before moving
+          if ! cmp -s "$settings_file" "$tmp_file"; then
+            mv "$tmp_file" "$settings_file"
+            printf "Updated VSCode Python path in: %s\n" "$settings_file" >&2
+          else
+            rm "$tmp_file"
+            printf "VSCode Python path already correct in: %s\n" "$settings_file" >&2
+          fi
+        else
+          printf "ERROR: Failed to update %s with jq.\n" "$settings_file" >&2
+          rm "$tmp_file"
+          exit 1
+        fi
+      '';
     };
   };
 

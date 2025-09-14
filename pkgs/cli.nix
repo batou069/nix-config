@@ -5,15 +5,39 @@
   ...
 }: {
   programs = {
+
+    superfile = {
+    	enable = true;
+    	settings = {
+    		transparent_background = false;
+    		theme = "catppuccin-frappe";
+    	};
+    };
+
+    atuin = {
+    	enable = true;
+    	enableZshIntegration = true;
+    	enableNushellIntegration = true;
+    	enableBashIntegration = true;
+    	enableFishIntegration = true;
+    	settings = {
+    		inline_height = 40;
+    		style = "compact";
+    	};
+    	daemon = {
+    		enable = true;
+    		logLevel = "warn";
+    	};
+
+    };
     micro = {
       enable = true;
-      settings = {
-        clipboard = "internal";
-        # colorscheme = "one-dark";
-        diffgutter = true;
-        indentchar = "space";
-        scrollbar = true;
-      };
+      # settings = {
+      #   clipboard = "internal";
+      #   diffgutter = true;
+      #   indentchar = "space";
+      #   scrollbar = true;
+      # };
     };
 
     kitty = {
@@ -24,7 +48,7 @@
       };
       settings = {
         cursor_shape = "beam";
-        cursor_beam_thickness = 1.5;
+        cursor_beam_thickness = 1.0;
         cursor_shape_unfocused = "hollow";
         underline_hyperlinks = "always";
         copy_on_select = "clipboard";
@@ -34,9 +58,9 @@
         hide_window_decorations = "yes";
         tab_bar_style = "powerline";
         tab_powerline_style = "slanted";
-        tab_activity_symbol = "(X)";
+        tab_activity_symbol = "(O)";
+        font_size = 17.0;
       };
-      # };
     };
 
     eza = {

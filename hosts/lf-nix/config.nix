@@ -14,6 +14,7 @@ in {
     ./hardware.nix
     ./users.nix
     ./packages.nix
+    ./clickcapital-parser.nix
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
@@ -21,24 +22,7 @@ in {
     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
-  nixpkgs.overlays = [
-    inputs.neovim-nightly-overlay.overlays.default
-    inputs.mcp-servers-nix.overlays.default
-    (final: prev: {
-      unstable = import inputs.nixpkgs-unstable {
-        inherit (prev) system;
-        config.allowUnfree = true;
-      };
-    })
-    # Second overlay: Add your other packages and jupyter-ai.
-    # This one can now safely access `final.unstable`.
-    (final: prev: {
-      claudia = inputs.claudia.packages.${prev.system}.default;
-      ags = inputs.ags.packages.${prev.system}.default;
-      firefox-addons = inputs.firefox-addons.packages.${prev.system};
-      
-    })
-  ];
+  nixpkgs.overlays = import ../../overlays {inherit inputs;};
 
   nixpkgs.config.allowUnfree = true;
   security.sudo.wheelNeedsPassword = false; # Allow sudo without password for wheel group
@@ -99,7 +83,9 @@ in {
       magicOrExtension = ''\x7fELF....AI\x02'';
     };
 
-    plymouth.enable = true;
+    plymouth = {
+      enable = true;
+    };
   };
 
   vm.guest-services.enable = false;
@@ -147,6 +133,13 @@ in {
       };
     };
 
+    # cron = {
+    #   enable = true;
+    #   systemCronJobs = [
+    #     "0 9 * * * lf $ /home/lf/repos/clickcapitalparser/process_alerts.py"
+    #     # removed `{pkgs.python3}/bin/python3`
+    #   ];
+    # };
     greetd = {
       enable = true;
       vt = 1;
@@ -420,6 +413,7 @@ in {
 
   stylix = {
     enable = true;
+    autoEnable = true;
     enableReleaseChecks = true;
     base16Scheme = ./schemes/catppuccin-frappe.yaml;
     polarity = "dark";
@@ -427,7 +421,14 @@ in {
       autoImport = true;
       followSystem = true;
     };
-    targets.nixvim.enable = false;
+
+    targets.nixvim = {
+      enable = true;
+      transparent_bg = {
+        sign_column = true;
+        main = true;
+      };
+    };
     # targets.firefox.profileNames = ["default"];
     cursor = lib.mkDefault {
       name = "catppuccin-mocha-peach-cursors";
@@ -435,10 +436,10 @@ in {
       size = 24;
     };
     opacity = {
-      applications = 1.5;
-      desktop = 1.5;
-      popups = 1.5;
-      terminal = 1.5;
+      applications = 0.9;
+      desktop = 0.9;
+      popups = 1.0;
+      terminal = 0.75;
     };
     # overlays.enable = true;
     fonts = {

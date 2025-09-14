@@ -2,26 +2,23 @@ c = get_config()
 
 # This is a dedicated configuration for the ipython-ai command.
 
-# Add the directory containing the custom provider to sys.path
-# This ensures that the extension can be found by IPython.
-import sys
-import os
-config_dir = os.path.dirname(__file__)
-sys.path.append(config_dir)
-print(f"DEBUG: sys.path after append: {sys.path}")
-print(f"DEBUG: config_dir: {config_dir}")
+# Import from the new package structure
+import my_providers.custom_gemini_provider
 
-# Point to the location of the custom provider extension.
-c.InteractiveShellApp.extensions = [
-    'custom_gemini_provider'
-]
+# Only set llm_prefix_from_history to isolate the problem.
+c.TerminalInteractiveShell.llm_prefix_from_history = 'input_history'
 
-# Configure the auto-suggestion provider directly.
+# Configure the LLM provider class.
 # IPython will import and instantiate this class.
-c.TerminalInteractiveShell.autosuggestions_provider = "dummy_provider.DummyProvider"
+c.TerminalInteractiveShell.llm_provider_class = "my_providers.custom_gemini_provider.CustomGeminiProvider"
 
-# Set the key binding for auto-suggestions.
-# This is separate from the provider configuration.
+# Configure constructor arguments for the LLM provider.
+c.TerminalInteractiveShell.llm_constructor_kwargs = {"model_id": "gemini-2.5-flash"}
+
+# Enable verbose crash reporting for more detailed tracebacks.
+c.Application.verbose_crash=True
+
+# Configure keybinding for LLM autosuggestions.
 c.TerminalInteractiveShell.shortcuts = [
     {
         "new_keys": ["c-q"],

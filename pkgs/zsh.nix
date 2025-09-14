@@ -8,15 +8,24 @@
     enableCompletion = true;
     autosuggestion = {
       enable = true;
-      highlight = "fg=#777777";
+      highlight = "fg=#ff00ff,bg=cyan,bold,underline";
+      strategy = [
+        "match_prev_cmd"
+        "completion"
+        "history"
+      ];
     };
+          historySubstringSearch = {
+        enable = true;
+      };
+
     history = {
       append = true;
       share = true;
       # findNoDups = true;
       # saveNoDups = true;
-      ignoreAllDups = true;
-      ignoreDups = true;
+      # ignoreAllDups = true;
+      # ignoreDups = true;
       ignoreSpace = true;
       path = "${config.xdg.dataHome}/.zsh_history";
       size = 100000;
@@ -27,10 +36,13 @@
     defaultKeymap = "viins";
     localVariables = {
     };
-    zsh-abbr.globalAbbreviations = {
-      C = "| wl-copy";
-      G = "| rg ";
-      L = "| less -R";
+    zsh-abbr = {
+      enable = true;
+      globalAbbreviations = {
+        C = "| wl-copy";
+        G = "| rg ";
+        L = "| less -R";
+      };
     };
     shellAliases = {
       nhs = "nh os switch $N";
@@ -85,26 +97,47 @@
 
     #. ${pkgs.fzf}/share/fzf/completion.zsh
     initContent = ''
+                    bak() { cp "$1" "$1.bak.$(date +%Y-%m-%d_%H-%M-%S)" }
                     yt() {fabric -y "$1" --transcript}
                     if command -v nix-your-shell > /dev/null; then
                       nix-your-shell zsh | source /dev/stdin
                     fi
 
                     mkcd() { mkdir -p "$1" && cd "$1" }
-                    rgn() { rg --line-number --no-heading "$@" | awk -F: '{print $1 " [" $2 "]"}' | fzf --border-label 'Ripgrep Search' --delimiter ' \[' --nth 1 --preview 'bat --style=plain --color=always {1} --line-range $(({2}-5)): --highlight-line {2}' --preview-window 'right,70%,border-left' --border-label 'Ripgrep Search' --bind 'enter:become(nvim {1} +{2})' }
-                    rga-fzf() {
-                      RG_PREFIX="rga --files-with-matches"
+                    rga() {
+                      # 1. Find the root of the git repository. This ensures all paths are consistent.
+                      local git_root
+                      git_root=$(git rev-parse --show-toplevel 2>/dev/null)
+                      if [[ -z "$git_root" ]]; then
+                        echo "Error: Not in a git repository." >&2
+                        return 1
+                      fi
+
+                      # 2. Define the command to find files.
+                      #    - We add `--color=never` to fix the garbled output with [@m[35m...
+                      local RG_PREFIX="rga --files-with-matches --color=never"
                       local file
-                      file="$(
+
+                      # 3. Run fzf from within the git root directory using a subshell `(...)`.
+                      #    This prevents the function from changing your current directory.
+                      file=$(
+                        (
+                          cd "$git_root" && \
                           FZF_DEFAULT_COMMAND="$RG_PREFIX '$1'" \
                               fzf --sort --preview="[[ ! -z {} ]] && rga --pretty --context 5 {q} {}" \
                                   --phony -q "$1" \
                                   --bind "change:reload:$RG_PREFIX {q}" \
                                   --preview-window="70%:wrap"
-                          )" &&
-                    echo "opening $file" &&
-                    xdg-open "$file"
+                        )
+                      )
+
+                      # 4. If a file was selected, open it using its full, absolute path.
+                      if [[ -n "$file" ]]; then
+                        echo "opening $git_root/$file" &&
+                        xdg-open "$git_root/$file"
+                      fi
                     }
+
                     [[ -f /run/secrets/api_keys/openai ]] && export OPENAI_API_KEY="$(cat /run/secrets/api_keys/openai)"
                     [[ -f /run/secrets/api_keys/gemini ]] && export GEMINI_API_KEY="$(cat /run/secrets/api_keys/gemini)"
                     [[ -f /run/secrets/api_keys/anthropic ]] && export ANTHROPIC_API_KEY="$(cat /run/secrets/api_keys/anthropic)"
@@ -124,13 +157,31 @@
         name = "zsh-fzf-tab";
         src = pkgs.zsh-fzf-tab;
       }
+      # {
+      #   name = "zsh-fzf-history-search";
+      #   src = pkgs.zsh-fzf-history-search;
+      # }
       {
-        name = "zsh-fzf-history-search";
-        src = pkgs.zsh-fzf-history-search;
+        # name = "zsh-fast-syntax-highlighting";
+        # src = pkgs.zsh-fast-syntax-highlighting;
+        name = "zsh-f-sy-h";
+        src = pkgs.zsh-f-sy-h;
       }
       {
-        name = "zsh-fast-syntax-highlighting";
-        src = pkgs.zsh-fast-syntax-highlighting;
+        name = "zsh-autopair";
+        src = pkgs.zsh-autopair;
+      }
+      {
+        name = "zsh-you-should-use";
+        src = pkgs.zsh-you-should-use;
+      }
+      {
+        name = "zsh-history-to-fish";
+        src = pkgs.zsh-history-to-fish;
+      }
+      {
+        name = "zsh-forgit";
+        src = pkgs.zsh-forgit;
       }
     ];
   };

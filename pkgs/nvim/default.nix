@@ -181,7 +181,8 @@
     plugins = with pkgs.vimPlugins; [
       # Plugin Manager
       lazy-nvim
-
+      # lazy.nvim
+      plenary-nvim
       # Theme
       catppuccin-nvim
 
