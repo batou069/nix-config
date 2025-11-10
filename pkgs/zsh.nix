@@ -1,24 +1,24 @@
-{
-  config,
-  pkgs,
-  ...
+{ config
+, pkgs
+, ...
 }: {
+  imports = [ ./lessfilter.nix ];
   programs.zsh = {
     enable = true;
     enableCompletion = true;
+    completionInit = ''
+      autoload -U compinit && compinit
+      zstyle ':completion:*' menu select
+      zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
+    '';
     autosuggestion = {
       enable = true;
-      highlight = "fg=#ff00ff,bg=cyan,bold,underline";
-      strategy = [
-        "match_prev_cmd"
-        "completion"
-        "history"
-      ];
+      highlight = "fg=#b2b7d5ff,italic";
+      strategy = [ "match_prev_cmd" "completion" "history" ];
     };
-          historySubstringSearch = {
-        enable = true;
-      };
-
+    historySubstringSearch = {
+      enable = true;
+    };
     history = {
       append = true;
       share = true;
@@ -26,6 +26,7 @@
       # saveNoDups = true;
       # ignoreAllDups = true;
       # ignoreDups = true;
+      # hist_verify = true;
       ignoreSpace = true;
       path = "${config.xdg.dataHome}/.zsh_history";
       size = 100000;
@@ -33,31 +34,39 @@
       extended = true;
     };
     autocd = true;
-    defaultKeymap = "viins";
-    localVariables = {
+    cdpath = [
+      "${config.home.homeDirectory}/git"
+      "${config.home.homeDirectory}/nix"
+    ];
+    dirHashes = {
+      lfnix = "${config.home.homeDirectory}/nix/hosts/lf-nix";
+      pkgs = "${config.home.homeDirectory}/nix/pkgs";
+      nix = "${config.home.homeDirectory}/nix";
+      py = "${config.home.homeDirectory}/git/py";
     };
+    defaultKeymap = "viins";
+    localVariables = { };
     zsh-abbr = {
-      enable = true;
+      # enable = true;
       globalAbbreviations = {
         C = "| wl-copy";
-        G = "| rg ";
+        G = "| rg";
         L = "| less -R";
       };
     };
     shellAliases = {
+      man = "batman";
       nhs = "nh os switch $N";
-      nix-gc = "nix-collect-garbage";
-      nix-gcd = "nix-collect-garbage -d";
+      ngc = "nix-collect-garbage";
+      ngcd = "nix-collect-garbage -d";
       sw = "nh os switch";
       upd = "nh os switch --update";
       hms = "nh home switch";
       g = "git";
       c = "clear";
       p = "python";
-      py = "python";
       e = "exit";
       btc = "curl rate.sx";
-      # paths="echo -e ${PATH//:/\\n}";
       d = "docker";
       dc = "docker compose";
       dcu = "docker compose up";
@@ -65,124 +74,97 @@
       dcud = "docker compose up -d";
       dps = "docker ps";
       dpsa = "docker ps -a";
-      drfa = "'docker rm -f $(docker ps -aq)'";
       tai = "tmux attach -t ai3";
       t = "tmux";
       ld = "lazydocker";
       lg = "lazygit";
-      treesize = "ncdu";
-      lastmod = "find . -type f -not -path '*/\.*' -exec ls -lrt {} +";
-      deadnix = "nix run github:astro/deadnix";
-      "-" = "cd -";
-
-      # zf = "z '$(zoxide query -l | fzf --preview 'ls --color {}' --preview-window '70%:wrap' --border-label='Dir Jump')'";
+      # Useful fzf-based aliases
       # gv = "git grep --line-number . | fzf --delimiter : --nth 3.. --bind 'enter:become(nvim {1} +{2})' --border-label='Git Grep'";
       # dfz = "docker ps -a | fzf --multi --header 'Select container' --preview 'docker inspect {1}' --preview-window '40%:wrap' --border-label='Docker Select' | awk '{print \$1}' | xargs -I {} docker start {}";
-      # v = "fzf --preview --border-label='File Picker' 'bat {}' --preview-window '70%:wrap' --multi --bind 'enter:become(nvim {+})'";
-      # mans = "man -k . | fzf --border-label='Man Pages' | awk '{print \$1}' | xargs -r man";
-      # ns = "nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --preview-window 'right:40%:wrap' --scheme history";
-      # manx = "manix '' | grep '^# ' | sed 's/^# \(.*\) (.*/\1/;s/ (.*//;s/^# //' | fzf --preview='manix '{}'' | xargs manix";
-      ".." = "cd ..";
-      "..." = "cd ../..";
+      mans = "man -k . | fzf --border-label='Man Pages' | awk '{print \$1}' | xargs -r man";
+
+      # Directory navigation
+      "22" = "cd ../..";
+      "33" = "cd ../../..";
+      "44" = "cd ../../../..";
+      "55" = "cd ../../../../..";
+      add_secret = "nix-shell -p sops --run \"SOPS_AGE_KEY_FILE=secrets/age-key.txt sops secrets/secrets.yaml\"";
     };
-    # syntaxHighlighting = {
-    #   enable = true;
-    #   highlighters = [
-    #     "main"
-    #     "brackets"
-    #     "pattern"
-    #     "cursor"
-    #   ];
-    # };
 
-    #. ${pkgs.fzf}/share/fzf/completion.zsh
     initContent = ''
-                    bak() { cp "$1" "$1.bak.$(date +%Y-%m-%d_%H-%M-%S)" }
-                    yt() {fabric -y "$1" --transcript}
-                    if command -v nix-your-shell > /dev/null; then
-                      nix-your-shell zsh | source /dev/stdin
-                    fi
+      # Unset FZF_DEFAULT_OPTS to clear any stale or conflicting configurations
+      unset FZF_DEFAULT_OPTS
 
-                    mkcd() { mkdir -p "$1" && cd "$1" }
-                    rga() {
-                      # 1. Find the root of the git repository. This ensures all paths are consistent.
-                      local git_root
-                      git_root=$(git rev-parse --show-toplevel 2>/dev/null)
-                      if [[ -z "$git_root" ]]; then
-                        echo "Error: Not in a git repository." >&2
-                        return 1
-                      fi
+      drfa() {docker rm -f "$(docker ps -aq)"}
+      bak() { cp "$1" "$1.bak.$(date +%Y-%m-%d_%H-%M-%S)" }
+      yt() {fabric -y "$1" --transcript}
+      mkcd() { mkdir -p "$1" && cd "$1" }
+      ytm() {ytmdl --nolocal --ignore-errors -o ~/Music/ytmdl --spotify-id  "$1" --url "$2" "$3"}
+      fzf-man-widget() {
+        manpage="echo {} | sed 's/\([[:alnum:][:punct:]]*\) (\([[:alnum:]]*\)).*/\2 \1/'"
+        batman="''${manpage} | xargs -r man | col -bx | bat --language=man --plain --color always --theme=\"Monokai Extended\""
+        man -k . | sort \
+        | awk -v cyan=$(tput setaf 6) -v blue=$(tput setaf 4) -v res=$(tput sgr0) -v bld=$(tput bold) '{ $1=cyan bld $1; $2=res blue $2; } 1' \
+        | fzf  \
+            -q "$1" \
+            --ansi \
+            --tiebreak=begin \
+            --prompt=' Man > '  \
+            --preview-window '50%,rounded,<50(up,85%,border-bottom)' \
+            --preview "''${batman}" \
+            --bind "enter:execute(''${manpage} | xargs -r man)" \
+            --bind "alt-c:+change-preview(cht.sh {1})+change-prompt(ﯽ Cheat > )" \
+            --bind "alt-m:+change-preview(''${batman})+change-prompt( Man > )" \
+            --bind "alt-t:+change-preview(tldr --color=always {1})+change-prompt(ﳁ TLDR > )"
+        zle reset-prompt
+      }
 
-                      # 2. Define the command to find files.
-                      #    - We add `--color=never` to fix the garbled output with [@m[35m...
-                      local RG_PREFIX="rga --files-with-matches --color=never"
-                      local file
+        if command -v nix-your-shell > /dev/null; then
+          nix-your-shell zsh | source /dev/stdin
+        fi
+        BASE16_SHELL="$HOME/.config/base16-shell/"
+        [ -n "$PS1" ] && \
+        [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+        source "$BASE16_SHELL/profile_helper.sh"
 
-                      # 3. Run fzf from within the git root directory using a subshell `(...)`.
-                      #    This prevents the function from changing your current directory.
-                      file=$(
-                        (
-                          cd "$git_root" && \
-                          FZF_DEFAULT_COMMAND="$RG_PREFIX '$1'" \
-                              fzf --sort --preview="[[ ! -z {} ]] && rga --pretty --context 5 {q} {}" \
-                                  --phony -q "$1" \
-                                  --bind "change:reload:$RG_PREFIX {q}" \
-                                  --preview-window="70%:wrap"
-                        )
-                      )
+        # FZF ZSH man page widget
+        bindkey '^h' fzf-man-widget
+        zle -N fzf-man-widget
+        # Source fzf completions for fzf-tab, without sourcing keybindings
+        # source "${pkgs.fzf}/share/fzf/completion.zsh"
 
-                      # 4. If a file was selected, open it using its full, absolute path.
-                      if [[ -n "$file" ]]; then
-                        echo "opening $git_root/$file" &&
-                        xdg-open "$git_root/$file"
-                      fi
-                    }
+        tmux-which-key() { tmux show-wk-menu-root ; }
+        zle -N tmux-which-key
+        # bindkey -M vicmd " " tmux-which-key
+        bindkey -M emacs '^ ' tmux-which-key
 
-                    [[ -f /run/secrets/api_keys/openai ]] && export OPENAI_API_KEY="$(cat /run/secrets/api_keys/openai)"
-                    [[ -f /run/secrets/api_keys/gemini ]] && export GEMINI_API_KEY="$(cat /run/secrets/api_keys/gemini)"
-                    [[ -f /run/secrets/api_keys/anthropic ]] && export ANTHROPIC_API_KEY="$(cat /run/secrets/api_keys/anthropic)"
-            #        eval "$(starship init zsh)"
-            # Base16 Shell
-      BASE16_SHELL="$HOME/.config/base16-shell/"
-      [ -n "$PS1" ] && \
-          [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
-              source "$BASE16_SHELL/profile_helper.sh"
 
-      # base16_default
-      autoload -U compinit; compinit
-      source ~/repos/fzf-tab/fzf-tab.plugin.zsh
+        # --- FZF-Tab stuff ---
+        # Inherit ALL default options (previewer, colors, layout) from the main fzf config.
+        zstyle ':fzf-tab:*' use-fzf-default-opts yes
+
+        # --- Overrides ---
+        # 1. For any command, when completing an option (e.g., ls -<TAB>), disable the preview.
+        zstyle ':fzf-tab:complete:*:options' fzf-preview
+
+        # 2. For the 'kill' command, use htop as a specific previewer.
+        zstyle ':fzf-tab:complete:kill:*' fzf-preview 'htop -p {1}'
     '';
-    plugins = [
-      {
-        name = "zsh-fzf-tab";
-        src = pkgs.zsh-fzf-tab;
-      }
-      # {
-      #   name = "zsh-fzf-history-search";
-      #   src = pkgs.zsh-fzf-history-search;
-      # }
-      {
-        # name = "zsh-fast-syntax-highlighting";
-        # src = pkgs.zsh-fast-syntax-highlighting;
-        name = "zsh-f-sy-h";
-        src = pkgs.zsh-f-sy-h;
-      }
-      {
-        name = "zsh-autopair";
-        src = pkgs.zsh-autopair;
-      }
-      {
-        name = "zsh-you-should-use";
-        src = pkgs.zsh-you-should-use;
-      }
-      {
-        name = "zsh-history-to-fish";
-        src = pkgs.zsh-history-to-fish;
-      }
-      {
-        name = "zsh-forgit";
-        src = pkgs.zsh-forgit;
-      }
-    ];
+
+    antidote = {
+      enable = true;
+      plugins = [
+        "z-shell/F-Sy-H"
+        "hlissner/zsh-autopair"
+        "MichaelAquilina/zsh-you-should-use"
+        "olets/zsh-abbr"
+        "casonadams/bitwarden.zsh"
+        "kalsowerus/zsh-bitwarden"
+        # "zshzoo/cd-ls"
+        "muePatrick/zsh-ai-commands"
+        "wfxr/forgit"
+        "Aloxaf/fzf-tab"
+      ];
+    };
   };
 }

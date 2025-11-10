@@ -1,8 +1,5 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: let
+{ pkgs, ... }:
+let
   r-with-packages = pkgs.rWrapper.override {
     packages = with pkgs.rPackages; [
       IRkernel
@@ -18,7 +15,7 @@
       sha256 = "sha256-GOD/qZsdCIgldRsOR/Hxo+mB0K7iutKt9XYUj9+6Tgc=";
     };
 
-    nativeBuildInputs = with pkgs; [autoPatchelfHook makeWrapper];
+    nativeBuildInputs = with pkgs; [ autoPatchelfHook makeWrapper ];
     buildInputs = with pkgs; [
       libGL
       nss
@@ -62,7 +59,7 @@
       icon = "zen-browser"; # Use icon name, registered in pixmaps
       comment = "A customizable, user-friendly web browser based on Firefox";
       desktopName = "Zen Browser";
-      categories = ["Network" "WebBrowser"];
+      categories = [ "Network" "WebBrowser" ];
     };
   };
 
@@ -74,7 +71,8 @@
     # export QT_LOGGING_RULES=qt6ct.debug=true
     exec ${pkgs.normcap}/bin/normcap "$@"
   '';
-in {
+in
+{
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages =
@@ -105,12 +103,12 @@ in {
       xdg-utils
       sof-firmware # added due to sound issues, missing microphone
       fastfetch
-      (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
+      (mpv.override { scripts = [ mpvScripts.mpris ]; }) # with tray
       # ranger
 
       # Hyprland Stuff
       # Build AGS v1 from source
-      inputs.ags.packages.${pkgs.system}.default
+      # inputs.ags.packages.${pkgs.system}.default
       btop
       brightnessctl # for brightness control
       cava
@@ -155,7 +153,7 @@ in {
       yt-dlp
       nix-search-tv
       gemini-cli
-      claude-code
+      #      claude-code
       # --- MY PACKAGES ---
       # Your requested packages
       lutris

@@ -1,10 +1,9 @@
-{
-  lib,
-  python312Packages,
-  fetchurl,
-  nodejs,
-  npm,
-  git,
+{ lib
+, python312Packages
+, fetchurl
+, nodejs
+, git
+,
 }:
 python312Packages.buildPythonPackage rec {
   pname = "jupyter-ai";
@@ -20,7 +19,6 @@ python312Packages.buildPythonPackage rec {
     hatch-jupyter-builder
     hatch-nodejs-version
     nodejs
-    npm
     git
   ];
   # Dependencies needed to RUN the package

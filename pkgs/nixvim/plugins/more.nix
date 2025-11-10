@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  nixvim,
-  ...
-}: {
+{ nixvim, ... }: {
   programs.nixvim = {
     plugins = {
       yanky = {
@@ -12,7 +7,7 @@
       };
 
       indent-blankline = {
-        enable = false;
+        enable = true;
         settings = {
           indent = {
             char = "│";
@@ -48,7 +43,7 @@
           library = [
             {
               path = "\${3rd}/luv/library";
-              words = ["vim%.uv"];
+              words = [ "vim%.uv" ];
             }
           ];
         };

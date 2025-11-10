@@ -1,8 +1,9 @@
 # 💫 https://github.com/JaKooLit 💫 #
-
-{ lib, pkgs, config, ... }:
-with lib;
-let
+{ lib
+, config
+, ...
+}:
+with lib; let
   cfg = config.vm.guest-services;
 in
 {

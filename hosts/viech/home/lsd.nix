@@ -1,10 +1,7 @@
-{
-  pkgs,
-  ...
-}: {
+{ pkgs, ... }: {
   programs.lsd = {
     enable = true;
-    enableZshIntegration= true;
+    enableZshIntegration = true;
     package = pkgs.lsd;
     settings = {
       date = "relative"; # Show relative dates

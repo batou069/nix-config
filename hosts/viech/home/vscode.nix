@@ -1,8 +1,5 @@
-{
-  pkgs,
-  ...
-}: {
-    programs.vscode = {
+{ pkgs, ... }: {
+  programs.vscode = {
     enable = true;
     package = pkgs.vscode;
 
@@ -22,7 +19,7 @@
         "nix.serverPath" = "nixd";
         "nix.enableLanguageServer" = true;
         "nix.serverSettings" = {
-          "nixd.formatting.command" = ["alejandra"];
+          "nixd.formatting.command" = [ "alejandra" ];
         };
         "[nix]" = {
           "editor.defaultFormatter" = "jnoortheen.nix-ide";
@@ -51,8 +48,8 @@
               ""
               "\${7: import} $0"
             ];
-            "description" = ["Insert AI3 Doc string."];
-            "prefix" = ["ai3"];
+            "description" = [ "Insert AI3 Doc string." ];
+            "prefix" = [ "ai3" ];
           };
         };
       };

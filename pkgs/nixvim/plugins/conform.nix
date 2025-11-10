@@ -1,7 +1,6 @@
-{
-  pkgs,
-  lib,
-  ...
+{ pkgs
+, lib
+, ...
 }: {
   programs.nixvim = {
     plugins.conform-nvim = {
@@ -18,14 +17,14 @@
             "trim_whitespace"
             "trim_newlines"
           ];
-          lua = ["stylua"];
-          python = ["ruff_format" "isort" "black"];
-          nix = ["alejandra"];
-          json = ["prettierd"];
-          yaml = ["prettierd"];
-          markdown = ["prettierd"];
-          sh = ["shfmt"];
-          rust = ["rustfmt"];
+          lua = [ "stylua" ];
+          python = [ "ruff_format" "isort" "black" ];
+          nix = [ "alejandra" ];
+          json = [ "prettierd" ];
+          yaml = [ "prettierd" ];
+          markdown = [ "prettierd" ];
+          sh = [ "shfmt" ];
+          rust = [ "rustfmt" ];
         };
         log_level = "warn";
         notify_on_error = false;
@@ -79,6 +78,9 @@
           };
           squeeze_blanks = {
             command = lib.getExe' pkgs.coreutils "cat";
+          };
+          alejandra = {
+            command = lib.getExe pkgs.alejandra;
           };
         };
       };

@@ -1,19 +1,19 @@
-{
-  pkgs,
-  username,
-  lib,
-  inputs,
-  ...
-}: let
-  pythonEnv = pkgs.python312.withPackages (ps:
+{ config
+, pkgs
+, username
+, lib
+, inputs
+, pkgs-unstable
+, ...
+}:
+let
+  pythonEnv312 = pkgs.python312.withPackages (ps:
     with ps; [
       black
-      ruff
-      ruff_format
       isort
-      # faiss
       alive-progress
       spacy
+      spacy-models.en_core_web_sm
       nltk
       huggingface-hub
       torchvision
@@ -70,19 +70,73 @@
       google-auth-oauthlib
       google-auth-httplib2
       google-api-python-client
+      # llama-index
+      chromadb
     ]);
   customWaybar = pkgs.waybar.overrideAttrs (oldAttrs: {
-    mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];
+    mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
   });
-in {
+  mcp-config =
+    let
+      mcp-pkgs = inputs.nix-mcp-servers.packages.${pkgs.system};
+      # Helper to create a server entry by pointing to the binary
+      mkServer = pkg: { command = "${pkg}/bin/${pkg.pname or pkg.name}"; };
+    in
+    inputs.mcp-servers-nix.lib.mkConfig pkgs {
+      fileName = "gemini-settings.json";
+      # This is the correct, manual way to define servers to avoid module errors
+      # and resolve the dependency collisions you are seeing.
+      settings.servers = {
+        # --- Servers from the cameronfyfe package set ---
+        fetch = mkServer mcp-pkgs.mcp-server-fetch;
+        "sequential-thinking" = {
+          command = "bash";
+          args = [
+            "-c"
+            "${pkgs.nodejs}/bin/npx -y @modelcontextprotocol/server-sequential-thinking"
+          ];
+        };
+        filesystem = {
+          command = "${mcp-pkgs.mcp-server-filesystem}/bin/mcp-server-filesystem";
+          args = [ config.home.homeDirectory ];
+        };
+        git = {
+          command = "${mcp-pkgs.mcp-server-git}/bin/mcp-server-git";
+          args = [ "--repository" "/home/lf/nix" ]; # Set a default repository
+        };
+        github = mkServer mcp-pkgs.github-mcp-server;
+        "brave-search" = mkServer mcp-pkgs.mcp-server-brave-search;
+
+        # --- Servers from your main nixpkgs ---
+        context7 = mkServer pkgs.context7-mcp;
+        serena = mkServer inputs.serena.packages.${pkgs.system}.serena;
+        tavily = mkServer pkgs.tavily-mcp;
+
+        # --- Special case for memory server with the stderr fix ---
+        memory = {
+          command = "bash";
+          args = [
+            "-c"
+            # We wrap the command to discard the noisy status message
+            "${mcp-pkgs.mcp-server-memory}/bin/mcp-server-memory 2>/dev/null"
+          ];
+        };
+      };
+    };
+in
+{
+  # Tell the unstable Home Manager module which package to use for activation.
+  programs.home-manager.package = pkgs-unstable.home-manager;
+
   imports = [
-    inputs.nixvim.homeManagerModules.nixvim
+    inputs.nixvim.homeModules.nixvim
+    # inputs.zen-browser.homeModules.default
     ./bat.nix
     ./cli.nix
-    ./nixvim
-    # ./emacs.nix
+    ./nixvim # Import your nixvim config
+    ./emacs.nix
     # ./firefox.nix      # not yet ready
-    ./fzf.nix # replaced by television
+    ./fzf.nix
     ./git.nix
     # ./hyprpanel.nix
     # ./hyprlock.nix
@@ -95,57 +149,82 @@ in {
     #   ./waybar.nix
     #   ./vscode.nix
     ./zsh.nix
+    # ./zen-browser.nix
   ];
+
   programs = {
     ruff = {
       enable = true;
-      settings = {};
+      settings = { };
     };
     hyprpanel.enable = false;
     uv.enable = true;
     nixvim = {
       enable = true;
       vimAlias = true;
-
-      # Import the main nixvim module
-      # imports = [];
+      viAlias = true;
+      extraConfigLuaPre = ''
+        vim.loader.enable()
+      '';
+    };
+    aria2 = {
+      enable = true;
+      settings = {
+        dir = "/home/lf/Downloads/aria2";
+        enable-rpc = true;
+        rpcSecretFile = "/home/lf/.config/aria2-rpc-secret";
+      };
     };
   };
-  services.tldr-update.enable = true;
+
+  gtk = {
+    enable = true;
+    iconTheme = {
+      package = lib.mkForce config.stylix.icons.package;
+      name = lib.mkForce config.stylix.icons.dark;
+    };
+  };
+
+  services = {
+    tldr-update.enable = true;
+    # copyq = {
+    #   enable = true;
+    #   forceXWayland = true;
+    # };
+  };
+
   # Home Manager version
   home = {
+    # This is required because we are using the unstable version of Home Manager
+    # with a stable Nixpkgs release, which is intentional.
+    enableNixpkgsReleaseCheck = false;
     stateVersion = "24.11";
 
     # User information
     username = username;
-    homeDirectory = "/home/${username}";
 
     packages = [
-      pythonEnv
-      # jupyter
-      # jupyter-all # Jupyter Notebook and JupyterLab with popular extensions///
+      pkgs.treefmt
+      pkgs.spotify-player
+      pythonEnv312
       customWaybar
       pkgs.blender # 3D creation suite
       pkgs.fpp
-      # ags
       pkgs.igrep # Improved grep with context and file filtering
       pkgs.base16-shell-preview # Set of shell scripts to change terminal colors using
       pkgs.base16-schemes # Collection of base16 color schemes
-      pkgs.unstable.manix
-      pkgs.unstable.rmpc
+      pkgs-unstable.manix
+      pkgs-unstable.rmpc
       pkgs.rtaudio # Real-time audio I/O library
       pkgs.erdtree # Visualize directory structure as a tree
-      # unstable.opencode
+      pkgs-unstable.opencode
       pkgs.cmake
-      # unstable.mpd
       pkgs.meld
-      pkgs.normcap
-      pkgs.fd
-      # ripgrep
+      pkgs-unstable.normcap
       pkgs.repgrep # A more powerful ripgrep with additional features
       pkgs.ripgrep-all
       pkgs.alejandra
-      pkgs.unstable.pre-commit
+      pkgs-unstable.pre-commit
       pkgs.nodejs # Provides npm
       pkgs.kdePackages.okular
       pkgs.vgrep # User-friendly pager for grep/git-grep/ripgrep
@@ -159,8 +238,7 @@ in {
       pkgs.pinentry-rofi
       pkgs.pinentry
       pkgs.alsa-ucm-conf # maybe this fixed sound issue?
-      pkgs.tradingview
-      pkgs.emacs-pgtk
+      # pkgs.tradingview
       pkgs.neovide
       pkgs.appimage-run
       pkgs.codex # Claude Assistant CLI
@@ -169,7 +247,8 @@ in {
       pkgs.statix # Lints and suggestions for the Nix programming language
       # nur.repos.novel2430.zen-browser-bin # Zen Browser
       # nur.repos."7mind".ibkr-tws     # Interactive Brokers TWS
-      pkgs.nur.repos.k3a.ib-tws
+      # pkgs.nur.repos.k3a.ib-tws
+      # pkgs.nur.repos.clefru.ib-tws
       pkgs.nixdoc
       pkgs.glow # Beautiful terminal markdown viewer
       pkgs.gum # Terminal-based GUI toolkit
@@ -185,10 +264,15 @@ in {
       pkgs.sof-tools
       pkgs.fabric-ai
       pkgs.faiss # Command line tool for interacting with Generative AI models
-      (pkgs.callPackage ./ipython-ai.nix {}).out
+      # (pkgs.callPackage ./ipython-ai.nix { inherit pkgs-unstable; }).out
+
+      pkgs.dosbox-staging
+      pkgs.dosbox-x
+      pkgs.google-chrome
     ];
 
     sessionVariables = {
+      # Personal directory shortcuts
       P = "$HOME/git/py";
       C = "$HOME/.config";
       G = "$HOME/git";
@@ -197,19 +281,30 @@ in {
       D = "$HOME/dotfiles";
       N = "$HOME/nix";
       DL = "$HOME/Downloads";
-      TERM = "xterm-256color";
+
+      # Personal application preferences
+      TERM = "xterm-kitty";
       VISUAL = "nvim";
       EDITOR = "nvim";
-      OPENAI_API_KEY = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
+      PAGER = "less";
+      LESS = "-R";
+
+      # Secrets
+      # OPENAI_API_KEY = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
       GEMINI_API_KEY = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
       GOOGLE_API_KEY = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
+      ZSH_AI_COMMANDS_OPENAI_API_KEY = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
       ANTHROPIC_API_KEY = "$(cat /run/secrets/api_keys/anthropic 2>/dev/null || echo '')";
-      NIXOS_OZONE_WL = 1;
+      BW_SESSION = "$(cat /run/secrets/bitwarden 2>/dev/null || echo '')";
+      INFLUX_TOKEN = "$(cat /run/secrets/influxdb 2>/dev/null || echo '')";
+      # Keys for MCP Servers
+      TAVILY_API_KEY = "$(cat /run/secrets/api_keys/tavily 2>/dev/null || echo '')";
+      BRAVE_API_KEY = "$(cat /run/secrets/api_keys/brave_search 2>/dev/null || echo '')";
+      GITHUB_TOKEN = "$(cat /run/secrets/api_keys/github_mcp 2>/dev/null || echo '')";
+      # Theming and shell appearance
       BASE16_SHELL = "$HOME/.config/base16-shell";
       TERM_ITALICS = "true";
       BAT_THEME = "base16";
-      PAGER = "less";
-      LESS = "-R";
     };
 
     file = {
@@ -225,11 +320,22 @@ in {
           secrets.pt.yaml
         '';
       };
-      ".ipython/extensions/custom_gemini_provider.py".source = ./custom-gemini-provider.py;
+      # ".ipython/extensions/custom_gemini_provider.py".source = ./custom-gemini-provider.py;
+      ".gemini/settings.json".source = mcp-config;
+
+      # Declaratively load Hyprland plugins as a workaround for the NixOS module bug
+      # ".config/hypr/plugins-load.conf" = {
+      #   text = ''
+      #     # WARNING: This file is generated by Nix. Do not edit it manually.
+      #     exec-once = hyprctl plugin load ${inputs.hyprland-plugins.packages.${pkgs.system}.hyprexpo}/lib/libhyprexpo.so
+      #     exec-once = hyprctl plugin load ${inputs.hyprland-plugins.packages.${pkgs.system}.xtra-dispatchers}/lib/libxtra-dispatchers.so
+      #     exec-once = hyprctl plugin load ${inputs.hy3.packages.${pkgs.system}.hy3}/lib/libhy3.so
+      #   '';
+      # };
     };
 
     activation = {
-      updateVSCodePythonPath = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      updateVSCodePythonPath = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         set -e # Exit immediately if a command exits with a non-zero status.
         python_path="${pkgs.python312}/bin/python3"
         settings_file="$HOME/.config/Code/User/settings.json"
@@ -269,11 +375,6 @@ in {
   };
 
   fonts.fontconfig.enable = true;
-  # catppuccin = {
-  #   flavor = "mocha";
-  #   accent = "peach";
-  #   enable = true;
-  # };
 
   xdg = {
     mimeApps = {
@@ -299,8 +400,8 @@ in {
         "application/x-yaml" = "code.desktop";
         "application/json" = "code.desktop";
         "image/avif" = "loupe.desktop";
-        "audio/*" = ["vlc.desktop"];
-        "video/*" = ["vlc.desktop"];
+        "audio/*" = [ "vlc.desktop" ];
+        "video/*" = [ "vlc.desktop" ];
       };
     };
     userDirs = {
@@ -320,40 +421,44 @@ in {
       "mimeapps.list".force = true;
     };
   };
+
   stylix = {
     enable = true;
+    enableReleaseChecks = false;
     autoEnable = true;
     targets = {
-      neovim.enable = false;
-      waybar.enable = false;
+      bat.enable = false;
+      tmux.enable = false;
+      neovim = {
+        enable = true;
+        plugin = "base16-nvim";
+        transparentBackground = {
+          main = true;
+          numberLine = false;
+          signColumn = false;
+        };
+      };
+      starship.enable = false;
       wofi.enable = false;
+      fzf.enable = false;
       hyprland.enable = false;
-      hyprlock.enable = false;
-      vscode = {
-        enable = true;
-      };
-      kitty = {
-        enable = true;
-        variant256Colors = true;
-      };
-      font-packages.enable = true;
+      vscode.enable = false;
+      kitty.enable = false;
     };
-    # iconTheme = {
-    # enable = true;
-    # package = pkgs.papirus-icon-theme;
-    # dark = "Papirus-Dark";
-    # light = "Papirus-Light";
-    # };
-    # cursor = {
-    # name = "DMZ-Black";
-    # size = 24;
-    # package = pkgs.vanilla-dmz;
-    # };
-    # opacity = {
-    # applications = 0.95;
-    # desktop = 0.95;
-    # popups = 1.0;
-    # terminal = 0.95;
-    # };
+    polarity = "dark";
+    targets.font-packages.enable = true;
+    icons = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
+    };
+
+    opacity = {
+      applications = 1.5;
+      desktop = 1.5;
+      popups = 1.5;
+      terminal = 1.0;
+    };
   };
 }

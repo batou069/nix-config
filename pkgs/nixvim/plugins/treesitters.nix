@@ -1,53 +1,51 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ pkgs, ... }: {
   programs.nixvim = {
     plugins = {
       treesitter-textobjects = {
         enable = true;
-        select = {
-          enable = true;
-          lookahead = true;
-          keymaps = {
-            "af" = "@function.outer";
-            "if" = "@function.inner";
-            "ac" = "@class.outer";
-            "ic" = "@class.inner";
-            "as" = "@scope";
-            "is" = "@scope.inner";
-            "aa" = "@parameter.outer";
-            "ia" = "@parameter.inner";
+        settings = {
+          select = {
+            enable = true;
+            lookahead = true;
+            keymaps = {
+              "af" = "@function.outer";
+              "if" = "@function.inner";
+              "ac" = "@class.outer";
+              "ic" = "@class.inner";
+              "as" = "@scope";
+              "is" = "@scope.inner";
+              "aa" = "@parameter.outer";
+              "ia" = "@parameter.inner";
+            };
           };
-        };
-        move = {
-          enable = true;
-          setJumps = true;
-          gotoNextStart = {
-            "]m" = "@function.outer";
-            "]]" = "@class.outer";
+          move = {
+            enable = true;
+            setJumps = true;
+            gotoNextStart = {
+              "]m" = "@function.outer";
+              "]]" = "@class.outer";
+            };
+            gotoNextEnd = {
+              "]M" = "@function.outer";
+              "][" = "@class.outer";
+            };
+            gotoPreviousStart = {
+              "[m" = "@function.outer";
+              "[[" = "@class.outer";
+            };
+            gotoPreviousEnd = {
+              "[M" = "@function.outer";
+              "[]" = "@class.outer";
+            };
           };
-          gotoNextEnd = {
-            "]M" = "@function.outer";
-            "][" = "@class.outer";
-          };
-          gotoPreviousStart = {
-            "[m" = "@function.outer";
-            "[[" = "@class.outer";
-          };
-          gotoPreviousEnd = {
-            "[M" = "@function.outer";
-            "[]" = "@class.outer";
-          };
-        };
-        swap = {
-          enable = true;
-          swapNext = {
-            "<leader>a" = "@parameter.inner";
-          };
-          swapPrevious = {
-            "<leader>A" = "@parameter.inner";
+          swap = {
+            enable = true;
+            swapNext = {
+              "<leader>a" = "@parameter.inner";
+            };
+            swapPrevious = {
+              "<leader>A" = "@parameter.inner";
+            };
           };
         };
       };
@@ -108,7 +106,7 @@
 
             # Some languages depend on vim's regex highlighting system for indent rules.
             additional_vim_regex_highlighting = true;
-            custom_captures = {};
+            custom_captures = { };
             disable = [
               "rust"
             ];

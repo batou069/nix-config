@@ -1,16 +1,13 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ ... }: {
   programs.nixvim = {
     plugins = {
+      tmux-navigator.enable = true;
       zen-mode.enable = true;
       twilight.enable = true;
       dressing.enable = true;
       dashboard.enable = true;
       web-devicons = {
-        enable = true;
+        enable = false;
         settings = {
           color_icons = true;
           default = true;

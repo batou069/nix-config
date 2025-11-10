@@ -1,11 +1,14 @@
-{pkgs, ...}: {
-  programs.emacs = {
+# ./pkgs/home.nix
+{ pkgs
+, dotfiles
+, ...
+}: {
+  programs.doom-emacs = {
     enable = true;
-
-    # Recommended: Use emacs-pgtk for the best Wayland/graphical experience
-    emacsPackage = pkgs.emacs-pgtk;
-
-    # Point to your personal configuration directory
-    doomPrivateDir = ./doom.d;
+    provideEmacs = true;
+    doomDir = dotfiles;
+    extraPackages = _epkgs: [
+      pkgs.notmuch # <-- This is where 'notmuch' now goes!
+    ];
   };
 }

@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   environment.etc."wireplumber/policy/10-hide-monitors.conf".text = ''
     context.modules = [
       { name = libpipewire-module-filter-chain }

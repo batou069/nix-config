@@ -3,11 +3,7 @@
   "mcpServers": {
     "nixos": {
       "command": "nix",
-      "args": [
-        "run",
-        "github:utensils/mcp-nixos",
-        "--"
-      ]
+      "args": ["run", "github:utensils/mcp-nixos", "--"]
     },
     "filesystem": {
       "command": "/etc/profiles/per-user/lf/bin/npx",
@@ -20,11 +16,15 @@
       ]
     },
     "memory": {
-      "command": "npx",
+      "command": "bash",
       "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
+        "-c",
+        "npx -y @modelcontextprotocol/server-memory 2>/dev/null"
       ]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
     }
   }
 }

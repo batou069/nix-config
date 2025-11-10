@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}: {
+{ pkgs, ... }: {
   programs.fzf = {
     enable = true;
     package = pkgs.fzf;
@@ -36,26 +33,26 @@
       "--border-label='History Search'"
     ];
     colors = {
-        fg = "#C6D0F5";
-        "fg+" = "#C6D0F5";
-        bg = "#303446";
-        "bg+" = "#51576D";
-        hl = "#E78284";
-        "hl+" = "#E78284";
-        info = "#CA9EE6";
-        marker = "#BABBF1";
-        prompt = "#CA9EE6";
-        spinner = "#F2D5CF";
-        pointer = "#F2D5CF";
-        header = "#E78284";
-        gutter = "#262626";
-        border = "#414559";
-        separator = "#4b4646";
-        scrollbar = "#a22b2b";
-        preview-bg = "#414559";
-        preview-border = "#4b4646";
-        label = "#C6D0F5";
-        query = "#d9d9d9";
+      fg = "#C6D0F5";
+      "fg+" = "#C6D0F5";
+      bg = "#303446";
+      "bg+" = "#51576D";
+      hl = "#E78284";
+      "hl+" = "#E78284";
+      info = "#CA9EE6";
+      marker = "#BABBF1";
+      prompt = "#CA9EE6";
+      spinner = "#F2D5CF";
+      pointer = "#F2D5CF";
+      header = "#E78284";
+      gutter = "#262626";
+      border = "#414559";
+      separator = "#4b4646";
+      scrollbar = "#a22b2b";
+      preview-bg = "#414559";
+      preview-border = "#4b4646";
+      label = "#C6D0F5";
+      query = "#d9d9d9";
     };
   };
 

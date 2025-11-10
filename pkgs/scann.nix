@@ -1,5 +1,12 @@
-{ lib, buildPythonPackage, fetchurl, numpy, tree, absl-py, unzip }:
-
+{ lib
+, buildPythonPackage
+, fetchurl
+, numpy
+, tree
+, absl-py
+, unzip
+,
+}:
 buildPythonPackage rec {
   pname = "scann";
   version = "1.4.2";
