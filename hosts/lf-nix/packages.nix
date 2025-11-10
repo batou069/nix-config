@@ -1,8 +1,11 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: let
+{ pkgs
+, pkgs-unstable
+, inputs
+, config
+, username
+, ...
+}:
+let
   r-with-packages = pkgs.rWrapper.override {
     packages = with pkgs.rPackages; [
       IRkernel
@@ -22,19 +25,27 @@
       lme4
     ];
   };
-in {
+in
+{
   imports = [
     ../../pkgs/gemini/gemini-cli-lf.nix
   ];
-  nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages =
     (with pkgs; [
+      overskride
+      ksnip
+      ytmdl
+      influxdb3
+      pstree
       # games
+
       dreamchess
       lc0
-      unstable.stockfish
-
+      pkgs-unstable.stockfish
+      pandoc
+      emojify
+      oath-toolkit
       smassh
       pastel
       catppuccin-plymouth
@@ -45,7 +56,23 @@ in {
       baobab
       btrfs-progs
       clang
-      mcp-server-fetch
+
+      # MCP SERVERS
+
+      # mcp-server-fetch
+      # mcp-server-sequential-thinking
+      # context7-mcp
+      # mcp-server-filesystem
+      # (callPackage ../../pkgs/wrapped-mcp-server-memory.nix {
+      #   original-mcp-server-memory = inputs.nix-mcp-servers.packages.${pkgs.system}.mcp-server-memory;
+      # })
+      # mcp-server-git
+      # tavily-mcp
+      # github-mcp-server
+      # serena
+      # mcp-server-brave-search
+
+      jrnl
       cpufrequtils
       duf # Utility For Viewing Disk Usage In Terminal
       findutils
@@ -67,10 +94,10 @@ in {
 
       # (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
       # ranger
-      # inputs.zen-browser.packages."${system}".twilight-official
+      # inputs.zen-browser.packages."${system}".default
       # Hyprland Stuff
       #ags
-      inputs.ags.packages.${pkgs.system}.default
+      # inputs.ags.packages.${pkgs.system}.default
       nix-your-shell
       btop
       brightnessctl # for brightness control
@@ -123,9 +150,7 @@ in {
       fx
       yq-go
       figlet
-      ghostty # Terminal
       # uv # Python Package Manager & more
-      tmux # Terminal Multiplexer
       gedit # Editor Gui
       vlc # Video Player
       obsidian
@@ -151,12 +176,19 @@ in {
       ncdu # Disk Usage Analyzer With Ncurses Interface
       picard # For Changing Music Metadata & Getting Cover Art
       usbutils # Good Tools For USB Devices
-      gcr
+      # gcr
       # Dev Stuff
-      nixd
-      nh
+      # nh
+      meowpdf
+      # zsh-f-sy-h
+      # zsh-forgit
+      # zsh-autopair
+      # zsh-you-should-use
+      # zsh-history-to-fish
+      # End Dev Stuff
     ])
-    ++ (with pkgs.unstable; [
+    ++ (with pkgs-unstable; [
+      nixd
       bc
       curl
       glib # for gsettings to work
@@ -175,12 +207,16 @@ in {
       pipx
       lm_sensors # Used For Getting Hardware Temps
       sof-firmware
+      inputs.hyprviz.packages.${pkgs.system}.default
+      hyprshade
     ])
     ++ [
       r-with-packages # Add the R environment
     ];
 
   programs = {
+    zoom-us.enable = true;
+    # mangowc.enable = true;
     direnv = {
       enable = true;
       nix-direnv.enable = true;
@@ -189,13 +225,7 @@ in {
       enableBashIntegration = true;
       enableXonshIntegration = true;
     };
-    hyprland = {
-      enable = true;
-      # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-      portalPackage = pkgs.xdg-desktop-portal-hyprland;
-      xwayland.enable = true;
-      withUWSM = true;
-    };
+
     # xonsh.enable = false;
     hyprlock.enable = true;
     waybar.enable = true;
@@ -218,6 +248,7 @@ in {
       enable = true;
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = false;
+      extraCompatPackages = [ pkgs.proton-ge-bin ];
     };
     firefox.enable = true;
     dconf.enable = true;
@@ -230,16 +261,23 @@ in {
     };
   };
 
+  services = {
+    aria2 = {
+      enable = true;
+      rpcSecretFile = "${config.users.users.${username}.home}/.config/aria2-rpc-secret";
+      # settings = {
+      #   dir = "${config.users.users.${username}.home}/Downloads/aria2";
+      #   enable-rpc = true;
+      # };
+    };
+  };
+
   # Extra Portal Configuration
   xdg.portal = {
     enable = true;
     wlr.enable = false;
     extraPortals = [
-      pkgs.xdg-desktop-portal-hyprland
       pkgs.xdg-desktop-portal-gtk
-    ];
-    configPackages = [
-      pkgs.xdg-desktop-portal-hyprland
     ];
   };
 }

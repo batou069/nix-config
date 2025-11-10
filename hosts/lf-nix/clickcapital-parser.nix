@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   # This defines your python script as an executable Nix package.
   process-alerts-script = pkgs.writeScript "process-alerts" ''
     #!${pkgs.nix}/bin/nix-shell
@@ -16,9 +17,10 @@
     from googleapiclient.discovery import build
     from googleapiclient.errors import HttpError
 
+    import os
     # --- CONFIGURATION ---
-    CONFIG_DIR = "/home/lf/.config/clickcapitalparser"
-    OBSIDIAN_VAULT_PATH = "/home/lf/Obsidian/my_vault/Laurent/"
+    CONFIG_DIR = os.environ.get("CONFIG_DIR", "/home/lf/.config/clickcapitalparser")
+    OBSIDIAN_VAULT_PATH = os.environ.get("OBSIDIAN_VAULT_PATH", "/home/lf/Obsidian/my_vault/Laurent/")
     OUTPUT_SUBFOLDER = "Tracking/Daily"
     NOTE_TITLE_FORMAT = "%Y-%m-%d Swing Alerts"
 
@@ -171,19 +173,35 @@
         main()
   '';
 
-  process-alerts-pkg = pkgs.runCommand "process-alerts-pkg" {} ''
+  process-alerts-pkg = pkgs.runCommand "process-alerts-pkg" { } ''
     mkdir -p $out/bin
     cp ${process-alerts-script} $out/bin/process-alerts
     chmod +x $out/bin/process-alerts
   '';
-in {
+in
+{
   # This section defines the configuration that the module provides.
-  services.cron = {
-    enable = true; # Ensures the cron service is running.
-    systemCronJobs = [
-      "0 9 * * * lf ${process-alerts-script}"
-    ];
+  systemd.services.clickcapital-parser = {
+    script = ''
+      ${process-alerts-script}
+    '';
+    serviceConfig = {
+      User = "lf";
+      Environment = [
+        "CONFIG_DIR=/home/lf/.config/clickcapitalparser"
+        "OBSIDIAN_VAULT_PATH=/home/lf/Obsidian/my_vault/Laurent/"
+      ];
+    };
   };
+
+  systemd.timers.clickcapital-parser = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "*-*-* 09:00:00";
+      Unit = "clickcapital-parser.service";
+    };
+  };
+
   users.users.lf.packages = [
     process-alerts-pkg
   ];

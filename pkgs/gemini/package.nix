@@ -1,26 +1,18 @@
-{
-  lib,
-  buildNpmPackage,
-  fetchFromGitHub,
-  fetchNpmDeps,
-  writeShellApplication,
-  cacert,
-  curl,
-  gnused,
-  jq,
-  nix-prefetch-github,
-  prefetch-npm-deps,
-  gitUpdater,
-  ...
+{ lib
+, buildNpmPackage
+, fetchFromGitHub
+, fetchNpmDeps
+, gitUpdater
+, ...
 }:
 buildNpmPackage (finalAttrs: {
   pname = "gemini-cli";
-  version = "0.8.1";
+  version = "0.11.2";
 
   src = fetchFromGitHub {
     owner = "google-gemini";
     repo = "gemini-cli";
-    rev = "a1cc5ac2b3b7101528bb8ec4e1eede4f08e88d0e";
+    rev = "f4f3727936d3cf9bb4f4269560153b94e2db04c1;";
     hash = "sha256-2w28N6Fhm6k3wdTYtKH4uLPBIOdELd/aRFDs8UMWMmU=";
   };
 
@@ -59,14 +51,13 @@ buildNpmPackage (finalAttrs: {
     runHook postInstall
   '';
 
-  passthru.updateScript = gitUpdater {};
+  passthru.updateScript = gitUpdater { };
 
   meta = {
     description = "AI agent that brings the power of Gemini directly into your terminal";
     homepage = "https://github.com/google-gemini/gemini-cli";
     license = lib.licenses.asl20;
-    maintainers = with lib.maintainers; [donteatoreo];
+    maintainers = with lib.maintainers; [ donteatoreo ];
     platforms = lib.platforms.all;
-    mainProgram = "gemini";
   };
 })

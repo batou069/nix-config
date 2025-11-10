@@ -1,7 +1,6 @@
-{
-  pkgs,
-  username,
-  ...
+{ pkgs
+, username
+, ...
 }:
 # users.nix
 {
@@ -39,7 +38,7 @@
   ];
   systemd.user.services.install-pre-commit = {
     description = "Install pre-commit hooks for dotfiles";
-    wantedBy = ["default.target"];
+    wantedBy = [ "default.target" ];
     script = ''
       ${pkgs.pre-commit}/bin/pre-commit install --install-dir $HOME/NixOS-Hyprland
     '';

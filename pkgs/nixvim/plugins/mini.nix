@@ -1,12 +1,8 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ lib, ... }: {
   programs.nixvim.plugins = {
     mini-pairs.enable = true;
     mini-starter = {
-      enable = true;
+      enable = false;
       settings = {
         autoopen = true;
         content_hooks = [

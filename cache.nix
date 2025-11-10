@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   # NOTE: These caches are used on NixOS (nixos-rebuild) only, and not in
   # home-manager (which would only use the user's nix.conf).
 

@@ -12,7 +12,7 @@
       "extensions.pocket.enabled" = false; # Disable Pocket
       "media.autoplay.default" = 5; # Block autoplay by default
     };
-    
+
     policies = {
       DisablePocket = true;
       DisplayBookmarksToolbar = true;
@@ -35,7 +35,7 @@
         Fingerprinting = true;
       };
 
-      languagePacks = ["en-US" "de"];
+      languagePacks = [ "en-US" "de" ];
 
       ExtensionSettings = {
         "jid1-MnnxcxisBPnSXQ@jetpack" = {
@@ -63,6 +63,6 @@
   };
 
   bowl.persist.entries = [
-    {path = ".mozilla/firefox";}
+    { path = ".mozilla/firefox"; }
   ];
 }

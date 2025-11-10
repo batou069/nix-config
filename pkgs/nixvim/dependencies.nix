@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ ... }: {
   programs.nixvim = {
     dependencies = {
       bat.enable = true;

@@ -1,12 +1,14 @@
-{
-  pkgs,
-  lib,
-  ...
+{ lib
+, pkgs-unstable
+, ...
 }: {
   programs.nixvim.plugins = {
-    sidekick.enable = true;
+    sidekick = {
+      enable = false;
+      package = pkgs-unstable.vimPlugins.sidekick-nvim;
+    };
     avante = {
-      enable = true;
+      enable = false;
       settings = {
         provider = "gemini";
         providers = {
@@ -19,33 +21,34 @@
         };
       };
     };
-    opencode = {
-      enable = true;
-      settings = {
-        # Assuming the zen opencode api is compatible with the openai format
-        # and you have a local server running.
-        # You may need to adjust the host and port.
-        host = "127.0.0.1";
-        port = 8080; # Default port, change if needed
-        prompts = {
-          explain = {
-            prompt = "Explain the following code block";
-            description = "Explain the code";
-          };
-          refactor = {
-            prompt = "Refactor the following code block";
-            description = "Refactor the code";
-          };
-        };
-      };
-    };
+    # opencode = {
+    # enable = true;
+    # package = pkgs-unstable.vimPlugins.opencode-nvim;
+    # settings = {
+    #   # Assuming the zen opencode api is compatible with the openai format
+    #   # and you have a local server running.
+    #   # You may need to adjust the host and port.
+    #   host = "127.0.0.1";
+    #   port = 8080; # Default port, change if needed
+    #   prompts = {
+    #     explain = {
+    #       prompt = "Explain the following code block";
+    #       description = "Explain the code";
+    #     };
+    #     refactor = {
+    #       prompt = "Refactor the following code block";
+    #       description = "Refactor the code";
+    #     };
+    #   };
+    # };
+    # };
     wtf = {
-      enable = true;
+      enable = false;
       settings = {
         # Using phind as a default search engine for diagnostics
         search_engine = "phind";
       };
     };
-    copilot-cmp.enable = true;
+    copilot-cmp.enable = false;
   };
 }

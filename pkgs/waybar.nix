@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs.waybar = {
     enable = true;
     package = pkgs.waybar;
@@ -79,7 +79,7 @@
       "backlight#2" = {
         device = "intel_backlight";
         format = "{icon} {percent}%";
-        format-icons = [";" ""];
+        format-icons = [ ";" "" ];
       };
 
       battery = {
@@ -232,7 +232,7 @@
       };
 
       "hyprland/window" = {
-        format = {};
+        format = { };
         max-length = 25;
         separate-outputs = true;
         offscreen-css = true;
@@ -408,7 +408,7 @@
           phone = "";
           portable = "";
           car = "";
-          default = ["" "" ""];
+          default = [ "" "" "" ];
         };
         on-click = "pamixer --toggle-mute";
         on-click-right = "pavucontrol -t 3";
@@ -827,7 +827,7 @@
       # This is a custom cava visualizer
       "custom/cava_mviz" = {
         exec = "$HOME/.config/hypr/scripts/WaybarCava.sh";
-        format = {};
+        format = { };
       };
 
       "custom/playerctl" = {

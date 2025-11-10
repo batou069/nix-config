@@ -1,9 +1,5 @@
 # Centralized keybindings for nixvim
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ ... }: {
   programs.nixvim = {
     keymaps = [
       # General & Navigation
@@ -101,6 +97,12 @@
         action = "<cmd>TypescriptRenameFile<cr>";
         options.desc = "Rename File (TS)";
       }
+      {
+        key = "gK";
+        action = "<cmd>lua vim.diagnostic.config({ virtual_lines = not vim.diagnostic.config().virtual_lines})<CR>";
+        mode = "n";
+        options.desc = "Toggle Virtual Lines";
+      }
 
       # Python Execution
       {
@@ -115,16 +117,16 @@
       }
 
       # DAP (Python)
-      {
-        key = "<leader>dPt";
-        action = "<cmd>lua require('dap-python').test_method()<cr>";
-        options.desc = "Debug Method";
-      }
-      {
-        key = "<leader>dPc";
-        action = "<cmd>lua require('dap-python').test_class()<cr>";
-        options.desc = "Debug Class";
-      }
+      # {
+      #   key = "<leader>dPt";
+      #   action = "<cmd>lua require('dap-python').test_method()<cr>";
+      #   options.desc = "Debug Method";
+      # }
+      # {
+      #   key = "<leader>dPc";
+      #   action = "<cmd>lua require('dap-python').test_class()<cr>";
+      #   options.desc = "Debug Class";
+      # }
 
       # Comment Box
       {

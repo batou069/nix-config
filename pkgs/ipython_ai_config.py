@@ -27,3 +27,8 @@ c.TerminalInteractiveShell.shortcuts = [
         "create": True,
     },
 ]
+
+# Load the jupyter-ai magics to enable the %%ai command
+c.InteractiveShellApp.extensions = [
+    "jupyter_ai_magics",
+]

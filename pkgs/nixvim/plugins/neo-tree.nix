@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ ... }: {
   programs.nixvim.plugins = {
     nui.enable = true;
 
@@ -13,7 +9,7 @@
         popup_border_style = "NC"; # -- or "" to use 'winborder' on Neovim v0.11+
         enable_git_status = true;
         enable_diagnostics = true;
-        open_files_do_not_replace_types = ["terminal" "trouble" "qf"]; #-- when opening files, do not use windows containing these filetypes or buftypes
+        open_files_do_not_replace_types = [ "terminal" "trouble" "qf" ]; #-- when opening files, do not use windows containing these filetypes or buftypes
         open_files_using_relative_paths = false;
         sort_case_insensitive = false; # -- used when sorting files and directories in the tree
         sort_function = "nil";

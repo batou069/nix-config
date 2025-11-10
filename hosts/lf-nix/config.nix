@@ -1,15 +1,17 @@
-{
-  config,
-  pkgs,
-  host,
-  username,
-  options,
-  lib,
-  inputs,
-  ...
-}: let
+{ config
+, pkgs
+, pkgs-unstable
+, host
+, username
+, options
+, inputs
+, lib
+, ...
+}:
+let
   inherit (import ./variables.nix) keyboardLayout;
-in {
+in
+{
   imports = [
     ./hardware.nix
     ./users.nix
@@ -22,9 +24,10 @@ in {
     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
-  nixpkgs.overlays = import ../../overlays {inherit inputs;};
+  # Silence the specialArgs warning by explicitly disabling the conflicting options.
+  nixpkgs.config.allowUnfree = lib.mkForce false;
+  nixpkgs.overlays = lib.mkForce [ ];
 
-  nixpkgs.config.allowUnfree = true;
   security.sudo.wheelNeedsPassword = false; # Allow sudo without password for wheel group
   boot = {
     # kernelPackages = pkgs.linuxPackages_zen; # Performance geared
@@ -32,6 +35,15 @@ in {
     # kernelPackages = pkgs.linuxPackages_testing; # Bleeding edge
 
     kernelParams = [
+      # silent
+      "quiet"
+      "loglevel=3"
+      "splash"
+      "boot.shell_on_fail"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
+
       "snd-intel-dspcfg.dsp_driver=3"
       "sof-transport-ipc=3"
       "systemd.mask=systemd-vconsole-setup.service"
@@ -52,10 +64,10 @@ in {
     '';
 
     initrd = {
-      availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod" "sdhci_pci"];
-      kernelModules = ["kvm-intel"];
+      availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod" "sdhci_pci" ];
+      kernelModules = [ "kvm-intel" ];
     };
-    extraModulePackages = [];
+    # extraModulePackages = [config.boot.kernelPackages.cpufreqtools];
     # Needed For Some Steam Games
     kernel.sysctl = {
       "vm.max_map_count" = 2147483642;
@@ -64,6 +76,7 @@ in {
     ## BOOT LOADERS: NOTE USE ONLY 1. either systemd or grub
     # Bootloader SystemD
     loader.systemd-boot.enable = true;
+    loader.grub.enable = false;
     loader.efi.canTouchEfiVariables = true;
     loader.timeout = 10;
 
@@ -88,6 +101,7 @@ in {
     };
   };
 
+  time.hardwareClockInLocalTime = true;
   vm.guest-services.enable = false;
   local.hardware-clock.enable = false;
 
@@ -123,16 +137,44 @@ in {
     LC_TIME = "en_US.UTF-8";
   };
 
+  systemd.tmpfiles.rules = [
+    # -----------------------------------------------------------
+    # Core Shells
+    # -----------------------------------------------------------
+
+    # 1. /bin/bash (The most common hardcoded shebang)
+    "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
+
+    # 2. /bin/sh (The default POSIX shell)
+    # NOTE: On NixOS, 'sh' is often linked to the simpler 'dash' for performance,
+    # but we can link it directly to bash if you prefer, or the coreutils 'sh'.
+    # If you don't know 'dash', linking to bash is generally safe.
+    "L+ /bin/sh - - - - ${pkgs.bash}/bin/sh"
+
+    # 3. /usr/bin/zsh (If you have scripts using #!/usr/bin/zsh)
+    "L+ /usr/bin/zsh - - - - ${pkgs.zsh}/bin/zsh"
+
+    # -----------------------------------------------------------
+    # Common Interpreters and Utilities
+    # -----------------------------------------------------------
+
+    # 4. /usr/bin/env (Crucial for the #!/usr/bin/env shebang style)
+    "L+ /usr/bin/python - - - - ${pkgs.python312}/bin/python"
+    "L+ /usr/bin/python3 - - - - ${pkgs.python312}/bin/python3"
+    "L+ /usr/bin/python3.12 - - - - ${pkgs.python312}/bin/python3.12" # Optional, but safer
+  ];
+  programs.localsend.enable = true;
   # Services to start
   services = {
     xserver = {
-      enable = false;
+      enable = lib.mkForce false; # Disable X11 entirely - was just false
       xkb = {
         layout = "${keyboardLayout}";
         variant = "";
       };
     };
 
+    # Cron Job for old Swing Trade Newsletter
     # cron = {
     #   enable = true;
     #   systemCronJobs = [
@@ -140,13 +182,13 @@ in {
     #     # removed `{pkgs.python3}/bin/python3`
     #   ];
     # };
+
     greetd = {
       enable = true;
       vt = 1;
       settings = {
         default_session = {
-          user = username;
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
         };
       };
     };
@@ -157,7 +199,7 @@ in {
     };
 
     gvfs.enable = true;
-    tumbler.enable = true;
+    # tumbler.enable = true;
 
     pipewire = {
       enable = true;
@@ -169,7 +211,7 @@ in {
 
     pulseaudio.enable = false; #unstable
     udev.enable = true;
-    envfs.enable = true;
+
     dbus.enable = true;
 
     fstrim = {
@@ -181,6 +223,7 @@ in {
     rpcbind.enable = false;
     nfs.server.enable = false;
     openssh.enable = true;
+
     flatpak.enable = true;
     blueman.enable = true;
 
@@ -201,9 +244,46 @@ in {
     syncthing = {
       enable = true;
       user = "${username}";
-      dataDir = "/home/${username}";
-      configDir = "/home/${username}/.config/syncthing";
+      dataDir = "${config.users.users.${username}.home}";
+      configDir = "${config.users.users.${username}.home}/.config/syncthing";
       relay.enable = true;
+    };
+
+    telegraf = {
+      enable = true;
+      extraConfig = {
+        inputs = {
+          cpu = {
+            percpu = true;
+            totalcpu = true;
+          };
+          mem = { };
+          disk = { };
+          diskio = { };
+          net = { };
+          system = { };
+          processes = { };
+          swap = { };
+          internal = { };
+        };
+        outputs = {
+          http = {
+            url = "http://127.0.0.1:8181/api/v3/write_lp?db=nixos_metrics";
+            method = "POST";
+            data_format = "influx";
+            headers = {
+              "Authorization" = "Token ${config.sops.secrets."influxdb".path}";
+            };
+          };
+        };
+      };
+    };
+    grafana = {
+      enable = true;
+      # Optional: Configure it to start automatically on your local machine
+      settings.server.root_url = "http://localhost:3000";
+      settings.security.admin_user = "admin";
+      settings.security.admin_password = "Token ${config.sops.secrets."influxdb".path}";
     };
   };
 
@@ -217,8 +297,8 @@ in {
   };
 
   powerManagement = {
-    enable = true;
-    cpuFreqGovernor = "schedutil";
+    enable = false;
+    cpuFreqGovernor = "powersave"; # or "performance" or "schedutil";
   };
 
   # Extra Logitech Support
@@ -269,25 +349,30 @@ in {
       })
     '';
   };
-  security.pam.services.hyprlock = {};
+  security.pam.services.hyprlock = { };
   # Cachix, Optimization settings and garbage collection automation
   nix = {
     settings = {
+      warn-dirty = false;
       auto-optimise-store = true;
       experimental-features = [
         "nix-command"
         "flakes"
       ];
-      substituters = ["https://hyprland.cachix.org"];
-      trusted-substituters = ["https://hyprland.cachix.org"];
-      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+      substituters = [ "https://hyprland.cachix.org" ];
+      trusted-substituters = [ "https://hyprland.cachix.org" ];
+      trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
     };
+    extraOptions = ''
+      access-tokens = github.com=${config.sops.secrets.github_pat.path}
+    '';
     gc = {
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
-    nixPath = ["nixpkgs=${inputs.nixpkgs}"];
+    nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+    optimise.automatic = true;
   };
 
   # Virtualization / Containers
@@ -303,7 +388,7 @@ in {
     rootless.enable = false;
     autoPrune.enable = true;
     enableOnBoot = true;
-    extraPackages = [pkgs.docker-buildx];
+    extraPackages = [ pkgs.docker-buildx ];
   };
 
   console.keyMap = "${keyboardLayout}";
@@ -312,40 +397,60 @@ in {
   environment = {
     sessionVariables = {
       NIXOS_OZONE_WL = "1"; # Enable Wayland Ozone platform for Electron apps
+      NIXOS_WAYLAND = "1"; # Force Wayland
       ELECTRON_OZONE_PLATFORM_HINT = "wayland"; # Or "AUTO"
-      # You might also try:
-      ELECTRON_ENABLE_WAYLAND = "1";
-      NH_FLAKE = "/home/lf/nix";
-      # variables.FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
+      # ELECTRON_ENABLE_WAYLAND = "1";
+      NH_FLAKE = "${config.users.users.lf.home}/nix";
+      ZSH_AI_COMMANDS_OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
+      OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
+      GEMINI_API_KEY = config.sops.secrets."api_keys/gemini".path;
+      ANTHROPIC_API_KEY = config.sops.secrets."api_keys/anthropic".path;
+      INFLUX_TOKEN = config.sops.secrets."influxdb".path;
     };
     variables = {
+      # Make the fzf shell integration available to all users.
+      # This path is determined by a system package (`pkgs.fzf`).
       FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
+      QT_QPA_PLATFORM = "wayland;xcb";
     };
   };
 
   programs = {
+    hyprland = {
+      # let
+      # Create a pristine pkgs set without any overlays to avoid conflicts from NUR.
+      # pkgs-pristine = import inputs.nixpkgs {
+      # system = pkgs.system;
+      # config.allowUnfree = true; # Keep this for consistency
+      # };
+      # Define plugins in a let block for clarity and robustness
+      # plugin-pkgs = with inputs; [
+      # hypr-dynamic-cursors.packages.${pkgs.system}.hypr-dynamic-cursors
+      # hyprland-plugins.packages.${pkgs.system}.hyprbars
+      # hyprland-plugins.packages.${pkgs.system}.hyprscrolling
+      # hyprland-plugins.packages.${pkgs.system}.hyprexpo
+      # hyprland-plugins.packages.${pkgs.system}.xtra-dispatchers
+      # hy3.packages.${pkgs.system}.hy3
+      # ];
+      # in {
+      enable = true;
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      xwayland.enable = true;
+      withUWSM = false;
+      # plugins = plugin-pkgs;
+    };
     # Zsh configuration
     zsh = {
       enable = true;
-      enableCompletion = true;
+      # enableCompletion = true;
       ohMyZsh.enable = false;
+      setOptions = [ "nonomatch" "zle" ];
 
-      autosuggestions.enable = true;
-      syntaxHighlighting.enable = true;
-      promptInit = "";
+      # autosuggestions.enable = true;
+      # syntaxHighlighting.enable = true;
+      # promptInit = "";
     };
     niri.enable = true;
-  };
-
-  systemd.services.user-session-env = {
-    script = ''
-          export OPENAI_API_KEY="$(cat
-      ${config.sops.secrets."api_keys/openai".path})"
-          export GEMINI_API_KEY="$(cat
-      ${config.sops.secrets."api_keys/gemini".path})"
-          export ANTHROPIC_API_KEY="$(cat
-      ${config.sops.secrets."api_keys/anthropic".path})"
-    '';
   };
 
   fonts = {
@@ -367,7 +472,7 @@ in {
       victor-mono
       nerd-fonts.im-writing
       nerd-fonts.fantasque-sans-mono
-      unstable.maple-mono.NF
+      pkgs-unstable.maple-mono.NF
       recursive
       cascadia-code
 
@@ -391,74 +496,72 @@ in {
     /*
        fontconfig = {
       defaultFonts = {
-        serif = [
-          "Maple Mono NF Italic"
-          "Noto Serif"
-        ];
+      serif = [
+      "Maple Mono NF Italic"
+      "Noto Serif"
+      ];
 
-        sansserif = [
-          "Maple Mono NF Italic"
-        ];
+      sansserif = [
+      "Maple Mono NF Italic"
+      ];
 
-        monospace = [
-          "Maple Mono NF Italic"
-          "Cascadia Code NF"
-        ];
+      monospace = [
+      "Maple Mono NF Italic"
+      "Cascadia Code NF"
+      ];
       };
 
       allowBitmaps = false;
-    };
+      };
     */
   };
 
   stylix = {
     enable = true;
     autoEnable = true;
+    # targets.hyprland.enable = false;
     enableReleaseChecks = true;
-    base16Scheme = ./schemes/catppuccin-frappe.yaml;
-    polarity = "dark";
+    # image = "/home/lf/Pictures/wallpapers/City-Night.png";
+    base16Scheme = ./schemes/flat.yaml;
+    polarity = "dark"; # "light", "dark", "either"
+    overlays.enable = true;
     homeManagerIntegration = {
       autoImport = true;
       followSystem = true;
     };
 
-    targets.nixvim = {
-      enable = true;
-      transparent_bg = {
-        sign_column = true;
-        main = true;
-      };
+    # icons = {
+    # enable = true;
+    # package = pkgs.colloid-icon-theme;
+    # };
+    cursor = {
+      name = "phinger-cursors-dark";
+      size = 32;
+      package = pkgs.phinger-cursors;
     };
-    # targets.firefox.profileNames = ["default"];
-    cursor = lib.mkDefault {
-      name = "catppuccin-mocha-peach-cursors";
-      package = pkgs.catppuccin-cursors.mochaPeach;
-      size = 24;
-    };
-    opacity = {
-      applications = 0.9;
-      desktop = 0.9;
-      popups = 1.0;
-      terminal = 0.75;
-    };
-    # overlays.enable = true;
+    # opacity = {
+    #   applications = 1.0;
+    #   desktop = 1.0;
+    #   popups = 1.0;
+    #   terminal = 0.75;
+    # };
     fonts = {
-      serif = {
+      sansSerif = {
         # package = pkgs.aleo-fonts;
         # name = "Aleo";
-        package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF";
+        package = pkgs.nerd-fonts.fantasque-sans-mono;
+        name = "Fantasqeue";
       };
 
-      sansSerif = {
+      serif = {
         # package = pkgs.noto-fonts-cjk-sans;
         # name = "Noto Sans CJK JP";
-        package = pkgs.maple-mono.NF;
+        package = pkgs-unstable.maple-mono.NF;
         name = "Maple Mono NF";
       };
 
       monospace = {
-        #        package = pkgs.maple-mono.NF;
+        package = pkgs.cascadia-code;
         name = "Maple Mono NF";
       };
 
@@ -468,19 +571,23 @@ in {
       };
 
       sizes = {
-        applications = 9;
-        desktop = 9;
-        popups = 9;
-        terminal = 9;
+        applications = 12;
+        desktop = 12;
+        popups = 14;
+        terminal = 14;
       };
     };
   };
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedTCPPorts = [8086 3000];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+
+  home-manager.sharedModules = [
+    inputs.zen-browser.homeModules.default
+  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

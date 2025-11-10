@@ -1,12 +1,8 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ ... }: {
   programs.nixvim = {
     plugins = {
       telescope = {
-        enable = false;
+        enable = true;
         extensions = {
           #file_browser = {
           #  enable = true;
