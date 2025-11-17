@@ -15,13 +15,6 @@
         "/nix"
       ]
     },
-    "memory": {
-      "command": "bash",
-      "args": [
-        "-c",
-        "npx -y @modelcontextprotocol/server-memory 2>/dev/null"
-      ]
-    },
     "fetch": {
       "command": "uvx",
       "args": ["mcp-server-fetch"]

@@ -16,11 +16,10 @@ in
     ./hardware.nix
     ./users.nix
     ./packages.nix
-    ./clickcapital-parser.nix
+    # ./clickcapital-parser.nix
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
-    # ../../pkgs/disable-monitors.nix
     "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
@@ -174,7 +173,7 @@ in
       };
     };
 
-    # Cron Job for old Swing Trade Newsletter
+    # Cron Job for Swing Trade Newsletter parser
     # cron = {
     #   enable = true;
     #   systemCronJobs = [
@@ -522,29 +521,21 @@ in
     # targets.hyprland.enable = false;
     enableReleaseChecks = true;
     # image = "/home/lf/Pictures/wallpapers/City-Night.png";
-    base16Scheme = ./schemes/flat.yaml;
-    polarity = "dark"; # "light", "dark", "either"
+    # base16Scheme = ../../assets/themes/flat.yaml;
+    base16Scheme = "github"; # ../../assets/base16_themes/cupcake.yaml;
+    polarity = "either"; # "light", "dark", "either"
     overlays.enable = true;
     homeManagerIntegration = {
       autoImport = true;
       followSystem = true;
     };
 
-    # icons = {
-    # enable = true;
-    # package = pkgs.colloid-icon-theme;
-    # };
+    # rose-pine-cursor , bibata-cursors, phinger-cursors-dark
     cursor = {
-      name = "phinger-cursors-dark";
-      size = 32;
-      package = pkgs.phinger-cursors;
+      name = "Banana";
+      size = 40;
+      package = pkgs.banana-cursor;
     };
-    # opacity = {
-    #   applications = 1.0;
-    #   desktop = 1.0;
-    #   popups = 1.0;
-    #   terminal = 0.75;
-    # };
     fonts = {
       sansSerif = {
         # package = pkgs.aleo-fonts;
@@ -561,7 +552,7 @@ in
       };
 
       monospace = {
-        package = pkgs.cascadia-code;
+        package = pkgs-unstable.maple-mono.NF;
         name = "Maple Mono NF";
       };
 
@@ -571,7 +562,7 @@ in
       };
 
       sizes = {
-        applications = 12;
+        applications = 10;
         desktop = 12;
         popups = 14;
         terminal = 14;
