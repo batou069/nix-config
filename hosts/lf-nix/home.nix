@@ -17,7 +17,7 @@
     users.${username} = {
       imports = [
         inputs.nix-doom-emacs-unstraightened.homeModule
-        ../../pkgs/home.nix
+        ../../home/home.nix
       ];
     };
   };

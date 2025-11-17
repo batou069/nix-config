@@ -137,12 +137,10 @@
   };
 
   outputs = inputs:
-    #@{flake-parts, nixpkgs, systems, ...}:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         # Import the treefmt-nix module
         inputs.treefmt-nix.flakeModule
-        # (import ./lib/import.tree.nix nixpkgs.lib ./pkgs)
       ];
       systems = [ "x86_64-linux" ];
       perSystem =

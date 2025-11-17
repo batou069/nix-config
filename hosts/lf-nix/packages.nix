@@ -1,8 +1,6 @@
 { pkgs
 , pkgs-unstable
 , inputs
-, config
-, username
 , ...
 }:
 let
@@ -261,23 +259,26 @@ in
     };
   };
 
-  services = {
-    aria2 = {
-      enable = true;
-      rpcSecretFile = "${config.users.users.${username}.home}/.config/aria2-rpc-secret";
-      # settings = {
-      #   dir = "${config.users.users.${username}.home}/Downloads/aria2";
-      #   enable-rpc = true;
-      # };
-    };
-  };
+  # services = {
+  # aria2 = {
+  #   enable = true;
+  #   rpcSecretFile = "${config.users.users.${username}.home}/.config/aria2-rpc-secret";
+  #   # settings = {
+  #   #   dir = "${config.users.users.${username}.home}/Downloads/aria2";
+  #   #   enable-rpc = true;
+  #   # };
+  # };
+  # };
 
-  # Extra Portal Configuration
-  xdg.portal = {
-    enable = true;
-    wlr.enable = false;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
-    ];
-  };
+  # # Extra Portal Configuration
+  # xdg.portal = {
+  #   enable = true;
+  #   wlr.enable = false;
+  #   extraPortals = [
+  #     pkgs.xdg-desktop-portal-hyprland
+  #     pkgs.xdg-desktop-portal-gtk
+  #   ];
+  #   config.common.default = "hyprland";
+  #   config."org.freedesktop.impl.portal.FileChooser".default = "gtk";
+  # };
 }
