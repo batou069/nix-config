@@ -50,8 +50,8 @@
         metrics = false;
       };
       vim_mode = false;
-      ui_font_size = 16;
-      buffer_font_size = 16;
+      # ui_font_size = 16;
+      # buffer_font_size = 16;
 
       show_diagnostics = "all";
 

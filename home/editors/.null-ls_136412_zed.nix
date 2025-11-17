@@ -1,9 +1,7 @@
 { ... }: {
   programs.zed-editor = {
     enable = true;
-    extensions = [
-      "nix"
-    ];
+    extensions = [ "nix" ];
 
     userKeymaps = [
       {
@@ -43,15 +41,11 @@
       autosave = "on_focus_change";
       always_treat_brackets_as_autoclosed = true;
       disable_ai = true;
-      features = {
-        copilot = false;
-      };
-      telemetry = {
-        metrics = false;
-      };
+      features = { copilot = false; };
+      telemetry = { metrics = false; };
       vim_mode = false;
-      ui_font_size = 16;
-      buffer_font_size = 16;
+      # ui_font_size = 16;
+      # buffer_font_size = 16;
 
       show_diagnostics = "all";
 
@@ -82,14 +76,9 @@
       };
 
       global_lsp_settings.button = true;
-      lsp = {
-        yaml-language-server.settings.yaml.keyOrdering = true;
-      };
+      lsp = { yaml-language-server.settings.yaml.keyOrdering = true; };
       format_on_save = "on";
-      formatter.external = {
-        command = "";
-        arguments = [ ];
-      };
+      formatter = "language_server";
     };
   };
 }

@@ -26,11 +26,12 @@ let
 in
 {
   imports = [
-    ../../pkgs/gemini/gemini-cli-lf.nix
+    ../../home/gemini/gemini-cli-lf.nix
   ];
 
   environment.systemPackages =
     (with pkgs; [
+      fuzzel
       overskride
       ksnip
       ytmdl
@@ -92,7 +93,7 @@ in
 
       # (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
       # ranger
-      # inputs.zen-browser.packages."${system}".default
+      inputs.zen-browser.packages."${system}".default
       # Hyprland Stuff
       #ags
       # inputs.ags.packages.${pkgs.system}.default
@@ -129,7 +130,6 @@ in
       slurp
       swappy
       swaynotificationcenter
-
       unzip
       wallust
       wl-clipboard
@@ -137,12 +137,6 @@ in
       xarchiver
       yad
       yt-dlp
-
-      # --- MY PACKAGES ---
-      # Your requested packages
-      lutris
-      heroic
-      bottles
       stow # Manage dotfiles symlinking
       gnome-font-viewer
       fx

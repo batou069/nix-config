@@ -44,7 +44,7 @@
       cursor-invert-fg-bg = true;
       cursor-style = "block_hollow";
       cursor-style-blink = false;
-      quick-terminal-animation-duration = 0.08;
+      quick-terminal-animation-duration = 8.0e-2;
       auto-update = "check";
       auto-update-channel = "stable";
       quit-after-last-window-closed = true;

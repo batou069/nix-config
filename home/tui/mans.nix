@@ -1,10 +1,8 @@
 { ... }: {
-  programs = {
-    man.enable = true; # lib.mkDefault false;
+  programs.man.enable = true; # lib.mkDefault false;
 
-    manual = {
-      html.enable = true;
-      manpages.enable = true;
-    };
+  manual = {
+    html.enable = true;
+    manpages.enable = true;
   };
 }

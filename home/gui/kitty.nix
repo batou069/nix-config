@@ -18,7 +18,7 @@
       strip_trailing_spaces = "smart";
       enable_audio_bell = "yes";
       hide_window_decorations = "yes";
-      tab_bar_style = "powerline"; # fade, slant, separator, powerline, hidden
+      tab_bar_style = "separator"; # fade, slant, separator, powerline, hidden
       tab_powerline_style = "slanted"; # angled, slanted, round.
       tab_fade = "0.25 0.5 0.75 1";
       tab_activity_symbol = "";
