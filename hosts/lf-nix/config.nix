@@ -522,8 +522,8 @@ in
     enableReleaseChecks = true;
     # image = "/home/lf/Pictures/wallpapers/City-Night.png";
     # base16Scheme = ../../assets/themes/flat.yaml;
-    base16Scheme = "github"; # ../../assets/base16_themes/cupcake.yaml;
-    polarity = "either"; # "light", "dark", "either"
+    image = ../../assets/wallpapers/astronaut_jellyfish.jpg; # ../../assets/base16_themes/cupcake.yaml;
+    polarity = "dark"; # "light", "dark", "either"
     overlays.enable = true;
     homeManagerIntegration = {
       autoImport = true;

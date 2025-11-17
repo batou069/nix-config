@@ -1,7 +1,7 @@
 { ... }: {
   imports = [
     ./zed.nix
-    ./emacs.nix
+    ./emacs
     ./nixvim
   ];
 }

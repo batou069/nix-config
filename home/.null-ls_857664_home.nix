@@ -7,79 +7,77 @@
 , ...
 }:
 let
-  pythonEnv312 = pkgs-unstable.python312.withPackages (
-    ps:
-      with ps; [
-        flask
-        black
-        isort
-        alive-progress
-        spacy
-        spacy-models.en_core_web_sm
-        nltk
-        huggingface-hub
-        torchvision
-        torchaudio
-        diffusers
-        transformers
-        tokenizers
-        accelerate
-        imageio
-        imageio-ffmpeg
-        easydict
-        ftfy
-        addict
-        beautifulsoup4
-        tensorboard
-        torchvision
-        deepface
-        facenet-pytorch
-        torch
-        tsfresh
-        optuna
-        pyquery
-        imbalanced-learn
-        scipy
-        requests
-        rich
-        polars
-        pandas
-        numpy
-        matplotlib
-        pymilvus
-        #     scann
-        pygame
-        jupyterlab
-        jupyter
-        pillow
-        opencv-python
-        tqdm
-        plotly
-        pytest
-        imageio
-        seaborn
-        python-dotenv
-        regex
-        tabulate
-        ipykernel
-        aiofiles
-        pip
-        scikit-learn
-        scikit-image
-        debugpy
-        sqlalchemy
-        pkgs-unstable.pyprland
-        google-auth-oauthlib
-        google-auth-httplib2
-        google-api-python-client
-        # llama-index
-        chromadb
-        typer
-        mcp
-        httpx
-        fastmcp
-      ]
-  );
+  pythonEnv312 = pkgs-unstable.python312.withPackages (ps:
+    with ps; [
+      flask
+      black
+      isort
+      alive-progress
+      spacy
+      spacy-models.en_core_web_sm
+      nltk
+      huggingface-hub
+      torchvision
+      torchaudio
+      diffusers
+      transformers
+      tokenizers
+      accelerate
+      imageio
+      imageio-ffmpeg
+      easydict
+      ftfy
+      addict
+      beautifulsoup4
+      tensorboard
+      torchvision
+      deepface
+      facenet-pytorch
+      torch
+      tsfresh
+      optuna
+      pyquery
+      imbalanced-learn
+      scipy
+      requests
+      rich
+      polars
+      pandas
+      numpy
+      matplotlib
+      pymilvus
+      #     scann
+      pygame
+      jupyterlab
+      jupyter
+      pillow
+      opencv-python
+      tqdm
+      plotly
+      pytest
+      imageio
+      seaborn
+      python-dotenv
+      regex
+      tabulate
+      ipykernel
+      aiofiles
+      pip
+      scikit-learn
+      scikit-image
+      debugpy
+      sqlalchemy
+      pkgs-unstable.pyprland
+      google-auth-oauthlib
+      google-auth-httplib2
+      google-api-python-client
+      # llama-index
+      chromadb
+      typer
+      mcp
+      httpx
+      fastmcp
+    ]);
   customWaybar = pkgs.waybar.overrideAttrs (oldAttrs: {
     mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
   });
@@ -105,18 +103,11 @@ let
         };
         filesystem = {
           command = "${mcp-pkgs.mcp-server-filesystem}/bin/mcp-server-filesystem";
-          args = [
-            "/home/lf/nix"
-            "/home/lf/git"
-            "/nix"
-          ];
+          args = [ "/home/lf/nix" "/home/lf/git" "/nix" ];
         };
         git = {
           command = "${mcp-pkgs.mcp-server-git}/bin/mcp-server-git";
-          args = [
-            "--repository"
-            "/home/lf/nix"
-          ]; # Set a default repository
+          args = [ "--repository" "/home/lf/nix" ]; # Set a default repository
         };
         github = mkServer mcp-pkgs.github-mcp-server;
         "brave-search" = mkServer mcp-pkgs.mcp-server-brave-search;
@@ -124,11 +115,7 @@ let
         # --- Custom MCP Servers ---
         nixos = {
           command = "${pkgs.nix}/bin/nix";
-          args = [
-            "run"
-            "github:utensils/mcp-nixos"
-            "--"
-          ];
+          args = [ "run" "github:utensils/mcp-nixos" "--" ];
         };
 
         # --- Servers from your main nixpkgs ---
@@ -213,14 +200,6 @@ in
     username = username;
 
     packages = [
-      (pkgs.writeShellApplication {
-        name = "ns";
-        runtimeInputs = with pkgs; [
-          fzf
-          nix-search-tv
-        ];
-        text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
-      })
       pkgs.treefmt
       pkgs.spotify-player
       pythonEnv312
@@ -439,10 +418,7 @@ in
         pkgs.gnome-keyring
       ];
       config.hyprland = {
-        default = [
-          "hyprland"
-          "gtk"
-        ];
+        default = [ "hyprland" "gtk" ];
         "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
         "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
         "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
@@ -473,13 +449,13 @@ in
       vscode.enable = true;
       kitty.enable = true;
     };
-    polarity = "dark";
+    polarity = "either";
     targets.font-packages.enable = true;
     icons = {
       enable = true;
       package = pkgs.juno-theme;
-      dark = "Juno-ocean";
-      light = "Juno-mirage";
+      # dark = "Papirus-Dark";
+      # light = "Papirus-Light";
     };
 
     opacity = {

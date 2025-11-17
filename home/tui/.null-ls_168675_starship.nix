@@ -21,29 +21,35 @@
         scan_timeout = 30;
         add_newline = true;
         command_timeout = 300;
-        continuation_prompt = "[▶▶ ](Subtext1) ";
+        continuation_prompt = "[∙ ∙ ∙ ](Subtext1) ";
         format = lib.concatStrings [
-          "\\["
+          "[ "
           "$username"
-          "\\]"
-          "\\["
+          # "$os"
+          " @ "
           "$directory"
-          "\\]"
-          "\\["
-          "$nix_shell"
-          "\\]"
+          "$python"
+          "$nix"
           "$character"
+          "]"
         ];
-        right_format = "\\[$git_branch\\] \\[$git_status\\] \\[$git_state\\] \\[$git_metrics\\] \\[$battery\\] $cmd_duration";
+        right_format = lib.concatStrings [
+          "$git_branch"
+          "$git_status"
+          # "$git_state"
+          "$git_metrics"
+          " "
+          "$cmd_duration"
+        ];
 
         directory = {
           format = "[$path]($style)[$read_only]($read_only_style) ";
           home_symbol = " ";
           # style = "blue";
-          style = " ${peach}";
+          style = "bold ${peach}";
           truncate_to_repo = true;
-          truncation_length = 4;
-          truncation_symbol = ".../";
+          truncation_length = 3;
+          truncation_symbol = "";
           repo_root_format = "[$before_root_path]($style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) ";
           # read_only = " !";
           # read_only = "";
@@ -67,13 +73,13 @@
         # ❮❯  󰳆 ≡ 󱚟
 
         character = {
-          success_symbol = " (peach)";
-          error_symbol = " #(red)";
-          vicmd_symbol = " (Subtext1)";
+          success_symbol = "[](peach)";
+          error_symbol = "[#](red)";
+          vicmd_symbol = "[](Subtext1)";
         };
 
         git_branch = {
-          format = "[$symbol $branch]($style) ";
+          format = "[$branch]($style) ";
           # style = darkgray;
           symbol = " ";
           style = "${teal}";
@@ -107,9 +113,7 @@
           am_or_rebase = "am/rebase";
         };
 
-        sudo = {
-          disabled = false;
-        };
+        sudo = { disabled = false; };
 
         git_metrics = {
           disabled = false;
@@ -129,14 +133,10 @@
         };
 
         python = {
-          symbol = " ";
+          symbol = "🐍 ";
           style = darkgray;
           format = "[$symbol$pyenv_prefix($version )(($virtualenv) )]($style)";
-          python_binary = [
-            "python"
-            "python3"
-            "python2"
-          ];
+          python_binary = [ "python" "python3" "python2" ];
           # pyenv_prefix = "PyEnv ";
           pyenv_version_name = true;
           version_format = "v$raw";
@@ -157,7 +157,7 @@
         nix_shell = {
           format = "[$symbol($version )]($style)";
           symbol = "❄️ ";
-          style = "blink ${darkgray}";
+          style = darkgray;
           heuristic = true;
           #        format = "via [$symbol(($name))]($style)";
         };
@@ -175,7 +175,7 @@
           format = "[$user]($style)";
           show_always = true;
           style_root = "bold ${red}";
-          style_user = "underline bold ${mauve}";
+          style_user = "bold ${mauve}";
         };
 
         hostname = {
@@ -195,7 +195,7 @@
           display = [
             {
               # 0% to 15%
-              style = "bold blink ${red}";
+              style = "bold ${red}";
               threshold = 15;
             }
             {
@@ -205,7 +205,7 @@
             }
             {
               # 50% to 90%
-              style = "blink bold ${green}";
+              style = "bold ${green}";
               threshold = 90;
             }
           ];
@@ -226,58 +226,28 @@
         os = {
           disabled = false;
           format = " [$symbol]($style)";
-          style = "bold blink${mauve}";
+          style = "bold ${mauve}";
         };
         #	character = {
         #	error_symbol = "";
         #	success_symbol = "❯(bold green)";
         #	};
         # SYMBOLS
-        git_commit = {
-          tag_symbol = "  ";
-        };
-        golang = {
-          symbol = " ";
-        };
-        guix_shell = {
-          symbol = " ";
-        };
-        haskell = {
-          symbol = " ";
-        };
-        haxe = {
-          symbol = " ";
-        };
-        hg_branch = {
-          symbol = " ";
-        };
-        java = {
-          symbol = " ";
-        };
-        julia = {
-          symbol = " ";
-        };
-        kotlin = {
-          symbol = " ";
-        };
-        lua = {
-          symbol = " ";
-        };
-        memory_usage = {
-          symbol = "󰍛 ";
-        };
-        meson = {
-          symbol = "󰔷 ";
-        };
-        nim = {
-          symbol = "󰆥 ";
-        };
-        nodejs = {
-          symbol = " ";
-        };
-        ocaml = {
-          symbol = " ";
-        };
+        git_commit = { tag_symbol = "  "; };
+        golang = { symbol = " "; };
+        guix_shell = { symbol = " "; };
+        haskell = { symbol = " "; };
+        haxe = { symbol = " "; };
+        hg_branch = { symbol = " "; };
+        java = { symbol = " "; };
+        julia = { symbol = " "; };
+        kotlin = { symbol = " "; };
+        lua = { symbol = " "; };
+        memory_usage = { symbol = "󰍛 "; };
+        meson = { symbol = "󰔷 "; };
+        nim = { symbol = "󰆥 "; };
+        nodejs = { symbol = " "; };
+        ocaml = { symbol = " "; };
         os.symbols = {
           Alpaquita = " ";
           Alpine = " ";
@@ -324,42 +294,20 @@
           Windows = "󰍲 ";
         };
 
-        package = {
-          symbol = "󰏗 ";
-        };
-        perl = {
-          symbol = " ";
-        };
-        php = {
-          symbol = " ";
-        };
-        pijul_channel = {
-          symbol = " ";
-        };
+        package = { symbol = "󰏗 "; };
+        perl = { symbol = " "; };
+        php = { symbol = " "; };
+        pijul_channel = { symbol = " "; };
         # python = {
         # symbol = " ";
         # };
-        rlang = {
-          symbol = "󰟔 ";
-        };
-        ruby = {
-          symbol = " ";
-        };
-        rust = {
-          symbol = "󱘗 ";
-        };
-        scala = {
-          symbol = " ";
-        };
-        swift = {
-          symbol = " ";
-        };
-        zig = {
-          symbol = " ";
-        };
-        gradle = {
-          symbol = " ";
-        };
+        rlang = { symbol = "󰟔 "; };
+        ruby = { symbol = " "; };
+        rust = { symbol = "󱘗 "; };
+        scala = { symbol = " "; };
+        swift = { symbol = " "; };
+        zig = { symbol = " "; };
+        gradle = { symbol = " "; };
       };
   };
 }

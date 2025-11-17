@@ -2,7 +2,7 @@
 , pkgs
 , ...
 }: {
-  imports = [ ./lessfilter.nix ];
+  imports = [ ../lessfilter.nix ];
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -38,13 +38,14 @@
       "${config.home.homeDirectory}/git"
       "${config.home.homeDirectory}/nix"
     ];
+    # dirHashes do `~n` instead of `~/nix`
     dirHashes = {
-      lfnix = "${config.home.homeDirectory}/nix/hosts/lf-nix";
-      pkgs = "${config.home.homeDirectory}/nix/pkgs";
-      nix = "${config.home.homeDirectory}/nix";
-      py = "${config.home.homeDirectory}/git/py";
+      nhl = "${config.home.homeDirectory}/nix/hosts/lf-nix";
+      nh = "${config.home.homeDirectory}/nix/home";
+      n = "${config.home.homeDirectory}/nix";
+      gp = "${config.home.homeDirectory}/git/py";
     };
-    defaultKeymap = "viins";
+    defaultKeymap = "emacs";
     localVariables = { };
     zsh-abbr = {
       # enable = true;
@@ -92,7 +93,7 @@
     };
 
     initContent = ''
-      zmodload zsh/zprof
+      # zmodload zsh/zprof
       # Unset FZF_DEFAULT_OPTS to clear any stale or conflicting configurations
       unset FZF_DEFAULT_OPTS
 
@@ -151,22 +152,22 @@
         # 2. For the 'kill' command, use htop as a specific previewer.
         zstyle ':fzf-tab:complete:kill:*' fzf-preview 'htop -p {1}'
 
-        zprof
+        # zprof
     '';
 
     antidote = {
       enable = true;
       plugins = [
-        "z-shell/F-Sy-H"
-        "hlissner/zsh-autopair"
-        "MichaelAquilina/zsh-you-should-use"
-        "olets/zsh-abbr"
-        "casonadams/bitwarden.zsh"
-        "kalsowerus/zsh-bitwarden"
-        # "zshzoo/cd-ls"
-        "/home/lf/nix/tmp/zsh-ai-commands"
-        "wfxr/forgit"
-        "Aloxaf/fzf-tab"
+        "z-shell/F-Sy-H" # Syntax Highlightling
+        "hlissner/zsh-autopair" # Autopair
+        "MichaelAquilina/zsh-you-should-use" # Auto best Practice settings
+        "olets/zsh-abbr" # use G instead of `<...> | grep <...>`
+        "casonadams/bitwarden.zsh" # Bitwarden 1 (?)
+        "kalsowerus/zsh-bitwarden" # Bitwarden 2 (?)
+        # "zshzoo/cd-ls"                      # Auto LS after cd
+        "muepatrick/zsh-ai-commands" # "/home/lf/nix/tmp/zsh-ai-commands"    # CTRL+O to send prompt to LLM
+        "wfxr/forgit" # Git aliases with fzf-like menues
+        "Aloxaf/fzf-tab" # Tab autocomplete menu
       ];
     };
   };
