@@ -231,7 +231,6 @@
       # Python Execution
       {
         key = "<localleader>p";
-        action = "<Nop>";
         options.desc = "Python";
       }
       {

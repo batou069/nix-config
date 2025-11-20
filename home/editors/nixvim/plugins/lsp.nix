@@ -251,7 +251,15 @@
           # nixd.enable = true;
           nil_ls = {
             enable = true;
-            settings.nil.diagnostics.autoArchive = true;
+            settings = {
+              nil = {
+                diagnostics.autoArchive = true;
+                nix = {
+                  pkgs = "github:NixOS/nixpkgs/nixos-25.05";
+                  "pkgs-unstable" = "github:NixOS/nixpkgs/nixos-unstable";
+                };
+              };
+            };
           };
           gopls.enable = true;
           clangd.enable = true;

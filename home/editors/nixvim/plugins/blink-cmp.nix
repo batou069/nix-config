@@ -32,7 +32,7 @@
           nerd_font_variant = "normal";
         };
         completion = {
-          menu.draw.treesitter = "lsp";
+          menu.draw.treesitter = { };
           menu.auto_show = false;
           ghost_text.show_with_menu = false;
         };

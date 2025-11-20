@@ -37,6 +37,11 @@
       # background_image = "/home/lf/Pictures/wallpapers/Minimal_Squares.png";
       # background_image_layout = "centered";
     };
+    quickAccessTerminalConfig = {
+      start_as_hidden = false;
+      hide_on_focus_loss = false;
+      background_opacity = 0.85;
+    };
     keybindings = {
       ## Kitty stuff
       "ctrl+shift+f1" = "show_kitty_doc overview";

@@ -1,3 +1,8 @@
 {
-  "python.defaultInterpreterPath": "/etc/profiles/per-user/lf/bin/python3"
+  "python.defaultInterpreterPath": "/etc/profiles/per-user/lf/bin/python3",
+  "nil": {
+    "nix": {
+      "pkgs": "github:NixOS/nixpkgs/nixos-unstable"
+    }
+  }
 }

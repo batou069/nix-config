@@ -1,4 +1,19 @@
-{ pkgs, ... }: {
+{ lib
+, pkgs
+, ...
+}: {
+  xdg.configFile = {
+    "tmux/plugins/tmux-which-key/config.yaml".text = lib.generators.toYAML { } {
+      command_alias_start_index = 200;
+      keybindings.prefix_table = "Space"; # The keybinding for the prefix key table (required)
+      keybindings.root_table = "C-Space";
+      title = {
+        style = "align=centre,bold"; # The title style
+        prefix = "tmux"; # A prefix added to every menu title
+        prefix_style = "fg=green,align=centre,bold"; # The prefix style
+      };
+    };
+  };
   programs.tmux = {
     enable = true;
     clock24 = true;
@@ -17,6 +32,7 @@
       pkgs.tmuxPlugins.vim-tmux-navigator
       # pkgs.tmuxPlugins.urlview
       pkgs.tmuxPlugins.tmux-which-key
+
       # pkgs.tmuxPlugins.tmux-sessionx
       # pkgs.tmuxPlugins.tmux-powerline
       pkgs.tmuxPlugins.tmux-floax
@@ -34,6 +50,7 @@
     extraConfig = ''
             set -g @catppuccin_flavour 'frappe' # or macchiato, frappe, latte, mocha
             set -g @resurrect-strategy-nvim 'session' # Restore nvim sessions
+            set -g @tmux-which-key-xdg-enable 1;
 
             is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
         | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|l?n?vim?x?|fzf)(diff)?$'"

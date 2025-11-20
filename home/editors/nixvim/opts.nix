@@ -74,8 +74,8 @@
       tabstop = 4; # number of spaces a tab counts for
       timeout = true; # enable timeout for key codes
       ttimeout = true; # enable timeout for key codes in terminal
-      timeoutlen = 10; # timeout length in milliseconds
-      ttimeoutlen = 10; # timeout length for terminal key codes in milliseconds
+      timeoutlen = 300; # timeout length in milliseconds
+      ttimeoutlen = 30; # timeout length for terminal key codes in milliseconds
       updatetime = 1000; # time in ms for CursorHold event
       undofile = true; # Build-in persistent undo
       virtualedit = "block"; # allow cursor to move where there is no text in block visual mode

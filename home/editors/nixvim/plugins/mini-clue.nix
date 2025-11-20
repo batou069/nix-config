@@ -1,5 +1,6 @@
 {
   programs.nixvim.plugins.mini.modules.clue = {
+    enable = false; # Disabled to prefer which-key
     window = {
       delay = 500;
       config = {

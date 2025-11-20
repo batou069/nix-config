@@ -18,7 +18,10 @@
       url = "github:MercuryTechnologies/nix-your-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    stylix.url = "github:nix-community/stylix/release-25.05";
+    stylix = {
+      url = "github:nix-community/stylix/master";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     # ags = {
     #   url = "github:aylur/ags/v1";
     #   # url = "github:aylur/ags";
@@ -38,7 +41,7 @@
     flake-utils.url = "github:numtide/flake-utils";
     nur = {
       url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     claudia = {
       url = "github:getAsterisk/claudia/218ecfb8b2069b69e4c40734e178e2a6af9fced7";
@@ -120,7 +123,7 @@
     };
     nix-doom-emacs-unstraightened = {
       url = "github:marienz/nix-doom-emacs-unstraightened";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     # mango = {
     #   url = "github:DreamMaoMao/mangowc";
@@ -194,7 +197,7 @@
           devShells.default = pkgs.mkShell {
             name = "nix-config-shell";
             inputsFrom = [ config.treefmt.package ];
-            packages = [ pkgs.pre-commit ];
+            packages = [ pkgs.pre-commit pkgs.gh pkgs.gum ];
             shellHook = ''
               echo "Welcome to the Nix config dev shell!"
 
@@ -237,6 +240,21 @@
             overlays = nixpkgsConfig.overlays;
           };
 
+          # Pkgs for standalone home-manager with hm lib
+          pkgs-unstable-hm = import inputs.nixpkgs-unstable {
+            inherit system;
+            config = nixpkgsConfig.config;
+            overlays =
+              nixpkgsConfig.overlays
+              ++ [
+                (_self: super: {
+                  lib = super.lib.extend (_self-lib: _super-lib: {
+                    hm = inputs.home-manager-unstable.lib;
+                  });
+                })
+              ];
+          };
+
           mkNixosSystem =
             { host
             , username
@@ -250,8 +268,7 @@
               };
 
               modules =
-                modules
-                ++ [
+                [
                   inputs.hyprland.nixosModules.default
                   inputs.disko.nixosModules.default
                   inputs.sops-nix.nixosModules.sops
@@ -261,7 +278,8 @@
                   ./hosts/${host}/config.nix
                   ./hosts/${host}/sops.nix
                   ./hosts/${host}/home.nix
-                ];
+                ]
+                ++ modules;
             };
         in
         {
@@ -276,6 +294,24 @@
               host = "viech";
               username = "lf";
               modules = [ inputs.home-manager.nixosModules.home-manager ];
+            };
+          };
+
+          homeConfigurations = {
+            "lf" = inputs.home-manager-unstable.lib.homeManagerConfiguration {
+              pkgs = pkgs-unstable-hm;
+              extraSpecialArgs = {
+                inherit inputs system pkgs pkgs-unstable;
+                username = "lf";
+                dotfiles = inputs.dotfiles-src;
+              };
+              modules = [
+                inputs.home-manager-unstable.homeManagerModules.default
+                inputs.stylix.homeModules.stylix
+                # inputs.nur.modules.homeManager.default
+                inputs.nix-doom-emacs-unstraightened.homeModule
+                ./home/home.nix
+              ];
             };
           };
         };

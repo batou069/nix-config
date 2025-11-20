@@ -11,6 +11,7 @@
     ./lsd.nix
     ./mans.nix
     ./nh.nix
+    ./nix-search-tv
     ./ripgrep.nix
     ./sesh.nix
     ./starship.nix

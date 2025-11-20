@@ -46,10 +46,10 @@ in
       "snd-intel-dspcfg.dsp_driver=3"
       "sof-transport-ipc=3"
       "systemd.mask=systemd-vconsole-setup.service"
-      "systemd.mask=dev-tpmrm0.device" #this is to mask that stupid 1.5 mins systemd bug
+      "systemd.mask=dev-tpmrm0.device" # this is to mask that stupid 1.5 mins systemd bug
       "nowatchdog"
       # "modprobe.blacklist=sp5100_tco" #watchdog for AMD
-      "modprobe.blacklist=iTCO_wdt" #watchdog for Intel
+      "modprobe.blacklist=iTCO_wdt" # watchdog for Intel
       # "vt.default_red=48,231,166,229,140,244,129,181,98,231,166,229,140,244,129,165"
       # "vt.default_grn=52,130,209,200,170,184,200,191,104,130,209,200,170,184,200,173"
       # "vt.default_blu=70,132,137,144,238,228,190,226,128,132,137,144,238,228,190,206"
@@ -63,7 +63,16 @@ in
     '';
 
     initrd = {
-      availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "uas" "usbhid" "sd_mod" "sdhci_pci" ];
+      availableKernelModules = [
+        "xhci_pci"
+        "ahci"
+        "nvme"
+        "usb_storage"
+        "uas"
+        "usbhid"
+        "sd_mod"
+        "sdhci_pci"
+      ];
       kernelModules = [ "kvm-intel" ];
     };
     # extraModulePackages = [config.boot.kernelPackages.cpufreqtools];
@@ -208,7 +217,7 @@ in
       wireplumber.enable = true;
     };
 
-    pulseaudio.enable = false; #unstable
+    pulseaudio.enable = false; # unstable
     udev.enable = true;
 
     dbus.enable = true;
@@ -443,7 +452,10 @@ in
       enable = true;
       # enableCompletion = true;
       ohMyZsh.enable = false;
-      setOptions = [ "nonomatch" "zle" ];
+      setOptions = [
+        "nonomatch"
+        "zle"
+      ];
 
       # autosuggestions.enable = true;
       # syntaxHighlighting.enable = true;
@@ -520,10 +532,9 @@ in
     autoEnable = true;
     # targets.hyprland.enable = false;
     enableReleaseChecks = true;
+    base16Scheme = ../../assets/base16_themes/catppuccin-mocha.yaml;
     # image = "/home/lf/Pictures/wallpapers/City-Night.png";
-    # base16Scheme = ../../assets/themes/flat.yaml;
-    image = ../../assets/wallpapers/astronaut_jellyfish.jpg; # ../../assets/base16_themes/cupcake.yaml;
-    polarity = "dark"; # "light", "dark", "either"
+
     overlays.enable = true;
     homeManagerIntegration = {
       autoImport = true;
@@ -532,9 +543,9 @@ in
 
     # rose-pine-cursor , bibata-cursors, phinger-cursors-dark
     cursor = {
-      name = "Banana";
+      name = "Rose Pine";
       size = 40;
-      package = pkgs.banana-cursor;
+      package = pkgs.rose-pine-cursor;
     };
     fonts = {
       sansSerif = {

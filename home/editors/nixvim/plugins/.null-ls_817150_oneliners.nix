@@ -33,7 +33,6 @@
       barbecue.enable = true;
       leap = {
         enable = true;
-        # defaultMappings = false;
         settings.silent = true;
       };
       neogit.enable = true;
