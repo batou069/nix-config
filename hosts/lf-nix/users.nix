@@ -22,6 +22,7 @@
           "input"
           "audio"
           "docker"
+          "nix-users"
           # "mpd"
         ];
       };

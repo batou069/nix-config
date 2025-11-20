@@ -10,6 +10,10 @@
       units
       gstat
     ];
+    extraConfig = ''
+      $env.config.show_banner = true
+      $env.config.edit_mode = "vi"
+    '';
     settings = {
       show_banner = true;
       enable_color = true;

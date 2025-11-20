@@ -17,7 +17,7 @@
       # kitty-scrollback.enable = true;
       alpha = {
         enable = false;
-        layout = [
+        settings.layout = [
           {
             type = "padding";
             val = 2;

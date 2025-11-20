@@ -1,10 +1,10 @@
 { lib, ... }: {
   programs.starship = {
     enable = true;
-    enableZshIntegration = true;
     enableTransience = true;
     enableFishIntegration = true;
     enableNushellIntegration = true;
+    enableZshIntegration = true;
     settings =
       let
         darkgray = "242";
@@ -51,7 +51,7 @@
           repo_root_format = "[$before_root_path]($style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) ";
           # read_only = " !";
           # read_only = "";
-          read_only = " ";
+          read_only = "  ";
           read_only_style = "bold ${sky}";
           use_logical_path = true;
           use_os_path_sep = true;

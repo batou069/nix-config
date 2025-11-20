@@ -1,8 +1,8 @@
-{ username, ... }: {
+{ config, ... }: {
   services.mpd = {
     enable = true;
-    dataDir = "/home/${username}/Music";
-    musicDirectory = "/home/${username}/Music";
+    musicDirectory = "${config.home.homeDirectory}/Music";
+    dataDir = "${config.home.homeDirectory}/.config/mpd";
     # fluidsynth = true;
     network.listenAddress = "any";
     network.startWhenNeeded = true;

@@ -114,6 +114,7 @@ in
       cava
       cliphist
       loupe
+      totem
       gnome-system-monitor
       grim
       gtk-engine-murrine #for gtk themes

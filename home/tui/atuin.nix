@@ -13,6 +13,9 @@
       enter_accept = true;
       scroll_exits = false;
       invert = true;
+      records = true;
+      search_mode = "skim";
+      secrets_filter = true;
     };
     daemon = {
       enable = true;

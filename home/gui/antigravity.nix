@@ -25,9 +25,9 @@
 , nspr
 , nss
 , pango
-, systemd
 , xorg
 , zlib
+, systemd
 ,
 }:
 let
@@ -122,7 +122,10 @@ let
     comment = "Next-generation agentic IDE";
     exec = "antigravity %U";
     icon = "antigravity";
-    categories = [ "Development" "IDE" ];
+    categories = [
+      "Development"
+      "IDE"
+    ];
     startupNotify = true;
     startupWMClass = "Antigravity";
     mimeTypes = [
