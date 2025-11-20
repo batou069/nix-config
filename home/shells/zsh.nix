@@ -14,7 +14,11 @@
     autosuggestion = {
       enable = true;
       highlight = "fg=#b2b7d5ff,italic";
-      strategy = [ "match_prev_cmd" "completion" "history" ];
+      strategy = [
+        "match_prev_cmd"
+        "completion"
+        "history"
+      ];
     };
     historySubstringSearch = {
       enable = true;
@@ -91,18 +95,23 @@
       "55" = "cd ../../../../..";
       add_secret = "nix-shell -p sops --run \"SOPS_AGE_KEY_FILE=secrets/age-key.txt sops secrets/secrets.yaml\"";
     };
-
-    initContent = ''
-      # zmodload zsh/zprof
-      # Unset FZF_DEFAULT_OPTS to clear any stale or conflicting configurations
-      unset FZF_DEFAULT_OPTS
-
-      drfa() {docker rm -f "$(docker ps -aq)"}
-      bak() { cp "$1" "$1.bak.$(date +%Y-%m-%d_%H-%M-%S)" }
-      yt() {fabric -y "$1" --transcript}
-      mkcd() { mkdir -p "$1" && cd "$1" }
-      ytm() {ytmdl --nolocal --ignore-errors -o ~/Music/ytmdl --spotify-id  "$1" --url "$2" "$3"}
-      fzf-man-widget() {
+    siteFunctions = {
+      mkcd = ''
+        mkdir -p "$1" && cd "$1"
+      '';
+      # yt = ''
+      #   fabric -y "$1" --transcript
+      #   '';
+      drfa = ''
+        docker rm -f "$(docker ps -aq)"
+      '';
+      bak = ''
+        cp "$1" "$1.bak.$(date +%Y-%m-%d_%H-%M-%S)"
+      '';
+      ytm = ''
+        ytmdl --nolocal --ignore-errors -o ~/Music/ytmdl --spotify-id  "$1" --url "$2" "$3"
+      '';
+      fzf-man-widget = ''
         manpage="echo {} | sed 's/\([[:alnum:][:punct:]]*\) (\([[:alnum:]]*\)).*/\2 \1/'"
         batman="''${manpage} | xargs -r man | col -bx | bat --language=man --plain --color always --theme=\"Monokai Extended\""
         man -k . | sort \
@@ -119,9 +128,21 @@
             --bind "alt-m:+change-preview(''${batman})+change-prompt( Man > )" \
             --bind "alt-t:+change-preview(tldr --color=always {1})+change-prompt(ﳁ TLDR > )"
         zle reset-prompt
-      }
+      '';
+      fcd = ''
+        local dest
+        dest=$(tree -df . | fzf --height 40% --reverse)
+        if [[ -n "$dest" ]]; then
+          cd "$(echo "$dest" | awk '{print $NF}')"
+        fi
+      '';
+    };
+    initContent = ''
+      # zmodload zsh/zprof
+      # Unset FZF_DEFAULT_OPTS to clear any stale or conflicting configurations
+      unset FZF_DEFAULT_OPTS
 
-        # if command -v nix-your-shell > /dev/null; then
+      # if command -v nix-your-shell > /dev/null; then
         #   nix-your-shell zsh | source /dev/stdin
         # fi
         BASE16_SHELL="$HOME/.config/base16-shell/"
@@ -141,6 +162,9 @@
         bindkey -M emacs '^ ' tmux-which-key
 
 
+        tmux-which-key() { tmux show-wk-menu-root ; }
+        zle -N tmux-which-key
+        bindkey -M vicmd " " tmux-which-key
         # --- FZF-Tab stuff ---
         # Inherit ALL default options (previewer, colors, layout) from the main fzf config.
         zstyle ':fzf-tab:*' use-fzf-default-opts yes

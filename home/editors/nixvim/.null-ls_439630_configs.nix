@@ -36,18 +36,15 @@
     diagnostic.settings = {
       update_in_insert = true;
       severity_sort = true;
-      jump = {
-        severity.__raw = "vim.diagnostic.severity.ERROR";
-      };
-      virtual_lines = {
-        current_line = true;
-      };
+      jump = { severity.__raw = "vim.diagnostic.severity.ERROR"; };
+      virtual_lines = { current_line = true; };
       float = {
         border = "rounded";
         title = "TEST_TITLE";
         header = "TEST_HEADER";
       };
-      virtual_text = false; # This replaces the distracting virtual lines with more subtle indicators
+      virtual_text =
+        false; # This replaces the distracting virtual lines with more subtle indicators
       virtualText.enable = false; # Disable virtual lines
       signs = {
         enable = true;

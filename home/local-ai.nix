@@ -1,0 +1,3 @@
+{}: {
+  programs.zapzap.enable = true;
+}

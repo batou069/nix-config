@@ -10,8 +10,13 @@ let
   pythonEnv312 = pkgs-unstable.python312.withPackages (
     ps:
       with ps; [
+        pnglatex
+        plotly
+        kaleido
+        pyperclip
         flask
         black
+        plotly
         isort
         alive-progress
         spacy
@@ -162,6 +167,95 @@ in
   ];
 
   programs = {
+    zapzap.enable = true;
+    claude-code.enable = true;
+    hyprshot.enable = true;
+    hyprshot.saveLocation = "$HOME/Pictures/Screenshots";
+    satty.enable = true;
+    swappy.enable = true;
+    swappy.settings = {
+      Default = {
+        auto_save = false;
+        custom_color = "rgba(193,125,17,1)";
+        early_exit = false;
+        fill_shape = false;
+        line_size = 5;
+        paint_mode = "brush";
+        save_dir = "$HOME/Desktop";
+        save_filename_format = "swappy-%Y%m%d-%H%M%S.png";
+        show_panel = false;
+        text_font = "sans-serif";
+        text_size = 20;
+        transparency = 50;
+        transparent = false;
+      };
+    };
+    vivid.enable = true;
+    vivid.enableZshIntegration = true;
+    vivid.themes = {
+      ayu = builtins.fetchurl {
+        url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/ayu.yml";
+        hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+      };
+
+      mocha = builtins.fetchurl {
+        url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/catppuccin-mocha.yml";
+        hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+      };
+    };
+
+    cudatext.enable = true;
+    cudatext.lexerSettings = {
+      Python = {
+        numbers_center = false;
+        numbers_style = 1;
+      };
+    };
+    nvchecker.enable = true;
+    aider-chat.enable = true;
+    aider-chat.settings = {
+      cache-prompts = true;
+      lint = true;
+      verify-ssl = false;
+    };
+    fabric-ai = {
+      enable = true;
+      enableZshIntegration = true;
+      enableYtAlias = true;
+      enablePatternsAliases = true;
+    };
+    intelli-shell.enable = true;
+    intelli-shell.enableZshIntegration = true;
+    intelli-shell.shellHotkeys = {
+      bookmark_hotkey = "\\\\C-b";
+      fix_hotkey = "\\\\C-p";
+      search_hotkey = "\\\\C-t";
+      skip_esc_bind = "\\\\C-q";
+      variable_hotkey = "\\\\C-a";
+    };
+    aliae.enable = true;
+    aliae.enableZshIntegration = true;
+    anvil-editor.enable = true;
+    anime-downloader.enable = true;
+    amber.enable = true;
+    amber.ambsSettings = {
+      regex = false;
+      column = false;
+      row = false;
+      binary = false;
+      statistics = false;
+      skipped = false;
+      interactive = true;
+      recursive = true;
+      symlink = true;
+      color = true;
+      file = true;
+      skip_vcs = true;
+      skip_gitignore = true;
+      fixed_order = true;
+      parent_ignore = true;
+      line_by_match = false;
+    };
     ruff = {
       enable = true;
       settings = { };
@@ -196,6 +290,29 @@ in
 
   services = {
     tldr-update.enable = true;
+    home-manager.autoUpgrade.useFlake = true;
+    home-manager.autoUpgrade.flakeDir = "/home/lf/nix";
+    wl-clip-persist.enable = true;
+    wl-clip-persist.clipboardType = "default"; # Type: one of "regular", "primary", "both"
+    # wl-clip-persist.extraOptions = [
+    # # Available options include:
+    # - --write-timeout : Timeout for writing clipboard data (default: 3000.
+    # - --ignore-event-on-error: Only handle events without errors.
+    # - --all-mime-type-regex : Filter events by MIME type regex.
+    # - --selection-size-limit : Limit clipboard data size.
+    # - --reconnect-tries : Number of reconnection attempts.
+    # - --reconnect-delay : Delay between reconnect attempts (default: 100.
+    # - --disable-timestamps: Disable log timestamps.
+
+    #
+    # "--write-timeout"
+    # "1000"
+    # "--ignore-event-on-error"
+    # "--all-mime-type-regex"
+    # "'(?i)^(?!image/).+'"
+    # "--selection-size-limit"
+    # "1048576"
+    # ]
     # copyq = {
     #   enable = true;
     #   forceXWayland = true;
@@ -210,9 +327,12 @@ in
     stateVersion = "24.11";
 
     # User information
-    username = username;
+    username = "lf";
+    homeDirectory = "/home/lf";
 
     packages = [
+      pkgs-unstable.home-manager
+      pkgs.tree-sitter
       (pkgs.writeShellApplication {
         name = "ns";
         runtimeInputs = with pkgs; [
@@ -473,6 +593,9 @@ in
       vscode.enable = true;
       kitty.enable = true;
     };
+    base16Scheme = ../assets/base16_themes/catppuccin-frappe.yaml;
+    image = ../assets/wallpapers/astronaut_jellyfish.jpg; # ../../assets/base16_themes/cupcake.yaml;
+
     polarity = "dark";
     targets.font-packages.enable = true;
     icons = {

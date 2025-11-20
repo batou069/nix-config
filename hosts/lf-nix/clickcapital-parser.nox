@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+f{ pkgs, ... }:
 let
   # This defines your python script as an executable Nix package.
   process-alerts-script = pkgs.writeScript "process-alerts" ''

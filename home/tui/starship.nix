@@ -24,26 +24,30 @@
         continuation_prompt = "[▶▶ ](Subtext1) ";
         format = lib.concatStrings [
           "\\["
-          "$username"
-          "\\]"
+          "$battery"
+          " $username\\]"
           "\\["
-          "$directory"
-          "\\]"
-          "\\["
-          "$nix_shell"
-          "\\]"
+          "$directory\\]"
+          # "\\["
+          # "$nix_shell\\]"
           "$character"
         ];
-        right_format = "\\[$git_branch\\] \\[$git_status\\] \\[$git_state\\] \\[$git_metrics\\] \\[$battery\\] $cmd_duration";
+        right_format = lib.concatStrings [
+          "\\["
+          "$git_branch"
+          " $git_status"
+          " $git_metrics"
+          "\\]"
+        ];
 
         directory = {
-          format = "[$path]($style)[$read_only]($read_only_style) ";
-          home_symbol = " ";
+          format = "[$path]($style)[$read_only]($read_only_style)";
+          home_symbol = "~";
           # style = "blue";
           style = " ${peach}";
           truncate_to_repo = true;
           truncation_length = 4;
-          truncation_symbol = ".../";
+          truncation_symbol = " ";
           repo_root_format = "[$before_root_path]($style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) ";
           # read_only = " !";
           # read_only = "";
@@ -73,7 +77,7 @@
         };
 
         git_branch = {
-          format = "[$symbol $branch]($style) ";
+          format = "[$symbol $branch]($style)";
           # style = darkgray;
           symbol = " ";
           style = "${teal}";
@@ -129,7 +133,6 @@
         };
 
         python = {
-          symbol = " ";
           style = darkgray;
           format = "[$symbol$pyenv_prefix($version )(($virtualenv) )]($style)";
           python_binary = [
@@ -156,7 +159,7 @@
 
         nix_shell = {
           format = "[$symbol($version )]($style)";
-          symbol = "❄️ ";
+          symbol = "❄️";
           style = "blink ${darkgray}";
           heuristic = true;
           #        format = "via [$symbol(($name))]($style)";
@@ -175,7 +178,7 @@
           format = "[$user]($style)";
           show_always = true;
           style_root = "bold ${red}";
-          style_user = "underline bold ${mauve}";
+          style_user = "bold ${mauve}";
         };
 
         hostname = {
@@ -205,7 +208,7 @@
             }
             {
               # 50% to 90%
-              style = "blink bold ${green}";
+              style = "bold blink ${green}";
               threshold = 90;
             }
           ];
@@ -336,9 +339,9 @@
         pijul_channel = {
           symbol = " ";
         };
-        # python = {
-        # symbol = " ";
-        # };
+        python = {
+          symbol = " ";
+        };
         rlang = {
           symbol = "󰟔 ";
         };

@@ -7,13 +7,9 @@
     plugins.snacks = {
       enable = true;
       settings = {
-        snackline = {
-          enabled = true;
-        };
+        snackline = { enabled = true; };
         indent = {
-          indent = {
-            enabled = false;
-          };
+          indent = { enabled = false; };
           chunk = {
             enabled = true;
             only_current = true;
@@ -30,10 +26,9 @@
     };
 
     # The paths here must be the FULL path from the top of the config.
-    highlight = (lib.mkIf (config.programs.nixvim.plugins.snacks.enable && lib.hasAttr "indent" config.programs.nixvim.plugins.snacks.settings)) {
-      SnacksIndent = {
-        fg = "#141414";
-      };
+    highlight = (lib.mkIf (config.programs.nixvim.plugins.snacks.enable
+      && lib.hasAttr "indent" config.programs.nixvim.plugins.snacks.settings)) {
+      SnacksIndent = { fg = "#141414"; };
     };
   };
 }
