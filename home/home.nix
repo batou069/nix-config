@@ -1,8 +1,6 @@
 { config
 , pkgs
-, username
 , lib
-, inputs
 , pkgs-unstable
 , ...
 }:
@@ -88,74 +86,8 @@ let
   customWaybar = pkgs.waybar.overrideAttrs (oldAttrs: {
     mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
   });
-  mcp-config =
-    let
-      mcp-pkgs = inputs.nix-mcp-servers.packages.${pkgs.system};
-      # Helper to create a server entry by pointing to the binary
-      mkServer = pkg: { command = "${pkg}/bin/${pkg.pname or pkg.name}"; };
-    in
-    inputs.mcp-servers-nix.lib.mkConfig pkgs {
-      fileName = "gemini-settings.json";
-      # This is the correct, manual way to define servers to avoid module errors
-      # and resolve the dependency collisions you are seeing.
-      settings.servers = {
-        # --- Servers from the cameronfyfe package set ---
-        fetch = mkServer mcp-pkgs.mcp-server-fetch;
-        "sequential-thinking" = {
-          command = "bash";
-          args = [
-            "-c"
-            "${pkgs.nodejs}/bin/npx -y @modelcontextprotocol/server-sequential-thinking"
-          ];
-        };
-        filesystem = {
-          command = "${mcp-pkgs.mcp-server-filesystem}/bin/mcp-server-filesystem";
-          args = [
-            "/home/lf/nix"
-            "/home/lf/git"
-            "/nix"
-          ];
-        };
-        git = {
-          command = "${mcp-pkgs.mcp-server-git}/bin/mcp-server-git";
-          args = [
-            "--repository"
-            "/home/lf/nix"
-          ]; # Set a default repository
-        };
-        github = mkServer mcp-pkgs.github-mcp-server;
-        "brave-search" = mkServer mcp-pkgs.mcp-server-brave-search;
-
-        # --- Custom MCP Servers ---
-        nixos = {
-          command = "${pkgs.nix}/bin/nix";
-          args = [
-            "run"
-            "github:utensils/mcp-nixos"
-            "--"
-          ];
-        };
-
-        # --- Servers from your main nixpkgs ---
-        context7 = mkServer pkgs.context7-mcp;
-        serena = mkServer inputs.serena.packages.${pkgs.system}.serena;
-        tavily = mkServer pkgs.tavily-mcp;
-
-        # --- Special case for memory server with the stderr fix ---
-        memory = {
-          command = "bash";
-          args = [
-            "-c"
-            # We wrap the command to discard the noisy status message
-            "${mcp-pkgs.mcp-server-memory}/bin/mcp-server-memory 2>/dev/null"
-          ];
-        };
-      };
-    };
 in
 {
-  # Tell the unstable Home Manager module which package to use for activation.
-  programs.home-manager.package = pkgs-unstable.home-manager;
   news.display = "show";
   imports = [
     # inputs.nixvim.homeModules.nixvim
@@ -164,11 +96,73 @@ in
     ./editors # Import all editors
     ./gui
     ./shells
+    ./kde.nix
+    ./mcp.nix
+    # ./zen-browser.nix
+    ./mpd.nix
+    ./mcp.nix
+    ./gemini.nix
   ];
 
   programs = {
+    # Tell the unstable Home Manager module which package to use for activation.
+    home-manager = {
+      package = pkgs-unstable.home-manager;
+    };
+
+    # Centralized MCP Server Configuration
+
+    bluetuith = {
+      enable = true;
+      settings = {
+        keybindings = {
+          adapter = "hci0";
+          Menu = "Alt+m";
+        };
+      };
+    };
+
+    fuzzel = {
+      enable = true;
+      # settings = {
+      #   # colors = {
+      #   #   # background = "24273add";
+      #   #   text = "cad3f5ff";
+      #   #   prompt = "b8c0e0ff";
+      #   #   placeholder = "8087a2ff";
+      #   #   input = "cad3f5ff";
+      #   #   match = "f5a97fff";
+      #   #   selection = "5b6078ff";
+      #   #   selection-text = "cad3f5ff";
+      #   #   selection-match = "f5a97fff";
+      #   #   counter = "8087a2ff";
+      #   #   border = "f5a97fff";
+      #   # };
+      # };
+    };
+    retroarch = {
+      cores = {
+        mgba.enable = true;
+        genesis-plus-gx.enable = true;
+        dosbox-pure.enable = true;
+        dolphin.enable = true;
+        bsnes.enable = true;
+        blastem.enable = true;
+        yabause.enable = true;
+        citra.enable = true;
+        vice-xvic.enable = true;
+        snes9x = {
+          enable = true;
+          package = pkgs.libretro.snes9x2010;
+        };
+      };
+    };
+
+    discord.enable = true;
+
     zapzap.enable = true;
     claude-code.enable = true;
+    claude-code.package = pkgs-unstable.claude-code;
     hyprshot.enable = true;
     hyprshot.saveLocation = "$HOME/Pictures/Screenshots";
     satty.enable = true;
@@ -181,7 +175,7 @@ in
         fill_shape = false;
         line_size = 5;
         paint_mode = "brush";
-        save_dir = "$HOME/Desktop";
+        save_dir = "$HOME/Pictures";
         save_filename_format = "swappy-%Y%m%d-%H%M%S.png";
         show_panel = false;
         text_font = "sans-serif";
@@ -190,17 +184,19 @@ in
         transparent = false;
       };
     };
-    vivid.enable = true;
-    vivid.enableZshIntegration = true;
-    vivid.themes = {
-      ayu = builtins.fetchurl {
-        url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/ayu.yml";
-        hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-      };
+    vivid = {
+      enable = true;
+      enableZshIntegration = true;
+      themes = {
+        ayu = builtins.fetchurl {
+          url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/ayu.yml";
+          sha256 = "sha256:02fj9y2857rhv3hdcn1xijxwims5x3caxg2qs8g85nvp2xbvz3gl";
+        };
 
-      mocha = builtins.fetchurl {
-        url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/catppuccin-mocha.yml";
-        hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+        mocha = builtins.fetchurl {
+          url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/catppuccin-macchiato.yml";
+          sha256 = "02np9axddfl4wyw31xvdn2hj7hi8wgd5knqp10gwl2hzk775ql5l";
+        };
       };
     };
 
@@ -224,17 +220,7 @@ in
       enableYtAlias = true;
       enablePatternsAliases = true;
     };
-    intelli-shell.enable = true;
-    intelli-shell.enableZshIntegration = true;
-    intelli-shell.shellHotkeys = {
-      bookmark_hotkey = "\\\\C-b";
-      fix_hotkey = "\\\\C-p";
-      search_hotkey = "\\\\C-t";
-      skip_esc_bind = "\\\\C-q";
-      variable_hotkey = "\\\\C-a";
-    };
-    aliae.enable = true;
-    aliae.enableZshIntegration = true;
+
     anvil-editor.enable = true;
     anime-downloader.enable = true;
     amber.enable = true;
@@ -258,6 +244,7 @@ in
     };
     ruff = {
       enable = true;
+      package = pkgs-unstable.ruff;
       settings = { };
     };
     hyprpanel.enable = false;
@@ -284,16 +271,63 @@ in
     enable = true;
     iconTheme = {
       package = lib.mkForce config.stylix.icons.package;
-      name = lib.mkForce config.stylix.icons.dark;
+      name = lib.mkForce config.stylix.icons.${config.stylix.polarity};
+    };
+    colorScheme = "dark";
+    gtk3 = {
+      bookmarks = [
+        "file://${config.home.homeDirectory}/Documents"
+        "file://${config.home.homeDirectory}/Downloads"
+        "file://${config.home.homeDirectory}/Pictures"
+        "file://${config.home.homeDirectory}/Videos"
+        "file://${config.home.homeDirectory}/Downloads"
+        "file://${config.home.homeDirectory}/repos"
+      ];
     };
   };
 
   services = {
+    signaturepdf = {
+      enable = true;
+      port = 8082;
+    };
+    activitywatch = {
+      enable = true;
+      watchers = {
+        aw-watcher-window-wayland = {
+          package = pkgs.aw-watcher-window-wayland;
+        };
+        aw-watcher-afk = {
+          package = pkgs.aw-watcher-afk;
+          settings = {
+            timeout = 180;
+            poll_time = 5;
+          };
+        };
+
+        aw-watcher-window = {
+          package = pkgs.aw-watcher-window;
+          settings = {
+            poll_time = 4;
+            exclude_title = true;
+          };
+        };
+      };
+    };
+    tomat = {
+      enable = true;
+      package = pkgs-unstable.tomat;
+    };
+    emacs = {
+      enable = true;
+      client.enable = true;
+    };
+    cliphist.enable = true;
     tldr-update.enable = true;
     home-manager.autoUpgrade.useFlake = true;
-    home-manager.autoUpgrade.flakeDir = "/home/lf/nix";
+    home-manager.autoUpgrade.flakeDir = "${config.home.homeDirectory}/nix";
     wl-clip-persist.enable = true;
-    wl-clip-persist.clipboardType = "default"; # Type: one of "regular", "primary", "both"
+    wl-clip-persist.clipboardType = "regular"; # Type: one of "regular", "primary", "both"
     # wl-clip-persist.extraOptions = [
     # # Available options include:
     # - --write-timeout : Timeout for writing clipboard data (default: 3000.
@@ -318,6 +352,8 @@ in
     #   forceXWayland = true;
     # };
   };
+
+  systemd.user.startServices = "sd-switch";
 
   # Home Manager version
   home = {
@@ -354,7 +390,6 @@ in
       pkgs-unstable.rmpc
       pkgs.rtaudio # Real-time audio I/O library
       pkgs.erdtree # Visualize directory structure as a tree
-      pkgs-unstable.opencode
       pkgs.cmake
       pkgs.meld
       pkgs-unstable.normcap
@@ -406,6 +441,7 @@ in
       pkgs.dosbox-staging
       pkgs.dosbox-x
       pkgs.google-chrome
+      # pkgs-unstable.antigravity-fhs
     ];
 
     sessionVariables = {
@@ -427,17 +463,18 @@ in
       LESS = "-R";
 
       # Secrets
-      # OPENAI_API_KEY = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
-      GEMINI_API_KEY = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
-      GOOGLE_API_KEY = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
-      ZSH_AI_COMMANDS_OPENAI_API_KEY = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
-      ANTHROPIC_API_KEY = "$(cat /run/secrets/api_keys/anthropic 2>/dev/null || echo '')";
-      BW_SESSION = "$(cat /run/secrets/bitwarden 2>/dev/null || echo '')";
-      INFLUX_TOKEN = "$(cat /run/secrets/influxdb 2>/dev/null || echo '')";
+      GITHUB_PERSONAL_ACCESS_TOKEN = config.sops.secrets.github_pat.path;
+      # OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
+      GEMINI_API_KEY = config.sops.secrets."api_keys/gemini".path;
+      GOOGLE_API_KEY = config.sops.secrets."api_keys/gemini".path;
+      ZSH_AI_COMMANDS_OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
+      ANTHROPIC_API_KEY = config.sops.secrets."api_keys/anthropic".path;
+      BW_SESSION = config.sops.secrets.bitwarden.path;
+      INFLUX_TOKEN = config.sops.secrets.influxdb.path;
       # Keys for MCP Servers
-      TAVILY_API_KEY = "$(cat /run/secrets/api_keys/tavily 2>/dev/null || echo '')";
-      BRAVE_API_KEY = "$(cat /run/secrets/api_keys/brave_search 2>/dev/null || echo '')";
-      GITHUB_TOKEN = "$(cat /run/secrets/api_keys/github_mcp 2>/dev/null || echo '')";
+      TAVILY_API_KEY = config.sops.secrets."api_keys/tavily".path;
+      BRAVE_API_KEY = config.sops.secrets."api_keys/brave_search".path;
+      GITHUB_TOKEN = config.sops.secrets."api_keys/github_mcp".path;
       # Theming and shell appearance
       BASE16_SHELL = "$HOME/.config/base16-shell";
       TERM_ITALICS = "true";
@@ -458,12 +495,10 @@ in
         '';
       };
       # ".ipython/extensions/custom_gemini_provider.py".source = ./custom-gemini-provider.py;
-      ".gemini/settings.json".source = mcp-config;
 
       # Declaratively load Hyprland plugins as a workaround for the NixOS module bug
       # ".config/hypr/plugins-load.conf" = {
       #   text = ''
-      #     # WARNING: This file is generated by Nix. Do not edit it manually.
       #     exec-once = hyprctl plugin load ${inputs.hyprland-plugins.packages.${pkgs.system}.hyprexpo}/lib/libhyprexpo.so
       #     exec-once = hyprctl plugin load ${inputs.hyprland-plugins.packages.${pkgs.system}.xtra-dispatchers}/lib/libxtra-dispatchers.so
       #     exec-once = hyprctl plugin load ${inputs.hy3.packages.${pkgs.system}.hy3}/lib/libhy3.so
@@ -508,6 +543,13 @@ in
           exit 1
         fi
       '';
+      linkMcpConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        set -e
+        # Ensure the target directory exists
+        mkdir -p "$HOME/.gemini"
+        # Create the symlink, overwriting if it already exists
+        ln -sf "$HOME/.config/mcp/mcp.json" "$HOME/.gemini/settings.json"
+      '';
     };
   };
 
@@ -517,7 +559,7 @@ in
     mimeApps = {
       enable = true;
       defaultApplications = {
-        "text/markdown" = "code.desktop";
+        "text/markdown" = "gedit.desktop";
         "text/plain" = "code.desktop";
         "text/x-csv" = "code.desktop";
         "text/x-log" = "code.desktop";
@@ -540,9 +582,16 @@ in
         "audio/*" = [ "vlc.desktop" ];
         "video/*" = [ "vlc.desktop" ];
       };
+      defaultApplicationPackages = [
+        pkgs.gnome-text-editor
+        pkgs.loupe
+        pkgs.totem
+        pkgs.vscode-fhs
+      ];
     };
     userDirs = {
       enable = true;
+      createDirectories = true;
       desktop = "$HOME/Desktop";
       documents = "$HOME/Documents";
       download = "$HOME/Downloads";
@@ -575,10 +624,11 @@ in
     enableReleaseChecks = false;
     autoEnable = true;
     targets = {
-      bat.enable = true;
-      tmux.enable = true;
+      ghostty.enable = false;
+      bat.enable = false;
+      tmux.enable = false;
       neovim = {
-        enable = true;
+        enable = false;
         # plugin = "base16-nvim";
         transparentBackground = {
           main = true;
@@ -586,18 +636,19 @@ in
           signColumn = true;
         };
       };
-      starship.enable = true;
-      wofi.enable = true;
-      fzf.enable = true;
-      hyprland.enable = true;
-      vscode.enable = true;
+      starship.enable = false;
+      wofi.enable = false;
+      fzf.enable = false;
+      hyprland.enable = false;
+      vscode.enable = false;
       kitty.enable = true;
     };
-    base16Scheme = ../assets/base16_themes/catppuccin-frappe.yaml;
+    base16Scheme = ../assets/base16_themes/catppuccin-macchiato.yaml;
     image = ../assets/wallpapers/astronaut_jellyfish.jpg; # ../../assets/base16_themes/cupcake.yaml;
 
     polarity = "dark";
     targets.font-packages.enable = true;
+
     icons = {
       enable = true;
       package = pkgs.juno-theme;
@@ -605,11 +656,51 @@ in
       light = "Juno-mirage";
     };
 
+    # rose-pine-cursor , bibata-cursors, phinger-cursors-dark
+    cursor = {
+      name = "Rose Pine";
+      size = 40;
+      package = pkgs.rose-pine-cursor;
+    };
+
     opacity = {
       applications = 1.5;
       desktop = 1.5;
       popups = 0.8;
       terminal = 1.0;
+    };
+
+    fonts = {
+      sansSerif = {
+        # package = pkgs.aleo-fonts;
+        # name = "Aleo";
+        package = pkgs.nerd-fonts.fantasque-sans-mono;
+        name = "Fantasqeue";
+      };
+
+      serif = {
+        # package = pkgs.noto-fonts-cjk-sans;
+        # name = "Noto Sans CJK JP";
+        package = pkgs-unstable.maple-mono.NF;
+        name = "Maple Mono NF";
+      };
+
+      monospace = {
+        package = pkgs-unstable.maple-mono.NF;
+        name = "Maple Mono NF";
+      };
+
+      emoji = {
+        package = pkgs.noto-fonts-color-emoji;
+        name = "Noto Color Emoji";
+      };
+
+      sizes = {
+        applications = 10;
+        desktop = 12;
+        popups = 14;
+        terminal = 14;
+      };
     };
   };
 }

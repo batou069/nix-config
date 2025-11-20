@@ -25,13 +25,8 @@ let
   };
 in
 {
-  imports = [
-    ../../home/gemini/gemini-cli-lf.nix
-  ];
-
   environment.systemPackages =
     (with pkgs; [
-      fuzzel
       overskride
       ksnip
       ytmdl
@@ -68,8 +63,6 @@ in
       # mcp-server-git
       # tavily-mcp
       # github-mcp-server
-      # serena
-      # mcp-server-brave-search
 
       jrnl
       cpufrequtils
@@ -101,7 +94,7 @@ in
       btop
       brightnessctl # for brightness control
       cava
-      cliphist
+      # cliphist
       loupe
       gnome-system-monitor
       grim
@@ -128,7 +121,6 @@ in
       kdePackages.qtstyleplugin-kvantum # kvantum
       rofi-wayland
       slurp
-      swappy
       swaynotificationcenter
       unzip
       wallust
@@ -172,6 +164,14 @@ in
       # Dev Stuff
       # nh
       meowpdf
+
+      file-roller
+
+      gnome-calculator
+      nautilus
+
+      seahorse
+      brightnessctl
       # zsh-f-sy-h
       # zsh-forgit
       # zsh-autopair
@@ -189,9 +189,7 @@ in
       nwg-look
       swww
       nix-search-tv
-      claude-code
       bitwarden-cli
-      ruff
       bitwarden-desktop
       twingate
       hyprls
@@ -200,6 +198,7 @@ in
       lm_sensors # Used For Getting Hardware Temps
       sof-firmware
       inputs.hyprviz.packages.${pkgs.system}.default
+      inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
       hyprshade
     ])
     ++ [
@@ -239,7 +238,7 @@ in
     steam = {
       enable = true;
       remotePlay.openFirewall = true;
-      dedicatedServer.openFirewall = false;
+      # dedicatedServer.openFirewall = false;
       extraCompatPackages = [ pkgs.proton-ge-bin ];
     };
     firefox.enable = true;

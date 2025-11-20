@@ -8,10 +8,12 @@
     ./fzf.nix
     ./git.nix
     ./htop.nix
+    ./intelli-shell.nix
     ./lsd.nix
     ./mans.nix
     ./nh.nix
-    ./nix-search-tv
+    ./nix-search-tv.nix
+    ./opencode.nix
     ./ripgrep.nix
     ./sesh.nix
     ./starship.nix

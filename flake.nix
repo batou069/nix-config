@@ -4,78 +4,110 @@
       url = "path:/home/lf/dotfiles";
       flake = false;
     };
+
+    # --- Nix & Home-Manager ---
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "git+https://github.com/nix-community/home-manager"; # /release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-unstable = {
-      url = "github:nix-community/home-manager/master";
+      url = "git+https://github.com/nix-community/home-manager/";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+
+    # --- Nix Addons ---
+
+    flake-parts.url = "git+https://github.com/hercules-ci/flake-parts";
+
     nix-your-shell = {
-      url = "github:MercuryTechnologies/nix-your-shell";
+      url = "git+https://github.com/MercuryTechnologies/nix-your-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     stylix = {
-      url = "github:nix-community/stylix/master";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:nix-community/stylix/release-25.05";
+      # url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+
     # ags = {
-    #   url = "github:aylur/ags/v1";
-    #   # url = "github:aylur/ags";
+    #   url = "git+https://github.com/aylur/ags/v1";
+    #   # url = "git+https://github.com/aylur/ags";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+
+    nix-mineral = {
+      url = "git+https://github.com/cynicsketch/nix-mineral";
+      flake = false;
+    };
+
+    disko.url = "git+https://github.com/nix-community/disko";
+
+    treefmt-nix.url = "git+https://github.com/numtide/treefmt-nix";
+
+    sops-nix.url = "git+https://github.com/Mic92/sops-nix";
+
+    flake-utils.url = "git+https://github.com/numtide/flake-utils";
+
+    nur = {
+      url = "git+https://github.com/nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     firefox-addons = {
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-mineral = {
-      url = "github:cynicsketch/nix-mineral";
-      flake = false;
-    };
-    disko.url = "github:nix-community/disko";
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    sops-nix.url = "github:Mic92/sops-nix";
-    flake-utils.url = "github:numtide/flake-utils";
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+
     claudia = {
       url = "github:getAsterisk/claudia/218ecfb8b2069b69e4c40734e178e2a6af9fced7";
     };
-    hyprland.url = "github:hyprwm/Hyprland/v0.50.0";
+
+    # --- HYPRLAND stuff ---
+
+    hyprland.url = "github:hyprwm/Hyprland/v0.50.0"; # TODO upgrae to 0.52.0
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins/v0.50.0";
       inputs.hyprland.follows = "hyprland";
     };
+    rose-pine-hyprcursor = {
+      # url = "github:ndom91/rose-pine-hyprcursor";
+      url = "git+https://github.com/ndom91/rose-pine-hyprcursor";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.hyprlang.follows = "hyprland/hyprlang";
+    };
+
     # hypr-dynamic-cursors = {
-    #   url = "github:VirtCode/hypr-dynamic-cursors";
+    #   url = "git+https://github.com/VirtCode/hypr-dynamic-cursors";
     #   inputs.hyprland.follows = "hyprland"; # to make sure that the plugin is built for the correct version of hyprland
     # };
-    hy3 = {
-      url = "github:outfoxxed/hy3/hl0.50.0";
-      inputs.hyprland.follows = "hyprland";
-    };
-    # pyprland.url = "github:hyprland-community/pyprland";
-    mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
+
     # hyprpanel = {
-    #   url = "github:Jas-SinghFSU/HyprPanel";
+    #   url = "git+https://github.com/Jas-SinghFSU/HyprPanel";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+
+    hy3 = {
+      url = "git+https://github.com/outfoxxed/hy3/"; # hl0.50.0";
+      inputs.hyprland.follows = "hyprland";
+    };
+
+    # pyprland.url = "git+https://github.com/hyprland-community/pyprland";
+
+    mcp-servers-nix.url = "git+https://github.com/natsukium/mcp-servers-nix";
+
     nixvim = {
-      url = "github:nix-community/nixvim";
+      url = "git+https://github.com/nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    flake-parts.url = "github:hercules-ci/flake-parts";
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake/beta";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # zen-browser = {
-    #   url = "github:benjaminkitt/zen-browser-flake";
+    #   url = "git+https://github.com/benjaminkitt/zen-browser-flake";
     #   inputs = {
     #     nixpkgs.follows = "nixpkgs";
     #     home-manager.follows = "home-manager";
@@ -83,7 +115,7 @@
     # };
 
     nixcord = {
-      url = "github:kaylorben/nixcord";
+      url = "git+https://github.com/kaylorben/nixcord";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -92,51 +124,60 @@
     vicinae.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-vscode-extensions = {
-      url = "github:nix-community/nix-vscode-extensions";
+      url = "git+https://github.com/nix-community/nix-vscode-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     #plugins list
     avante-nvim = {
-      url = "github:yetone/avante.nvim";
+      url = "git+https://github.com/yetone/avante.nvim";
       flake = false;
     };
     minuet-ai-nvim = {
-      url = "github:milanglacier/minuet-ai.nvim";
+      url = "git+https://github.com/milanglacier/minuet-ai.nvim";
       flake = false;
     };
-    blink-cmp.url = "github:saghen/blink.cmp";
+    blink-cmp.url = "git+https://github.com/saghen/blink.cmp";
     vim-translator = {
-      url = "github:voldikss/vim-translator";
+      url = "git+https://github.com/voldikss/vim-translator";
       flake = false;
     };
     none-ls-nvim = {
-      url = "github:nvimtools/none-ls.nvim";
+      url = "git+https://github.com/nvimtools/none-ls.nvim";
       flake = false;
     };
     nui-nvim = {
-      url = "github:MunifTanjim/nui.nvim";
+      url = "git+https://github.com/MunifTanjim/nui.nvim";
       flake = false;
     };
     emacs-overlay = {
-      url = "github:nix-community/emacs-overlay";
+      url = "git+https://github.com/nix-community/emacs-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-doom-emacs-unstraightened = {
-      url = "github:marienz/nix-doom-emacs-unstraightened";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "git+https://github.com/marienz/nix-doom-emacs-unstraightened";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     # mango = {
-    #   url = "github:DreamMaoMao/mangowc";
+    #   url = "git+https://github.com/DreamMaoMao/mangowc";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     nix-mcp-servers = {
-      url = "github:cameronfyfe/nix-mcp-servers";
+      url = "git+https://github.com/cameronfyfe/nix-mcp-servers";
     };
-    hyprviz.url = "github:timasoft/hyprviz";
+    mcp-nixos = {
+      url = "git+https://github.com/utensils/mcp-nixos";
+    };
+    hyprviz.url = "git+https://github.com/timasoft/hyprviz";
     serena = {
-      url = "github:oraios/serena";
+      url = "git+https://github.com/oraios/serena";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    plasma-manager = {
+      url = "git+https://github.com/nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager-unstable";
+    };
+    catppuccin.url = "git+https://github.com/catppuccin/nix";
   };
 
   outputs = inputs:
@@ -146,6 +187,8 @@
         # Import the treefmt-nix module
         inputs.treefmt-nix.flakeModule
         # (import ./lib/import.tree.nix nixpkgs.lib ./pkgs)
+        # Try importing HM flake module from https://nix-community.github.io/home-manager/index.xhtml#sec-flakes-flake-parts-module
+        # inputs.home-manager-unstable.flakeModules.home-manager
       ];
       systems = [ "x86_64-linux" ];
       perSystem =
@@ -197,7 +240,11 @@
           devShells.default = pkgs.mkShell {
             name = "nix-config-shell";
             inputsFrom = [ config.treefmt.package ];
-            packages = [ pkgs.pre-commit pkgs.gh pkgs.gum ];
+            packages = [
+              pkgs.pre-commit
+              pkgs.gh
+              pkgs.gum
+            ];
             shellHook = ''
               echo "Welcome to the Nix config dev shell!"
 
@@ -248,9 +295,11 @@
               nixpkgsConfig.overlays
               ++ [
                 (_self: super: {
-                  lib = super.lib.extend (_self-lib: _super-lib: {
-                    hm = inputs.home-manager-unstable.lib;
-                  });
+                  lib = super.lib.extend (
+                    _self-lib: _super-lib: {
+                      hm = inputs.home-manager-unstable.lib;
+                    }
+                  );
                 })
               ];
           };
@@ -263,12 +312,21 @@
             }:
             lib.nixosSystem {
               specialArgs = {
-                inherit inputs username host system pkgs pkgs-unstable lib;
+                inherit
+                  inputs
+                  username
+                  host
+                  system
+                  pkgs
+                  pkgs-unstable
+                  lib
+                  ;
                 dotfiles = inputs.dotfiles-src;
               };
 
               modules =
-                [
+                modules
+                ++ [
                   inputs.hyprland.nixosModules.default
                   inputs.disko.nixosModules.default
                   inputs.sops-nix.nixosModules.sops
@@ -278,8 +336,7 @@
                   ./hosts/${host}/config.nix
                   ./hosts/${host}/sops.nix
                   ./hosts/${host}/home.nix
-                ]
-                ++ modules;
+                ];
             };
         in
         {
@@ -293,7 +350,7 @@
             "viech" = mkNixosSystem {
               host = "viech";
               username = "lf";
-              modules = [ inputs.home-manager.nixosModules.home-manager ];
+              modules = [ inputs.home-manager-unstable.nixosModules.home-manager ];
             };
           };
 
@@ -301,15 +358,22 @@
             "lf" = inputs.home-manager-unstable.lib.homeManagerConfiguration {
               pkgs = pkgs-unstable-hm;
               extraSpecialArgs = {
-                inherit inputs system pkgs pkgs-unstable;
+                inherit
+                  inputs
+                  system
+                  pkgs
+                  pkgs-unstable
+                  ;
                 username = "lf";
                 dotfiles = inputs.dotfiles-src;
               };
               modules = [
-                inputs.home-manager-unstable.homeManagerModules.default
+                # inputs.home-manager-unstable.flakeModules.home-manager
+                inputs.plasma-manager.homeModules.plasma-manager
                 inputs.stylix.homeModules.stylix
-                # inputs.nur.modules.homeManager.default
+                inputs.nur.modules.homeManager.default
                 inputs.nix-doom-emacs-unstraightened.homeModule
+                inputs.catppuccin.homeModules.catppuccin
                 ./home/home.nix
               ];
             };
@@ -317,3 +381,5 @@
         };
     };
 }
+# Trivial change to invalidate cache
+

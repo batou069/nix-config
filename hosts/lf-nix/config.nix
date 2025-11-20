@@ -12,7 +12,28 @@ let
   inherit (import ./variables.nix) keyboardLayout;
 in
 {
+  # Register flake inputs for nix commands
+  nix.registry =
+    lib.mapAttrs (_: flake: { inherit flake; }) (lib.filterAttrs (_: lib.isType "flake") inputs)
+    // {
+      # Add nixpkgs to the registry
+      nixpkgs = {
+        flake = inputs.nixpkgs;
+      };
+    };
+
+  # Add inputs to legacy channels
+  nix.nixPath = [ "/etc/nix/path" ];
+  environment.etc =
+    lib.mapAttrs'
+      (name: value: {
+        name = "nix/path/${name}";
+        value.source = value.flake;
+      })
+      config.nix.registry;
+
   imports = [
+    ./kde.nix
     ./hardware.nix
     ./users.nix
     ./packages.nix
@@ -77,9 +98,9 @@ in
     };
     # extraModulePackages = [config.boot.kernelPackages.cpufreqtools];
     # Needed For Some Steam Games
-    kernel.sysctl = {
-      "vm.max_map_count" = 2147483642;
-    };
+    # kernel.sysctl = {
+    #   "vm.max_map_count" = 2147483642; # try 262144, 1048576 or disable block
+    # };
 
     ## BOOT LOADERS: NOTE USE ONLY 1. either systemd or grub
     # Bootloader SystemD
@@ -100,8 +121,8 @@ in
       interpreter = "${pkgs.appimage-run}/bin/appimage-run";
       recognitionType = "magic";
       offset = 0;
-      mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
-      magicOrExtension = ''\x7fELF....AI\x02'';
+      mask = "\\xff\\xff\\xff\\xff\\x00\\x00\\x00\\x00\\xff\\xff\\xff";
+      magicOrExtension = "\\x7fELF....AI\\x02";
     };
 
     plymouth = {
@@ -117,11 +138,7 @@ in
   networking = {
     networkmanager.enable = true;
     hostName = "${host}";
-    timeServers =
-      options.networking.timeServers.default
-      ++ [
-        "pool.ntp.org"
-      ];
+    timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
   };
 
   # Set your time zone.
@@ -131,18 +148,21 @@ in
   time.timeZone = "Asia/Jerusalem"; # Set local timezone
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocales = [ "he_IL.UTF-8/UTF-8" ];
 
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "he_IL.UTF-8";
-    LC_IDENTIFICATION = "he_IL.UTF-8";
-    LC_MEASUREMENT = "he_IL.UTF-8";
-    LC_MONETARY = "he_IL.UTF-8";
-    LC_NAME = "he_IL.UTF-8";
-    LC_NUMERIC = "he_IL.UTF-8";
-    LC_PAPER = "he_IL.UTF-8";
-    LC_TELEPHONE = "he_IL.UTF-8";
-    LC_TIME = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "he_IL.UTF-8";
+      LC_IDENTIFICATION = "he_IL.UTF-8";
+      LC_MEASUREMENT = "he_IL.UTF-8";
+      LC_MONETARY = "he_IL.UTF-8";
+      LC_NAME = "he_IL.UTF-8";
+      LC_NUMERIC = "he_IL.UTF-8";
+      LC_PAPER = "he_IL.UTF-8";
+      LC_TELEPHONE = "he_IL.UTF-8";
+      LC_TIME = "en_US.UTF-8";
+    };
   };
 
   systemd.tmpfiles.rules = [
@@ -172,8 +192,59 @@ in
     "L+ /usr/bin/python3.12 - - - - ${pkgs.python312}/bin/python3.12" # Optional, but safer
   ];
   programs.localsend.enable = true;
+
   # Services to start
   services = {
+    logind = {
+      lidSwitch = "hybrid-sleep";
+      lidSwitchExternalPower = "ignore";
+      lidSwitchDocked = "ignore";
+    };
+    power-profiles-daemon.enable = false;
+    fprintd.enable = false;
+    tlp = {
+      enable = true;
+      settings = {
+        CPU_SCALING_GOVERNOR_ON_AC = "schedutil";
+        CPU_SCALING_GOVERNOR_ON_BAT = "schedutil";
+        CPU_BOOST_ON_AC = 1;
+        CPU_BOOST_ON_BAT = 0;
+        CPU_SCALING_MIN_FREQ_ON_BAT = 400000;
+        CPU_SCALING_MAX_FREQ_ON_BAT = 3000000;
+
+        CPU_ENERGY_PERF_POLICY_ON_AC = "balance_power";
+        CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+
+        PLATFORM_PROFILE_ON_AC = "low-power";
+        PLATFORM_PROFILE_ON_BAT = "low-power";
+
+        USB_EXCLUDE_BTUSB = 1;
+        USB_AUTOSUSPEND = 1;
+        USB_AUTOSUSPEND_DISABLE_ON_SHUTDOWN = 1;
+
+        AMDGPU_ABM_LEVEL_ON_AC = 0;
+        AMDGPU_ABM_LEVEL_ON_BAT = 3;
+
+        DISK_IOSCHED = [ "none" ];
+        DISK_APM_LEVEL_ON_BAT = "1 1";
+
+        SATA_LINKPWR_ON_BAT = "min_power";
+        PCIE_ASPM_ON_AC = "performance";
+        PCIE_ASPM_ON_BAT = "powersupersave";
+
+        RUNTIME_PM_ON_AC = "on";
+        RUNTIME_PM_ON_BAT = "auto";
+
+        WIFI_PWR_ON_BAT = "on";
+
+        SOUND_POWER_SAVE_ON_BAT = 1;
+        SOUND_POWER_SAVE_CONTROLLER = "Y";
+
+        # Battery charge thresholds for on-road usage
+        START_CHARGE_THRESH_BAT0 = 85;
+        STOP_CHARGE_THRESH_BAT0 = 90;
+      };
+    };
     xserver = {
       enable = lib.mkForce false; # Disable X11 entirely - was just false
       xkb = {
@@ -239,7 +310,7 @@ in
     #hardware.openrgb.motherboard = "amd";
 
     fwupd.enable = false;
-    upower.enable = true;
+    upower.enable = lib.mkForce true;
     gnome.gnome-keyring.enable = true;
 
     #printing = {
@@ -369,17 +440,18 @@ in
       ];
       substituters = [ "https://hyprland.cachix.org" ];
       trusted-substituters = [ "https://hyprland.cachix.org" ];
-      trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
+      trusted-public-keys = [
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      ];
     };
     extraOptions = ''
-      access-tokens = github.com=${config.sops.secrets.github_pat.path}
+      access-tokens = github.com=${builtins.readFile config.sops.secrets.github_pat.path}
     '';
     gc = {
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
-    nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
     optimise.automatic = true;
   };
 
@@ -505,7 +577,7 @@ in
       minecraftia
     ];
     /*
-       fontconfig = {
+      fontconfig = {
       defaultFonts = {
       serif = [
       "Maple Mono NF Italic"
@@ -540,45 +612,6 @@ in
       autoImport = true;
       followSystem = true;
     };
-
-    # rose-pine-cursor , bibata-cursors, phinger-cursors-dark
-    cursor = {
-      name = "Rose Pine";
-      size = 40;
-      package = pkgs.rose-pine-cursor;
-    };
-    fonts = {
-      sansSerif = {
-        # package = pkgs.aleo-fonts;
-        # name = "Aleo";
-        package = pkgs.nerd-fonts.fantasque-sans-mono;
-        name = "Fantasqeue";
-      };
-
-      serif = {
-        # package = pkgs.noto-fonts-cjk-sans;
-        # name = "Noto Sans CJK JP";
-        package = pkgs-unstable.maple-mono.NF;
-        name = "Maple Mono NF";
-      };
-
-      monospace = {
-        package = pkgs-unstable.maple-mono.NF;
-        name = "Maple Mono NF";
-      };
-
-      emoji = {
-        package = pkgs.noto-fonts-color-emoji;
-        name = "Noto Color Emoji";
-      };
-
-      sizes = {
-        applications = 10;
-        desktop = 12;
-        popups = 14;
-        terminal = 14;
-      };
-    };
   };
 
   # Open ports in the firewall.
@@ -587,9 +620,7 @@ in
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  home-manager.sharedModules = [
-    inputs.zen-browser.homeModules.default
-  ];
+  home-manager.sharedModules = [ inputs.zen-browser.homeModules.default ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -598,4 +629,6 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
+
+  services.openssh.authorizedKeysFiles = [ config.sops.secrets."ssh_keys/github".path ];
 }

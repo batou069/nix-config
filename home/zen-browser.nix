@@ -1,4 +1,7 @@
-{ inputs, ... }: {
+{ inputs
+, pkgs
+, ...
+}: {
   imports = [
     inputs.zen-browser.homeModules.default
   ];
@@ -61,7 +64,7 @@
   # programs.zen-browser.profiles.default.spaces.work.position = 2;
 
   programs.zen-browser.profiles.default.spacesForce = true;
-
+  programs.zen-browser.package = inputs.zen-browser.packages.${pkgs.system}.default;
   # Policies
   programs.zen-browser.policies =
     let
@@ -105,9 +108,6 @@
       };
     };
 
-  # Set zen browser profile name to Stylix
-  # stylix.targets.zen-browser.profileNames = ["default"];
-
   xdg.desktopEntries.zen-beta.name = "Zen Browser";
   xdg.desktopEntries.zen-beta.genericName = "Web Browser";
 
@@ -140,4 +140,7 @@
 
   xdg.desktopEntries.zen-beta.actions."profile-manager-window".name = "Profile Manager";
   xdg.desktopEntries.zen-beta.actions."profile-manager-window".exec = "zen-beta --ProfileManager";
+
+  # Set zen browser profile name to Stylix
+  # programs.stylix.targets.zen-browser.profileNames = [ "default" ];
 }

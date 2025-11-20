@@ -4,5 +4,6 @@
     ./fish.nix
     ./nushell.nix
     ./zsh.nix
+    ./aliae.nix
   ];
 }

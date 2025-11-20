@@ -4,6 +4,7 @@
     enableFishIntegration = true;
     enableNushellIntegration = false;
     enableZshIntegration = true;
+    enableBashIntegration = true;
     colors = "always";
     git = true;
     icons = "auto";

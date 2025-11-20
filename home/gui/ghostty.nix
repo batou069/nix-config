@@ -1,6 +1,7 @@
 { pkgs-unstable, ... }: {
   programs.ghostty = {
     enable = true;
+    systemd.enable = true;
     enableZshIntegration = true;
     enableBashIntegration = true;
     enableFishIntegration = true;
@@ -8,40 +9,42 @@
     installVimSyntax = true;
     package = pkgs-unstable.ghostty;
     settings = {
-      font-family = "Maple Mono NF";
+      font-family = "Maple Mono Italic SemiBold";
       font-thicken = true;
       bold-is-bright = true;
       font-style = "medium italic";
+      font-feature = "cv02,cv38,cv42,cv43,cv62,cv66,ss03,ss07,zero";
+      window-title-font-family = "JetBrains Mono";
       keybind = [
-        "ctrl+shift+s>left=new_split:left"
-        "ctrl+shift+s>down=new_split:down"
-        "ctrl+shift+s>up=new_split:up"
-        "ctrl+shift+s>right=new_split:right"
-        "ctrl+shift+s>a=new_split:auto"
-        "ctrl+shift+s>c=close_surface"
-        "ctrl+shift+left=goto_split:left"
-        "ctrl+shift+right=goto_split:right"
-        "ctrl+shift+up=goto_split:top"
-        "ctrl+shift+down=goto_split:bottom"
+        "ctrl+s>left=new_split:left"
+        "ctrl+s>down=new_split:down"
+        "ctrl+s>up=new_split:up"
+        "ctrl+s>right=new_split:right"
+        "ctrl+s>a=new_split:auto"
+        "ctrl+s>c=close_surface"
+        "alt+left=goto_split:left"
+        "alt+right=goto_split:right"
+        "alt+up=goto_split:top"
+        "alt+down=goto_split:bottom"
       ];
-      font-size = 12;
+      font-size = 10;
       font-thicken-strength = 127;
 
       link-url = true;
       minimum-contrast = 1;
 
       # mouse
-      mouse-scroll-multiplier = 2;
+      mouse-scroll-multiplier = 10;
       mouse-hide-while-typing = true;
       mouse-shift-capture = true;
 
       quick-terminal-position = "top";
       quick-terminal-screen = "main";
 
-      selection-invert-fg-bg = true;
-      cursor-color = "#f5e0dc";
+      selection-invert-fg-bg = false;
+      cursor-click-to-move = true;
+      cursor-color = "#ffee00ff";
       cursor-text = "#cdd6f4";
-      cursor-invert-fg-bg = true;
       cursor-style = "block_hollow";
       cursor-style-blink = false;
       quick-terminal-animation-duration = 0.08;
@@ -61,6 +64,7 @@
       background-blur-radius = 20;
       window-padding-balance = true;
       confirm-close-surface = false;
+      theme = "maple";
     };
     themes = {
       catppuccin-mocha = {
@@ -87,6 +91,31 @@
         ];
         selection-background = "353749";
         selection-foreground = "cdd6f4";
+      };
+      maple = {
+        background = "#1e1e1f";
+        cursor-color = "#cbd5e1";
+        foreground = "#cbd5e1";
+        palette = [
+          "8 = #666666"
+          "12 = #a8e0ff"
+          "14 = #bafffe"
+          "10 = #bdf8c7"
+          "13 = #ebe5ff"
+          "9 = #ffc4c4"
+          "15 = #ffffff"
+          "11 = #ffe8b9"
+          "0 = #333333"
+          "4 = #8fc7ff"
+          "6 = #a1e8e5"
+          "2 = #a4dfae"
+          "5 = #d2ccff"
+          "1 = #edabab"
+          "7 = #f3f2f2"
+          "3 = #eecfa0"
+        ];
+        selection-background = "#cbd5e1";
+        selection-foreground = "#1e1e1f";
       };
     };
   };
