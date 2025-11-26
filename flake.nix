@@ -274,32 +274,10 @@
 
       flake =
         let
-          system = "x86_64-linux";
-          lib = inputs.nixpkgs.lib;
-          # Get helpers from perSystem
-          perSystem = inputs.self.perSystem.${system};
-          libOverlay = perSystem._module.args.libOverlay;
-          libPkg = perSystem._module.args.libPkg;
+          lib = import ./lib { inherit inputs; };
+          hosts = import ./lib/hosts.nix { inherit inputs; };
 
-          # Define a central config to be applied to both package sets
-          nixpkgsConfig = {
-            config.allowUnfree = true;
-            # Import the list of overlays from the dedicated file
-            overlays = import ./overlays/default.nix { inherit inputs libOverlay; };
-          };
-          # Create the configured package sets
-          pkgs = import inputs.nixpkgs {
-            inherit system;
-            config = nixpkgsConfig.config;
-            overlays = nixpkgsConfig.overlays;
-          };
-          pkgs-unstable = import inputs.nixpkgs-unstable {
-            inherit system;
-            config = nixpkgsConfig.config;
-            overlays = nixpkgsConfig.overlays;
-          };
-
-          # Centralized sops configuration
+          # Centralized sops configuration from your local changes
           sopsConfig = {
             sops = {
               defaultSopsFile = ./secrets/secrets.yaml;
@@ -319,94 +297,21 @@
               };
             };
           };
-
-          mkNixosSystem =
-            { host
-            , username
-            , modules ? [ ]
-            ,
-            }:
-            lib.nixosSystem {
-              specialArgs = {
-                inherit
-                  inputs
-                  username
-                  host
-                  system
-                  pkgs
-                  pkgs-unstable
-                  lib
-                  libOverlay
-                  libPkg
-                  ;
-                dotfiles = inputs.dotfiles-src;
-              };
-
-              modules =
-                modules
-                ++ [
-                  inputs.nixpkgs.nixosModules.readOnlyPkgs
-                  { nixpkgs.pkgs = pkgs; }
-                  inputs.musnix.nixosModules.musnix
-                  inputs.hyprland.nixosModules.default
-                  inputs.disko.nixosModules.default
-                  inputs.sops-nix.nixosModules.sops
-                  inputs.nur.modules.nixos.default
-                  inputs.stylix.nixosModules.stylix
-                  # inputs.mango.nixosModules.mango
-                  sopsConfig # Apply centralized sops config
-                  ./hosts/${host}/config.nix
-                ];
-            };
         in
         {
-          nixosConfigurations = {
-            "lf-nix" = mkNixosSystem {
-              host = "lf-nix";
-              username = "lf";
-              modules = [
-                inputs.home-manager.nixosModules.home-manager
-                ./hosts/lf-nix/home.nix
-                # Inject the sops-nix home-manager module for this user
-                {
-                  home-manager.users.lf.imports = [
-                    inputs.sops-nix.homeManagerModules.sops
-                  ];
-                }
-              ];
-            };
+          nixosConfigurations = lib.mapAttrs'
+            (name: config: lib.nameValuePair name (lib.buildNixosSystem (config // {
+              host = name;
+              specialArgs = (config.specialArgs or {}) // { inherit sopsConfig; };
+            })))
+            hosts.nixos;
 
-            "viech" = mkNixosSystem {
-              host = "viech";
-              username = "lf";
-              modules = [ inputs.home-manager.nixosModules.home-manager ];
-            };
-          };
-
-          homeConfigurations = {
-            "lf" = inputs.home-manager.lib.homeManagerConfiguration {
-              pkgs = pkgs-unstable; # Use pkgs-unstable directly
-              extraSpecialArgs = {
-                inherit
-                  inputs
-                  system
-                  pkgs
-                  pkgs-unstable
-                  libOverlay
-                  libPkg
-                  ;
-                username = "lf";
-                dotfiles = inputs.dotfiles-src;
-              };
-              modules = [
-                inputs.sops-nix.homeManagerModules.sops
-                inputs.nur.modules.homeManager.default
-                inputs.nix-doom-emacs-unstraightened.homeModule
-                sopsConfig # Apply centralized sops config
-                ./home/home.nix
-              ];
-            };
-          };
+          homeConfigurations = lib.mapAttrs'
+            (name: config: lib.nameValuePair name (lib.buildHomeConfiguration (config // {
+              username = name;
+              extraSpecialArgs = (config.extraSpecialArgs or {}) // { inherit sopsConfig; };
+            })))
+            hosts.home;
         };
     };
 }
