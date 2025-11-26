@@ -41,7 +41,7 @@ in
     ../../modules/intel-drivers.nix
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
-    "${inputs.nix-mineral}/nix-mineral.nix"
+    # "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
   # Silence the specialArgs warning by explicitly disabling the conflicting options.
@@ -71,9 +71,9 @@ in
       "nowatchdog"
       # "modprobe.blacklist=sp5100_tco" #watchdog for AMD
       "modprobe.blacklist=iTCO_wdt" # watchdog for Intel
-      # "vt.default_red=48,231,166,229,140,244,129,181,98,231,166,229,140,244,129,165"
-      # "vt.default_grn=52,130,209,200,170,184,200,191,104,130,209,200,170,184,200,173"
-      # "vt.default_blu=70,132,137,144,238,228,190,226,128,132,137,144,238,228,190,206"
+      "vt.default_red=36,237,166,238,138,245,139,184,91,237,166,238,138,245,139,165"
+      "vt.default_grn=39,135,218,212,173,189,213,192,96,135,218,212,173,189,213,173"
+      "vt.default_blu=58,150,149,159,244,230,202,224,120,150,149,159,244,230,202,203"
     ];
 
     extraModprobeConfig = ''
@@ -150,7 +150,7 @@ in
   # Select internationalisation properties.
   i18n = {
     defaultLocale = "en_US.UTF-8";
-    extraLocales = [ "he_IL.UTF-8/UTF-8" ];
+    # extraLocales = [ "he_IL.UTF-8/UTF-8" ];
 
     extraLocaleSettings = {
       LC_ADDRESS = "he_IL.UTF-8";
@@ -195,6 +195,10 @@ in
 
   # Services to start
   services = {
+    openssh = {
+      enable = true;
+      authorizedKeysFiles = [ config.sops.secrets."ssh_keys/github".path ];
+    };
     logind = {
       lidSwitch = "hybrid-sleep";
       lidSwitchExternalPower = "ignore";
@@ -219,7 +223,7 @@ in
         PLATFORM_PROFILE_ON_BAT = "low-power";
 
         USB_EXCLUDE_BTUSB = 1;
-        USB_AUTOSUSPEND = 1;
+        USB_AUTOSUSPEND = 0;
         USB_AUTOSUSPEND_DISABLE_ON_SHUTDOWN = 1;
 
         AMDGPU_ABM_LEVEL_ON_AC = 0;
@@ -237,8 +241,8 @@ in
 
         WIFI_PWR_ON_BAT = "on";
 
-        SOUND_POWER_SAVE_ON_BAT = 1;
-        SOUND_POWER_SAVE_CONTROLLER = "Y";
+        SOUND_POWER_SAVE_ON_BAT = 0;
+        SOUND_POWER_SAVE_CONTROLLER = "N";
 
         # Battery charge thresholds for on-road usage
         START_CHARGE_THRESH_BAT0 = 85;
@@ -267,7 +271,7 @@ in
       vt = 1;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --sessions /run/current-system/sw/share/wayland-sessions";
         };
       };
     };
@@ -301,7 +305,6 @@ in
     libinput.enable = true;
     rpcbind.enable = false;
     nfs.server.enable = false;
-    openssh.enable = true;
 
     flatpak.enable = true;
     blueman.enable = true;
@@ -328,42 +331,42 @@ in
       relay.enable = true;
     };
 
-    telegraf = {
-      enable = true;
-      extraConfig = {
-        inputs = {
-          cpu = {
-            percpu = true;
-            totalcpu = true;
-          };
-          mem = { };
-          disk = { };
-          diskio = { };
-          net = { };
-          system = { };
-          processes = { };
-          swap = { };
-          internal = { };
-        };
-        outputs = {
-          http = {
-            url = "http://127.0.0.1:8181/api/v3/write_lp?db=nixos_metrics";
-            method = "POST";
-            data_format = "influx";
-            headers = {
-              "Authorization" = "Token ${config.sops.secrets."influxdb".path}";
-            };
-          };
-        };
-      };
-    };
-    grafana = {
-      enable = true;
-      # Optional: Configure it to start automatically on your local machine
-      settings.server.root_url = "http://localhost:3000";
-      settings.security.admin_user = "admin";
-      settings.security.admin_password = "Token ${config.sops.secrets."influxdb".path}";
-    };
+    # telegraf = {
+    #   enable = true;
+    #   extraConfig = {
+    #     inputs = {
+    #       cpu = {
+    #         percpu = true;
+    #         totalcpu = true;
+    #       };
+    #       mem = { };
+    #       disk = { };
+    #       diskio = { };
+    #       net = { };
+    #       system = { };
+    #       processes = { };
+    #       swap = { };
+    #       internal = { };
+    #     };
+    #     outputs = {
+    #       http = {
+    #         url = "http://127.0.0.1:8181/api/v3/write_lp?db=nixos_metrics";
+    #         method = "POST";
+    #         data_format = "influx";
+    #         headers = {
+    #           "Authorization" = "Token ${config.sops.secrets."influxdb".path}";
+    #         };
+    #       };
+    #     };
+    #   };
+    # };
+    # grafana = {
+    #   enable = true;
+    #   # Optional: Configure it to start automatically on your local machine
+    #   settings.server.root_url = "http://localhost:3000";
+    #   settings.security.admin_user = "admin";
+    #   settings.security.admin_password = "Token ${config.sops.secrets."influxdb".path}";
+    # };
   };
 
   # zram
@@ -375,10 +378,10 @@ in
     algorithm = "zstd";
   };
 
-  powerManagement = {
-    enable = false;
-    cpuFreqGovernor = "powersave"; # or "performance" or "schedutil";
-  };
+  # powerManagement = {
+  #   enable = false;
+  #   cpuFreqGovernor = "powersave"; # or "performance" or "schedutil";
+  # };
 
   # Extra Logitech Support
   hardware = {
@@ -429,6 +432,18 @@ in
     '';
   };
   security.pam.services.hyprlock = { };
+
+  musnix = {
+    enable = true;
+
+    # DEFINITELY KEEP FALSE for simple playback
+    # Prevents long compile times and potential instability
+    kernel.realtime = false;
+
+    # OPTIONAL: Useful tool to check if your system is bottlenecking audio
+    rtcqs.enable = true;
+  };
+
   # Cachix, Optimization settings and garbage collection automation
   nix = {
     settings = {
@@ -629,6 +644,4 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
-
-  services.openssh.authorizedKeysFiles = [ config.sops.secrets."ssh_keys/github".path ];
 }

@@ -26,6 +26,8 @@
           args = [
             "${config.home.homeDirectory}/nix"
             "${config.home.homeDirectory}/git"
+            "${config.home.homeDirectory}/.config"
+            "${config.home.homeDirectory}/dotfiles"
             "/nix"
           ];
         };

@@ -9,10 +9,6 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "git+https://github.com/nix-community/home-manager"; # /release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    home-manager-unstable = {
       url = "git+https://github.com/nix-community/home-manager/";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
@@ -31,6 +27,8 @@
       # url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    musnix = { url = "github:musnix/musnix"; };
 
     # ags = {
     #   url = "git+https://github.com/aylur/ags/v1";
@@ -175,7 +173,7 @@
     plasma-manager = {
       url = "git+https://github.com/nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager-unstable";
+      inputs.home-manager.follows = "home-manager";
     };
     catppuccin.url = "git+https://github.com/catppuccin/nix";
   };
@@ -188,21 +186,30 @@
         inputs.treefmt-nix.flakeModule
         # (import ./lib/import.tree.nix nixpkgs.lib ./pkgs)
         # Try importing HM flake module from https://nix-community.github.io/home-manager/index.xhtml#sec-flakes-flake-parts-module
-        # inputs.home-manager-unstable.flakeModules.home-manager
+        # inputs.home-manager.flakeModules.home-manager
       ];
       systems = [ "x86_64-linux" ];
       perSystem =
         { config
         , pkgs
+        , system
         , ...
         }:
         let
           pkgs-unfree = import inputs.nixpkgs {
-            system = pkgs.system;
+            inherit system;
             config.allowUnfree = true;
           };
+          # Import the new helper functions
+          lib-helpers = import ./modules/lib-helpers.nix { inherit inputs system; };
         in
         {
+          _module.args = {
+            # Expose the helpers to all modules
+            libOverlay = lib-helpers.libOverlay;
+            libPkg = lib-helpers.libPkg;
+          };
+
           packages = {
             vscode-fhs = pkgs-unfree.vscode-fhs;
           };
@@ -269,11 +276,16 @@
         let
           system = "x86_64-linux";
           lib = inputs.nixpkgs.lib;
+          # Get helpers from perSystem
+          perSystem = inputs.self.perSystem.${system};
+          libOverlay = perSystem._module.args.libOverlay;
+          libPkg = perSystem._module.args.libPkg;
+
           # Define a central config to be applied to both package sets
           nixpkgsConfig = {
             config.allowUnfree = true;
             # Import the list of overlays from the dedicated file
-            overlays = import ./overlays/default.nix { inherit inputs; };
+            overlays = import ./overlays/default.nix { inherit inputs libOverlay; };
           };
           # Create the configured package sets
           pkgs = import inputs.nixpkgs {
@@ -287,21 +299,25 @@
             overlays = nixpkgsConfig.overlays;
           };
 
-          # Pkgs for standalone home-manager with hm lib
-          pkgs-unstable-hm = import inputs.nixpkgs-unstable {
-            inherit system;
-            config = nixpkgsConfig.config;
-            overlays =
-              nixpkgsConfig.overlays
-              ++ [
-                (_self: super: {
-                  lib = super.lib.extend (
-                    _self-lib: _super-lib: {
-                      hm = inputs.home-manager-unstable.lib;
-                    }
-                  );
-                })
-              ];
+          # Centralized sops configuration
+          sopsConfig = {
+            sops = {
+              defaultSopsFile = ./secrets/secrets.yaml;
+              defaultSopsFormat = "yaml";
+              age.keyFile = "/home/lf/nix/secrets/age-key.txt";
+              secrets = {
+                "github_pat" = { };
+                "api_keys/openai" = { };
+                "api_keys/anthropic" = { };
+                "api_keys/gemini" = { };
+                "bitwarden" = { };
+                "api_keys/tavily" = { };
+                "api_keys/brave_search" = { };
+                "api_keys/github_mcp" = { };
+                "influxdb" = { };
+                "ssh_keys/github" = { };
+              };
+            };
           };
 
           mkNixosSystem =
@@ -320,6 +336,8 @@
                   pkgs
                   pkgs-unstable
                   lib
+                  libOverlay
+                  libPkg
                   ;
                 dotfiles = inputs.dotfiles-src;
               };
@@ -327,15 +345,17 @@
               modules =
                 modules
                 ++ [
+                  inputs.nixpkgs.nixosModules.readOnlyPkgs
+                  { nixpkgs.pkgs = pkgs; }
+                  inputs.musnix.nixosModules.musnix
                   inputs.hyprland.nixosModules.default
                   inputs.disko.nixosModules.default
                   inputs.sops-nix.nixosModules.sops
                   inputs.nur.modules.nixos.default
                   inputs.stylix.nixosModules.stylix
                   # inputs.mango.nixosModules.mango
+                  sopsConfig # Apply centralized sops config
                   ./hosts/${host}/config.nix
-                  ./hosts/${host}/sops.nix
-                  ./hosts/${host}/home.nix
                 ];
             };
         in
@@ -344,36 +364,45 @@
             "lf-nix" = mkNixosSystem {
               host = "lf-nix";
               username = "lf";
-              modules = [ inputs.home-manager-unstable.nixosModules.home-manager ];
+              modules = [
+                inputs.home-manager.nixosModules.home-manager
+                ./hosts/lf-nix/home.nix
+                # Inject the sops-nix home-manager module for this user
+                {
+                  home-manager.users.lf.imports = [
+                    inputs.sops-nix.homeManagerModules.sops
+                  ];
+                }
+              ];
             };
 
             "viech" = mkNixosSystem {
               host = "viech";
               username = "lf";
-              modules = [ inputs.home-manager-unstable.nixosModules.home-manager ];
+              modules = [ inputs.home-manager.nixosModules.home-manager ];
             };
           };
 
           homeConfigurations = {
-            "lf" = inputs.home-manager-unstable.lib.homeManagerConfiguration {
-              pkgs = pkgs-unstable-hm;
+            "lf" = inputs.home-manager.lib.homeManagerConfiguration {
+              pkgs = pkgs-unstable; # Use pkgs-unstable directly
               extraSpecialArgs = {
                 inherit
                   inputs
                   system
                   pkgs
                   pkgs-unstable
+                  libOverlay
+                  libPkg
                   ;
                 username = "lf";
                 dotfiles = inputs.dotfiles-src;
               };
               modules = [
-                # inputs.home-manager-unstable.flakeModules.home-manager
-                inputs.plasma-manager.homeModules.plasma-manager
-                inputs.stylix.homeModules.stylix
+                inputs.sops-nix.homeManagerModules.sops
                 inputs.nur.modules.homeManager.default
                 inputs.nix-doom-emacs-unstraightened.homeModule
-                inputs.catppuccin.homeModules.catppuccin
+                sopsConfig # Apply centralized sops config
                 ./home/home.nix
               ];
             };

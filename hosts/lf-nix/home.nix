@@ -15,7 +15,9 @@
       inherit inputs username system pkgs pkgs-unstable dotfiles;
     };
     users.${username} = {
+      home.stateVersion = "24.11";
       imports = [
+        inputs.nur.modules.homeManager.default
         inputs.nix-doom-emacs-unstraightened.homeModule
         ../../home/home.nix
       ];

@@ -5,7 +5,7 @@
     enableMcpIntegration = true;
     settings = {
       "$schema" = "https://opencode.ai/config.json";
-      autoshare = "auto";
+
       autoupdate = false;
       tui = {
         scroll_acceleration.enabled = true;
