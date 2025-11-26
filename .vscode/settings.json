@@ -1,8 +1,17 @@
 {
-  "python.defaultInterpreterPath": "/etc/profiles/per-user/lf/bin/python3",
-  "nil": {
-    "nix": {
-      "pkgs": "github:NixOS/nixpkgs/nixos-unstable"
+  "nix.serverSettings": {
+    "nixd": {
+      "formatting": {
+        "command": ["nixpkgs-fmt"]
+      },
+      "options": {
+        "nixos": {
+          "expr": "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.\"lf-nix\".options"
+        },
+        "home-manager": {
+          "expr": "(builtins.getFlake (builtins.toString ./.)).homeConfigurations.\"lf\".options"
+        }
+      }
     }
   }
 }

@@ -287,10 +287,56 @@ in
   };
 
   services = {
+    espanso = {
+      enable = true;
+      configs = {
+        vscode = {
+          filter_title = "Visual Studio Code$";
+          backend = "Clipboard";
+        };
+      };
+      matches = {
+        matches = [
+          {
+            trigger = ":nrs";
+            replace = "nix nixos-rebuild switch --flake $N";
+          }
+          {
+            trigger = ":lf";
+            replace = "Laurent Flaster";
+          }
+          {
+            trigger = ":now";
+            replace = "{{currentdate}} {{currenttime}}";
+          }
+        ];
+        global_vars = {
+          global_vars = [
+            {
+              name = "currentdate";
+              type = "date";
+              params = { format = "%d/%m/%Y"; };
+            }
+            {
+              name = "currenttime";
+              type = "date";
+              params = { format = "%R"; };
+            }
+          ];
+        };
+      };
+    };
+
     signaturepdf = {
       enable = true;
       port = 8082;
+      extraConfig = {
+        max_file_uploads = "201";
+        post_max_size = "24M";
+        upload_max_filesize = "24M";
+      };
     };
+
     activitywatch = {
       enable = true;
       watchers = {
@@ -354,6 +400,22 @@ in
   };
 
   systemd.user.startServices = "sd-switch";
+
+  systemd.user.services.waybar = {
+    Unit = {
+      Description = "Waybar";
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStartPre = "${pkgs.bash}/bin/bash -c '[[ \"$XDG_CURRENT_DESKTOP\" == \"Hyprland\" ]] || exit 0'";
+      ExecStart = "${pkgs.waybar}/bin/waybar";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
 
   # Home Manager version
   home = {
@@ -464,7 +526,7 @@ in
 
       # Secrets
       GITHUB_PERSONAL_ACCESS_TOKEN = config.sops.secrets.github_pat.path;
-      # OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
+      OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
       GEMINI_API_KEY = config.sops.secrets."api_keys/gemini".path;
       GOOGLE_API_KEY = config.sops.secrets."api_keys/gemini".path;
       ZSH_AI_COMMANDS_OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
@@ -476,9 +538,6 @@ in
       BRAVE_API_KEY = config.sops.secrets."api_keys/brave_search".path;
       GITHUB_TOKEN = config.sops.secrets."api_keys/github_mcp".path;
       # Theming and shell appearance
-      BASE16_SHELL = "$HOME/.config/base16-shell";
-      TERM_ITALICS = "true";
-      BAT_THEME = "base16";
     };
 
     file = {
@@ -675,7 +734,7 @@ in
         # package = pkgs.aleo-fonts;
         # name = "Aleo";
         package = pkgs.nerd-fonts.fantasque-sans-mono;
-        name = "Fantasqeue";
+        name = "Fantasque";
       };
 
       serif = {
@@ -687,7 +746,7 @@ in
 
       monospace = {
         package = pkgs-unstable.maple-mono.NF;
-        name = "Maple Mono NF";
+        name = "Maple Mono NF Bold";
       };
 
       emoji = {

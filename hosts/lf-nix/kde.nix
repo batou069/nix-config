@@ -1,25 +1,20 @@
-{ pkgs, ... }:
-let
-  wallpaper = ../../assets/wallpapers/astronaut_jellyfish.jpg;
-in
-{
+{ pkgs, ... }: {
   # Enable KDE
-  services.displayManager.sddm = {
-    enable = true;
-    enableHidpi = true;
-    settings.Theme.CursorTheme = "Yaru";
-    wayland.enable = true;
-  };
+  # services.displayManager.sddm = {
+  #   enable = true;
+  #   enableHidpi = true;
+  #   settings.Theme.CursorTheme = "Yaru";
+  #   wayland.enable = true;
+  # };
   services.desktopManager.plasma6.enable = true;
 
-  environment.systemPackages = [
-    pkgs.yaru-theme
-    (pkgs.writeTextDir "share/sddm/themes/breeze/theme.conf.user" ''
-      [General]
-      background=${wallpaper};
-      type=image
-    '')
-  ];
+  # environment.systemPackages = [
+  #   (pkgs.writeTextDir "share/sddm/themes/breeze/theme.conf.user" ''
+  #     [General]
+  #     background=${wallpaper};
+  #     type=image
+  #   '')
+  # ];
 
   # Excluding some KDE applications from the default install
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
@@ -27,7 +22,6 @@ in
     elisa
     ffmpegthumbs
     kate
-    khelpcenter
     konsole
     krdp
     plasma-browser-integration

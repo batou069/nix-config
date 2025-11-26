@@ -1,31 +1,19 @@
 # /home/lf/nix/overlays/default.nix
 # This file centralizes all overlays for your Nix configurations.
-{ inputs, ... }: [
-  # WORKAROUND: The nixvim flake contains a definition for the `atopile` LSP
-  # server, but the `atopile` package does not exist in nixpkgs. This causes
-  # an evaluation error when nixvim tries to generate documentation for all
-  # possible LSP servers. This overlay creates an empty placeholder package
-  # to satisfy the dependency and allow the build to succeed.
-  # (final: prev: {
-  #   atopile = prev.stdenv.mkDerivation {
-  #     name = "atopile-placeholder";
-  #     version = "0.0.0";
-  #     src = prev.lib.sources.sourceByRegex ./../. ["flake.nix"]; # Trivial source
-  #     installPhase = "mkdir -p $out/bin; touch $out/bin/atopile";
-  #   };
-  # })
-  inputs.nur.overlays.default
-  inputs.mcp-servers-nix.overlays.default
-  # inputs.nix-mcp-servers.overlays.default
-  inputs.emacs-overlay.overlay
-  # inputs.nix-doom-emacs-unstraightened.overlays.homeModule
-  # inputs.nix-doom-emacs-unstraightened.overlay
-  inputs.nix-doom-emacs-unstraightened.overlays.default
+{ inputs
+, libOverlay
+, ...
+}: [
+  # Use the libOverlay helper for flake inputs
+  (libOverlay inputs.nur)
+  (libOverlay inputs.mcp-servers-nix)
+  (libOverlay inputs.emacs-overlay)
+  (libOverlay inputs.nix-doom-emacs-unstraightened)
+
+  # Keep custom overlay functions as they are
   (_final: prev: {
     claudia = inputs.claudia.packages.${prev.system}.default;
-    # ags = inputs.ags.packages.${prev.system}.default;
     firefox-addons = inputs.firefox-addons.packages.${prev.system};
-    # pyprland = inputs.pyprland.packages.${prev.system}.default;
     vimPlugins =
       prev.vimPlugins
       // {

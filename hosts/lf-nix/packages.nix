@@ -57,9 +57,10 @@ in
       # mcp-server-sequential-thinking
       # context7-mcp
       # mcp-server-filesystem
-      # (callPackage ../../pkgs/wrapped-mcp-server-memory.nix {
-      #   original-mcp-server-memory = inputs.nix-mcp-servers.packages.${pkgs.system}.mcp-server-memory;
-      # })
+      # mcp-server-memory
+      (callPackage ../../overlays/wrapped-mcp-server-memory.nox {
+        original-mcp-server-memory = inputs.nix-mcp-servers.packages.${pkgs.system}.mcp-server-memory;
+      })
       # mcp-server-git
       # tavily-mcp
       # github-mcp-server
@@ -180,6 +181,7 @@ in
       # End Dev Stuff
     ])
     ++ (with pkgs-unstable; [
+      nixfmt
       nixd
       bc
       curl
@@ -200,6 +202,7 @@ in
       inputs.hyprviz.packages.${pkgs.system}.default
       inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
       hyprshade
+      antigravity
     ])
     ++ [
       r-with-packages # Add the R environment
@@ -217,9 +220,9 @@ in
       enableXonshIntegration = true;
     };
 
-    # xonsh.enable = false;
+    xonsh.enable = false;
     hyprlock.enable = true;
-    waybar.enable = true;
+
     thunar = {
       enable = true;
       # thunar.

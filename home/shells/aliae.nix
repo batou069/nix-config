@@ -327,43 +327,43 @@
         }
         # Secrets (Using the same shell command substitution from your config)
         # { name = "OPENAI_API_KEY"; value = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')"; }
-        {
-          name = "GEMINI_API_KEY";
-          value = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
-        }
-        {
-          name = "GOOGLE_API_KEY";
-          value = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
-        }
-        {
-          name = "ZSH_AI_COMMANDS_OPENAI_API_KEY";
-          value = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
-        }
-        {
-          name = "ANTHROPIC_API_KEY";
-          value = "$(cat /run/secrets/api_keys/anthropic 2>/dev/null || echo '')";
-        }
-        {
-          name = "BW_SESSION";
-          value = "$(cat /run/secrets/bitwarden 2>/dev/null || echo '')";
-        }
-        {
-          name = "INFLUX_TOKEN";
-          value = "$(cat /run/secrets/influxdb 2>/dev/null || echo '')";
-        }
-        # Keys for MCP Servers
-        {
-          name = "TAVILY_API_KEY";
-          value = "$(cat /run/secrets/api_keys/tavily 2>/dev/null || echo '')";
-        }
-        {
-          name = "BRAVE_API_KEY";
-          value = "$(cat /run/secrets/api_keys/brave_search 2>/dev/null || echo '')";
-        }
-        {
-          name = "GITHUB_TOKEN";
-          value = "$(cat /run/secrets/api_keys/github_mcp 2>/dev/null || echo '')";
-        }
+        # {
+        #   name = "GEMINI_API_KEY";
+        #   value = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
+        # }
+        # {
+        #   name = "GOOGLE_API_KEY";
+        #   value = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
+        # }
+        # {
+        #   name = "ZSH_AI_COMMANDS_OPENAI_API_KEY";
+        #   value = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
+        # }
+        # {
+        #   name = "ANTHROPIC_API_KEY";
+        #   value = "$(cat /run/secrets/api_keys/anthropic 2>/dev/null || echo '')";
+        # }
+        # {
+        #   name = "BW_SESSION";
+        #   value = "$(cat /run/secrets/bitwarden 2>/dev/null || echo '')";
+        # }
+        # {
+        #   name = "INFLUX_TOKEN";
+        #   value = "$(cat /run/secrets/influxdb 2>/dev/null || echo '')";
+        # }
+        # # Keys for MCP Servers
+        # {
+        #   name = "TAVILY_API_KEY";
+        #   value = "$(cat /run/secrets/api_keys/tavily 2>/dev/null || echo '')";
+        # }
+        # {
+        #   name = "BRAVE_API_KEY";
+        #   value = "$(cat /run/secrets/api_keys/brave_search 2>/dev/null || echo '')";
+        # }
+        # {
+        #   name = "GITHUB_TOKEN";
+        #   value = "$(cat /run/secrets/api_keys/github_mcp 2>/dev/null || echo '')";
+        # }
 
         # Theming and shell appearance
         {
@@ -421,7 +421,7 @@
         {
           "if" = "match .Shell \"zsh\"";
           value = ''
-            # zmodload zsh/zprof
+            zmodload zsh/zprof
 
             # --- Directory Hashes (Specific to Zsh) ---
             hash -d nhl={{ .Home }}/nix/hosts/lf-nix
@@ -481,7 +481,7 @@
             # hash -d n={{ .Home }}/nix
 
 
-            # zprof
+            zprof
           '';
         }
         {
