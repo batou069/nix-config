@@ -39,6 +39,7 @@ lib
     , host
     , username
     , modules ? [ ]
+    , specialArgs ? { }
     ,
     }:
     let
@@ -46,26 +47,29 @@ lib
       helpers = lib-helpers system;
     in
     lib.nixosSystem {
-      specialArgs = {
-        inherit
-          inputs
-          username
-          host
-          system
-          pkgs
-          ;
-        pkgs-unstable = import inputs.nixpkgs-unstable {
-          inherit system;
-          config = pkgs.config;
-          overlays = pkgs.overlays;
+      specialArgs =
+        specialArgs
+        // {
+          inherit
+            inputs
+            username
+            host
+            system
+            pkgs
+            ;
+          pkgs-unstable = import inputs.nixpkgs-unstable {
+            inherit system;
+            config = pkgs.config;
+            overlays = pkgs.overlays;
+          };
+          dotfiles = inputs.dotfiles-src;
+          libOverlay = helpers.libOverlay;
+          libPkg = helpers.libPkg;
         };
-        dotfiles = inputs.dotfiles-src;
-        libOverlay = helpers.libOverlay;
-        libPkg = helpers.libPkg;
-      };
       modules =
         modules
         ++ [
+          ../modules/sops.nix
           inputs.nixpkgs.nixosModules.readOnlyPkgs
           { nixpkgs.pkgs = pkgs; }
           inputs.musnix.nixosModules.musnix
@@ -74,25 +78,6 @@ lib
           inputs.sops-nix.nixosModules.sops
           inputs.nur.modules.nixos.default
           inputs.stylix.nixosModules.stylix
-          {
-            sops = {
-              defaultSopsFile = ../secrets/secrets.yaml;
-              defaultSopsFormat = "yaml";
-              age.keyFile = "/home/lf/nix/secrets/age-key.txt";
-              secrets = {
-                "github_pat" = { };
-                "api_keys/openai" = { };
-                "api_keys/anthropic" = { };
-                "api_keys/gemini" = { };
-                "bitwarden" = { };
-                "api_keys/tavily" = { };
-                "api_keys/brave_search" = { };
-                "api_keys/github_mcp" = { };
-                "influxdb" = { };
-                "ssh_keys/github" = { };
-              };
-            };
-          }
           ../hosts/${host}/config.nix
         ];
     };
@@ -102,6 +87,7 @@ lib
     { system
     , username
     , modules ? [ ]
+    , extraSpecialArgs ? { }
     ,
     }:
     let
@@ -114,40 +100,22 @@ lib
         config = pkgs.config;
         overlays = pkgs.overlays;
       };
-      extraSpecialArgs = {
-        inherit
-          inputs
-          system
-          username
-          ;
-        dotfiles = inputs.dotfiles-src;
-        libOverlay = helpers.libOverlay;
-        libPkg = helpers.libPkg;
-      };
+      extraSpecialArgs =
+        extraSpecialArgs
+        // {
+          inherit
+            inputs
+            system
+            username
+            ;
+          dotfiles = inputs.dotfiles-src;
+          libOverlay = helpers.libOverlay;
+          libPkg = helpers.libPkg;
+        };
       modules =
-        [
-          {
-            sops = {
-              defaultSopsFile = ../secrets/secrets.yaml;
-              defaultSopsFormat = "yaml";
-              age.keyFile = "/home/lf/nix/secrets/age-key.txt";
-              secrets = {
-                "github_pat" = { };
-                "api_keys/openai" = { };
-                "api_keys/anthropic" = { };
-                "api_keys/gemini" = { };
-                "bitwarden" = { };
-                "api_keys/tavily" = { };
-                "api_keys/brave_search" = { };
-                "api_keys/github_mcp" = { };
-                "influxdb" = { };
-                "ssh_keys/github" = { };
-              };
-            };
-          }
-        ]
-        ++ modules
+        modules
         ++ [
+          ../modules/sops.nix
           inputs.sops-nix.homeManagerModules.sops
           ../home/home.nix
         ];

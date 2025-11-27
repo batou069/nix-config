@@ -274,27 +274,140 @@
 
       flake =
         let
-          lib = import ./lib { inherit inputs; };
-          hosts = import ./lib/hosts.nix { inherit inputs; };
+          system = "x86_64-linux";
+          lib = inputs.nixpkgs.lib;
+
+          # Import helpers directly to avoid circular dependency
+          lib-helpers = import ./modules/lib-helpers.nix { inherit inputs system; };
+          libOverlay = lib-helpers.libOverlay;
+          libPkg = lib-helpers.libPkg;
+
+          # Define a central config to be applied to both package sets
+          nixpkgsConfig = {
+            config.allowUnfree = true;
+            # Import the list of overlays from the dedicated file
+            overlays = import ./overlays/default.nix { inherit inputs libOverlay; };
+          };
+          # Create the configured package sets
+          pkgs = import inputs.nixpkgs {
+            inherit system;
+            config = nixpkgsConfig.config;
+            overlays = nixpkgsConfig.overlays;
+          };
+          pkgs-unstable = import inputs.nixpkgs-unstable {
+            inherit system;
+            config = nixpkgsConfig.config;
+            overlays = nixpkgsConfig.overlays;
+          };
+
+          # Centralized sops configuration
+          sopsConfig = {
+            sops = {
+              defaultSopsFile = ./secrets/secrets.yaml;
+              defaultSopsFormat = "yaml";
+              age.keyFile = "/home/lf/nix/secrets/age-key.txt";
+              secrets = {
+                "github_pat" = { };
+                "api_keys/openai" = { };
+                "api_keys/anthropic" = { };
+                "api_keys/gemini" = { };
+                "bitwarden" = { };
+                "api_keys/tavily" = { };
+                "api_keys/brave_search" = { };
+                "api_keys/github_mcp" = { };
+                "influxdb" = { };
+                "ssh_keys/github" = { };
+              };
+            };
+          };
+
+          mkNixosSystem =
+            { host
+            , username
+            , modules ? [ ]
+            ,
+            }:
+            lib.nixosSystem {
+              specialArgs = {
+                inherit
+                  inputs
+                  username
+                  host
+                  system
+                  pkgs
+                  pkgs-unstable
+                  lib
+                  libOverlay
+                  libPkg
+                  ;
+                dotfiles = inputs.dotfiles-src;
+              };
+
+              modules =
+                modules
+                ++ [
+                  inputs.nixpkgs.nixosModules.readOnlyPkgs
+                  { nixpkgs.pkgs = pkgs; }
+                  inputs.musnix.nixosModules.musnix
+                  inputs.hyprland.nixosModules.default
+                  inputs.disko.nixosModules.default
+                  inputs.sops-nix.nixosModules.sops
+                  inputs.nur.modules.nixos.default
+                  inputs.stylix.nixosModules.stylix
+                  # inputs.mango.nixosModules.mango
+                  sopsConfig # Apply centralized sops config
+                  ./hosts/${host}/config.nix
+                ];
+            };
         in
         {
-          nixosConfigurations =
-            lib.mapAttrs'
-              (name: config:
-                lib.nameValuePair name (lib.buildNixosSystem (config
-                  // {
-                  host = name;
-                })))
-              hosts.nixos;
+          nixosConfigurations = {
+            "lf-nix" = mkNixosSystem {
+              host = "lf-nix";
+              username = "lf";
+              modules = [
+                inputs.home-manager.nixosModules.home-manager
+                ./hosts/lf-nix/home.nix
+                # Inject the sops-nix home-manager module for this user
+                {
+                  home-manager.users.lf.imports = [
+                    inputs.sops-nix.homeManagerModules.sops
+                  ];
+                }
+              ];
+            };
 
-          homeConfigurations =
-            lib.mapAttrs'
-              (name: config:
-                lib.nameValuePair name (lib.buildHomeConfiguration (config
-                  // {
-                  username = name;
-                })))
-              hosts.home;
+            "viech" = mkNixosSystem {
+              host = "viech";
+              username = "lf";
+              modules = [ inputs.home-manager.nixosModules.home-manager ];
+            };
+          };
+
+          homeConfigurations = {
+            "lf" = inputs.home-manager.lib.homeManagerConfiguration {
+              pkgs = pkgs-unstable; # Use pkgs-unstable directly
+              extraSpecialArgs = {
+                inherit
+                  inputs
+                  system
+                  pkgs
+                  pkgs-unstable
+                  libOverlay
+                  libPkg
+                  ;
+                username = "lf";
+                dotfiles = inputs.dotfiles-src;
+              };
+              modules = [
+                sopsConfig # Apply centralized sops config FIRST
+                inputs.sops-nix.homeManagerModules.sops
+                inputs.nur.modules.homeManager.default
+                inputs.nix-doom-emacs-unstraightened.homeModule
+                ./home/home.nix
+              ];
+            };
+          };
         };
     };
 }
