@@ -2,7 +2,7 @@
 -- Initialize global background settings
 vim.g.bg_settings = {
   transparent = false, -- Default transparency state
-  opacity = 0.8,      -- Default opacity (matches Ghostty's config)
+  opacity = 0.8, -- Default opacity (matches Ghostty's config)
   blur_enabled = false, -- Default blur state (controlled by Ghostty)
 }
 
@@ -88,7 +88,12 @@ return {
       update_ghostty_background()
 
       -- Keybinding for transparency toggle
-      vim.keymap.set("n", "<leader>ub", toggle_transparency, { desc = "Toggle Background Transparency", noremap = true, silent = true })
+      vim.keymap.set(
+        "n",
+        "<leader>ub",
+        toggle_transparency,
+        { desc = "Toggle Background Transparency", noremap = true, silent = true }
+      )
     end,
   },
 }

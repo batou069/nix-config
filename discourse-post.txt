@@ -1,256 +1,75 @@
 ````markdown
-# Struggling with sops-nix in a Hybrid (NixOS + Standalone) Home Manager Flake
+# The Anatomy of an Infinite Recursion: A sops-nix and Flake-Parts Debugging Saga
 
 Hello everyone,
 
-I'm hoping to get some expert eyes on a persistent `sops-nix` issue in my hybrid flake setup. I've been trying to solve this for a while and have gone through several refactors, but the same error persists, which tells me I'm fundamentally misunderstanding something about how configurations are evaluated.
+I'm hoping to get some expert eyes on a persistent evaluation issue in my hybrid flake setup. After several days of debugging, I've encountered a series of cascading errors that I believe point to a fundamental concept I'm misunderstanding about the Nix module system, particularly concerning `specialArgs` and module evaluation order.
 
 ### The Goal
-I have a `flake.nix` that uses `flake-parts` to manage two types of configurations:
+I have a `flake.nix` that uses a `lib` pattern to manage two types of configurations:
 1.  **`nixosConfigurations`**: For my NixOS machines, which use Home Manager as a module.
-2.  **`homeConfigurations`**: A standalone Home Manager configuration that I can apply to any machine.
+2.  **`homeConfigurations`**: A standalone Home Manager configuration.
 
-My goal is for **both** types of configurations to share the exact same secrets, managed by `sops-nix`.
+My goal is for **both** configurations to share secrets from a single, centralized `sops-nix` setup.
 
-### The Problem
-The `nixosConfigurations` build seems to work correctly, but the standalone `homeConfigurations` build consistently fails with the following error:
+### The Debugging Journey: A Trail of Errors
 
+This has been a multi-step process, with each "fix" revealing a new, deeper layer to the problem.
+
+#### Stage 1: The Initial `sops-nix` Failure
+Initially, the standalone `homeConfigurations` build would consistently fail with `error: attribute '"api_keys/anthropic"' missing`. This indicated that the `sops` secrets were not being populated for the standalone Home Manager build, even though the NixOS build worked.
+
+#### Stage 2: The Module Class Mismatch
+To fix this, I refactored my configuration to use separate `nixos-sops.nix` and `hm-sops.nix` modules, ensuring that options like `owner = "root"` were only used in the NixOS context. This led to a new, more explicit error:
 ```
-error: attribute '"api_keys/anthropic"' missing
-       at /.../nix/home/home.nix:533:27:
-          532|       ZSH_AI_COMMANDS_OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
-          533|       ANTHROPIC_API_KEY = config.sops.secrets."api_keys/anthropic".path;
-             |                           ^
-          534|       BW_SESSION = config.sops.secrets.bitwarden.path;
+error: The module ... (class: "homeManager") cannot be imported into a module evaluation that expects class "nixos".
 ```
+This was a breakthrough. It revealed I was incorrectly importing a Home Manager module (`sops-nix.homeManagerModules.sops`) into the main NixOS module list. I corrected this by creating a proper "bridge" module (`hosts/lf-nix/home.nix`) that correctly imported the Home Manager modules inside the `home-manager.users.<name>` attribute set.
 
-This happens in my `home/home.nix` file where I try to access the secret:
-```nix
-# home/home.nix (snippet)
-home.sessionVariables = {
-  # ...
-  ANTHROPIC_API_KEY = config.sops.secrets."api_keys/anthropic".path;
-  # ...
-};
-```
+#### Stage 3: The Infinite Recursion
+After fixing the module class error, I was hit with the most difficult error yet: `error: infinite recursion encountered`. The stack trace pointed to the evaluation of the module argument `inputs`, specifically within my `nixvim` configuration.
 
-This tells me that for the `homeConfigurations` build, the `config.sops.secrets` attribute set is not being populated.
+My hypothesis was a naming collision. The flake system passes `inputs` as a top-level argument to all modules, but I was *also* passing `inputs` via `specialArgs` (which become `config._module.args`). This created a circular dependency: to resolve the `inputs` argument, the system was looking at `specialArgs`, which itself depended on `inputs`.
 
-### My Configuration Structure
-To make the setup modular, I've refactored the logic into a `./lib` directory, inspired by other flakes in the community.
+#### Stage 4: The Current State - `attribute 'inputs' missing`
+To solve the recursion, I removed `inherit inputs;` from `specialArgs`. This led immediately to the opposite error: `error: attribute 'inputs' missing`.
 
-<details>
-<summary><b><code>flake.nix</code></b></summary>
+This is the final clue. It proves that some module in my configuration (likely `nixvim` or one of its dependencies) is not using the modern approach of accepting `inputs` as a direct function argument. Instead, it is incorrectly trying to access `inputs` from `config._module.args.inputs`.
 
-```nix
-{
-  inputs = {
-    # ... (all my inputs are here, including sops-nix, home-manager, flake-parts)
-  };
+### The Current Hypothesis and Proposed Fix
 
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [
-        inputs.treefmt-nix.flakeModule
-      ];
-      systems = [ "x86_64-linux" ];
-      perSystem = { config, pkgs, system, ... }: {
-        # ... (devShells, treefmt config, etc.)
-      };
+The root cause is the `inputs` naming collision. The definitive solution is to break this collision without removing the argument that the older module depends on.
 
-      flake =
-        let
-          lib = import ./lib { inherit inputs; };
-          hosts = import ./lib/hosts.nix { inherit inputs; };
-        in
-        {
-          nixosConfigurations = lib.mapAttrs'
-            (name: config: lib.nameValuePair name (lib.buildNixosSystem (config // { host = name; })))
-            hosts.nixos;
+My latest change, which has not yet been validated by a successful build, is to **rename `inputs` within `specialArgs`**.
 
-          homeConfigurations = lib.mapAttrs'
-            (name: config: lib.nameValuePair name (lib.buildHomeConfiguration (config // { username = name; })))
-            hosts.home;
-        };
-    };
-}
-```
-</details>
-
-<details>
-<summary><b><code>lib/default.nix</code> (The Core Logic)</b></summary>
-
-```nix
-# lib/default.nix
-{ inputs, ... }:
-let
-  lib = inputs.nixpkgs.lib;
-in
-lib // rec {
-  # ... (helper functions like forAllSystems, mkPkgs, etc.)
-
-  # Builder for NixOS systems
-  buildNixosSystem = { system, host, username, modules ? [ ] }:
-    let
-      pkgs = pkgsBySystem.${system};
-      helpers = lib-helpers system;
-    in
-    lib.nixosSystem {
-      specialArgs = {
-        # ... (pkgs, pkgs-unstable, etc.)
-      };
-      modules = modules ++ [
-        # ... (core modules like musnix, hyprland, etc.)
-        ../modules/sops.nix # Import sops config as a module
-        ../hosts/${host}/config.nix
-      ];
-    };
-
-  # Builder for standalone Home Manager configurations
-  buildHomeConfiguration = { system, username, modules ? [ ] }:
-    let
-      pkgs = pkgsBySystem.${system};
-      helpers = lib-helpers system;
-    in
-    inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = import inputs.nixpkgs-unstable {
-        # ...
-      };
-      extraSpecialArgs = {
-        # ...
-      };
-      modules =
-        [ ../modules/sops.nix ]
-        ++ modules
-        ++ [
-          inputs.sops-nix.homeManagerModules.sops
-          ../home/home.nix
-        ];
-    };
-}
-```
-</details>
-
-<details>
-<summary><b><code>modules/sops.nix</code> (The Problem Child)</b></summary>
-
-```nix
-# modules/sops.nix
-{ lib, ... }:
-{
-  sops = {
-    defaultSopsFile = ../secrets/secrets.yaml;
-    defaultSopsFormat = "yaml";
-    age.keyFile = "/home/lf/nix/secrets/age-key.txt";
-
-    # This block is for the NixOS module.
-    secrets = {
-      "github_pat" = { };
-      "api_keys/openai" = { };
-      "api_keys/anthropic" = { };
-      # ... and all other secrets
-    };
-  };
-
-  # This block is for the standalone Home Manager module.
-  sops.secrets = {
-    "github_pat" = { };
-    "api_keys/openai" = { };
-    "api_keys/anthropic" = { };
-    # ... and all other secrets
-  };
-}
-```
-</details>
-
-### What I've Tried (The Journey of Failures)
-
-1.  **Initial Approach:** Had separate `sops` blocks in my NixOS and Home Manager configurations. This was messy and led to the same error in the standalone build.
-
-2.  **Centralized `sopsConfig`:** I created a `sopsConfig` variable in `flake.nix`'s `let` block and passed it into both the `nixosSystem` and `homeManagerConfiguration` module lists. **Result:** Same error.
-
-3.  **Module Import Order:** Suspecting an evaluation order issue, I made sure the `sopsConfig` was the very first module imported in the `homeManagerConfiguration` list. **Result:** Same error.
-
-4.  **Inlining the Config:** I abandoned the `sopsConfig` variable and directly inlined the entire `sops = { ... };` block into the `modules` list of both builders in `lib/default.nix`. **Result:** Same error.
-
-5.  **The Current Approach:** Based on documentation, I realized the standalone HM module needs individual secret declarations. I created `modules/sops.nix` (shown above) which provides *both* the top-level `secrets` block (for NixOS) and the individual `sops.secrets."key" = {};` declarations (for standalone HM). This module is then imported by both builders. **Result:** Still the same error.
-
-### The Core Question
-
-I feel like I'm running in circles. The configuration seems to align with examples I've found, yet it fails. Why is the `config.sops.secrets` attribute set not being populated during the `homeConfigurations` build, even when the `sops-nix` module is imported and configured?
-
-Is there a fundamental conflict between `flake-parts`, the library (`lib`) pattern, and how the standalone `sops-nix` Home Manager module discovers its configuration?
-
-Any help or insight would be incredibly appreciated. Thank you!
-
-**Link to my repository for full context:** [PASTE GITHUB REPO LINK HERE]
-
----
-### **Update & A New Clue**
-
-After refactoring my `lib/default.nix` to accept `specialArgs` and `extraSpecialArgs` and injecting a centralized `sopsConfig` from `flake.nix`, the error has moved.
-
-The standalone `homeConfigurations` build now proceeds, but the **`nixosConfigurations`** build fails with a very similar error:
-
-```
-error: attribute '"ssh_keys/github"' missing
-   at /.../nix/hosts/lf-nix/config.nix:200:31:
-      199|       enable = true;
-      200|       authorizedKeysFiles = [ config.sops.secrets."ssh_keys/github".path ];
-         |                               ^
-      201|     };
-```
-
-This is happening inside a NixOS module, where I'm trying to set up an authorized SSH key for a user.
-
-This is a significant clue. It tells me:
-1.  The problem is not exclusive to the standalone Home Manager setup.
-2.  The issue is fundamental to how the `sops` configuration is being passed to and evaluated by the `sops-nix` module in *both* contexts.
-3.  Injecting the configuration via `specialArgs` was a good structural change, but it didn't solve the underlying evaluation problem.
-
-My `flake.nix` now looks like this:
-```nix
-# flake.nix (snippet)
-flake =
-  let
-    lib = import ./lib { inherit inputs; };
-    hosts = import ./lib/hosts.nix { inherit inputs; };
-
-    # Centralized sops configuration
-    sopsConfig = {
-      sops = {
-        defaultSopsFile = ./secrets/secrets.yaml;
-        # ... and the rest of the sops config
-      };
-    };
-  in
-  {
-    nixosConfigurations = lib.mapAttrs'
-      (name: config: lib.nameValuePair name (lib.buildNixosSystem (config // {
-        host = name;
-        specialArgs = (config.specialArgs or {}) // { inherit sopsConfig; };
-      })))
-      hosts.nixos;
-    # ... homeConfigurations is similar
-  };
-```
-
-And my `lib/default.nix` now accepts `specialArgs`:
+In my `lib/default.nix`, I have changed the builders:
 ```nix
 # lib/default.nix (snippet)
-buildNixosSystem = { ..., specialArgs ? {} }:
-  lib.nixosSystem {
-    specialArgs = specialArgs // {
-      # ... my default specialArgs
-    };
-    modules = [
-      # ... my modules
-      inputs.sops-nix.nixosModules.sops # sops-nix module is here
-    ];
-  };
+# ...
+specialArgs = {
+  flakeInputs = inputs; # Renamed from 'inputs'
+  inherit username host system pkgs;
+  # ...
+};
+# ...
+```
+And in my `homeManagerConfiguration` builder:
+```nix
+# lib/default.nix (snippet)
+# ...
+extraSpecialArgs = {
+  flakeInputs = inputs; # Renamed from 'inputs'
+  inherit system username;
+  # ...
+};
+# ...
 ```
 
-### Revised Core Question
+This should theoretically solve both problems:
+1.  The **infinite recursion** is broken because the top-level `inputs` argument no longer collides with an argument of the same name in `specialArgs`.
+2.  The **`attribute 'inputs' missing`** error should be resolved because any module looking for `inputs` in `specialArgs` will now find it under the name `flakeInputs` (assuming I update the call sites), or more likely, the resolution of the primary `inputs` argument will now succeed, and the module system will correctly pass it down.
 
-Why is the `sopsConfig` attribute set, when passed into the `modules` list of `nixosSystem` (or `homeManagerConfiguration`), not being correctly evaluated by the `sops-nix` module, resulting in an empty `config.sops.secrets` set? Is there a specific way that a module *containing* configuration needs to be structured or imported when using a `flake-parts` and library-based setup?
+I am documenting this before attempting the next rebuild.
+
+**Link to my repository for full context:** [PASTE GITHUB REPO LINK HERE]
 ````

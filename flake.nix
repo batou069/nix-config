@@ -125,6 +125,13 @@
       url = "git+https://github.com/nix-community/nix-vscode-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-ai-tools = {
+      url = "github:numtide/nix-ai-tools";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
+
     #plugins list
     avante-nvim = {
       url = "git+https://github.com/yetone/avante.nvim";
@@ -242,6 +249,8 @@
             };
             settings.formatter.ruff-check.priority = 1;
             settings.formatter.ruff-format.priority = 2;
+            # Exclude secrets from formatting (sops-encrypted files)
+            settings.formatter.prettier.excludes = [ "secrets/*" ];
           };
 
           devShells.default = pkgs.mkShell {
@@ -284,6 +293,7 @@
                 lib.nameValuePair name (lib.buildNixosSystem (config
                   // {
                   host = name;
+                  inherit inputs;
                 })))
               hosts.nixos;
 
@@ -293,6 +303,7 @@
                 lib.nameValuePair name (lib.buildHomeConfiguration (config
                   // {
                   username = name;
+                  inherit inputs;
                 })))
               hosts.home;
         };

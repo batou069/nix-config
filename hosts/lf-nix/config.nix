@@ -44,9 +44,8 @@ in
     # "${inputs.nix-mineral}/nix-mineral.nix"
   ];
 
-  # Silence the specialArgs warning by explicitly disabling the conflicting options.
-  nixpkgs.config.allowUnfree = lib.mkForce false;
-  nixpkgs.overlays = lib.mkForce [ ];
+  # nixpkgs.pkgs is set via readOnlyPkgs in lib/default.nix
+  # The pkgs is pre-configured with allowUnfree and overlays there
 
   security.sudo.wheelNeedsPassword = false; # Allow sudo without password for wheel group
   boot = {
@@ -453,14 +452,15 @@ in
         "nix-command"
         "flakes"
       ];
-      substituters = [ "https://hyprland.cachix.org" ];
+      substituters = [ "https://hyprland.cachix.org" "https://numtide.cachix.org" ];
       trusted-substituters = [ "https://hyprland.cachix.org" ];
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       ];
+      extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" ];
     };
     extraOptions = ''
-      access-tokens = github.com=${builtins.readFile config.sops.secrets.github_pat.path}
+      access-tokens = github.com=${config.sops.secrets."api_keys/github_mcp".path}
     '';
     gc = {
       automatic = true;

@@ -11,8 +11,8 @@ body:
       label: Already reported ? *
       description: Before opening a new feature request, please take a moment to search through the current open and closed issues / request to check if it already exists.
       options:
-      - label: I have searched the existing open and closed request.
-        required: true
+        - label: I have searched the existing open and closed request.
+          required: true
 
   - type: textarea
     id: desc
@@ -29,10 +29,3 @@ body:
       description: "describe if you have a specific solution in mind"
     validations:
       required: true
-
-
-
-
-
-
-

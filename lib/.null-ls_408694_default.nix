@@ -12,7 +12,8 @@ lib
   forAllSystems = lib.genAttrs supportedSystems;
 
   # Define our custom helpers in one place
-  lib-helpers = system: import ../modules/lib-helpers.nix { inherit inputs system; };
+  lib-helpers = system:
+    import ../modules/lib-helpers.nix { inherit inputs system; };
 
   # Function to generate the configured nixpkgs set for a given system
   mkPkgs = system:
@@ -40,8 +41,7 @@ lib
     , username
     , modules ? [ ]
     , specialArgs ? { }
-    , inputs
-    , # Add inputs as a direct argument
+    ,
     }:
     let
       pkgs = pkgsBySystem.${system};
@@ -51,12 +51,7 @@ lib
       specialArgs =
         specialArgs
         // {
-          inherit
-            inputs
-            username
-            host
-            system
-            ;
+          inherit inputs username host system pkgs;
           pkgs-unstable = import inputs.nixpkgs-unstable {
             inherit system;
             config = pkgs.config;
@@ -70,8 +65,7 @@ lib
         modules
         ++ [
           ../modules/nixos-sops.nix
-          # Set nixpkgs.pkgs to use our pre-configured pkgs with overlays
-          # Note: External modules (stylix, NUR) may add their own overlays
+          inputs.nixpkgs.nixosModules.readOnlyPkgs
           { nixpkgs.pkgs = pkgs; }
           inputs.musnix.nixosModules.musnix
           inputs.hyprland.nixosModules.default
@@ -89,8 +83,8 @@ lib
     , username
     , modules ? [ ]
     , extraSpecialArgs ? { }
-    , inputs
-    , # Add inputs as a direct argument
+    , homeModules ? [ ../home/home.nix ]
+    ,
     }:
     let
       pkgs = pkgsBySystem.${system};
@@ -105,26 +99,14 @@ lib
       extraSpecialArgs =
         extraSpecialArgs
         // {
-          inherit
-            inputs
-            system
-            username
-            ;
+          inherit inputs system username;
           dotfiles = inputs.dotfiles-src;
           libOverlay = helpers.libOverlay;
           libPkg = helpers.libPkg;
         };
       modules =
-        [
-          # 1. Load sops configuration first
-          ../modules/hm-sops.nix
-          # 2. Load the sops-nix module itself
-          inputs.sops-nix.homeManagerModules.sops
-          # 3. Load other common modules
-          inputs.nur.modules.homeManager.default
-          inputs.nix-doom-emacs-unstraightened.homeModule
-        ]
-        # 4. Finally, load the host-specific modules (like home.nix)
-        ++ modules;
+        modules
+        ++ [ ../modules/hm-sops.nix inputs.sops-nix.homeManagerModules.sops ]
+        ++ homeModules;
     };
 }

@@ -11,8 +11,8 @@ body:
       label: Already reported ? *
       description: Before opening a new bug report, please take a moment to search through the current open and closed issues to check if it already exists.
       options:
-      - label: I have searched the existing open and closed issues.
-        required: true
+        - label: I have searched the existing open and closed issues.
+          required: true
 
   - type: dropdown
     id: type
@@ -48,7 +48,7 @@ body:
         </details>"
     validations:
       required: true
-      
+
   - type: textarea
     id: dots
     attributes:

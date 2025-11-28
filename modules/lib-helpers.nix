@@ -1,7 +1,5 @@
 # modules/lib-helpers.nix
-{ system
-, ...
-}: {
+{ system, ... }: {
   libOverlay = input:
     input.overlays.default or input.overlay or (_: _: { });
 

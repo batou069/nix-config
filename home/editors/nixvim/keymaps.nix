@@ -162,6 +162,15 @@
         options.desc = "Rename";
       }
       {
+        mode = "n";
+        key = "<leader>cf";
+        action = "<cmd>lua vim.lsp.buf.format()<CR>";
+        options = {
+          desc = "Format Code";
+          silent = true;
+        };
+      }
+      {
         key = "K";
         action = "<cmd>lua vim.lsp.buf.hover()<cr>";
         mode = "n";

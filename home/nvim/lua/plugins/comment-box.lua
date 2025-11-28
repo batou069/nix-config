@@ -46,4 +46,3 @@ return {
   -- Its commands are globally available once loaded.
   -- ── config = false, -- Explicitly state no config function is needed ──
 }
-

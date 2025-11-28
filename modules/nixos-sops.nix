@@ -1,0 +1,19 @@
+# modules/nixos-sops.nix
+#
+# SOPS configuration for NixOS SYSTEM services that run as root.
+{ ... }: {
+  sops = {
+    defaultSopsFile = ../secrets/secrets.yaml;
+    defaultSopsFormat = "yaml";
+    age.keyFile = "/home/lf/nix/secrets/age-key.txt";
+    secrets = {
+      # Secrets needed for NixOS system-level configuration
+      "api_keys/github_mcp" = { owner = "root"; };
+      "api_keys/openai" = { };
+      "api_keys/gemini" = { };
+      "api_keys/anthropic" = { };
+      "influxdb" = { };
+      "ssh_keys/github" = { };
+    };
+  };
+}

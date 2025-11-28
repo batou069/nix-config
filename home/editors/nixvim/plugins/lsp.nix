@@ -90,7 +90,6 @@
           formatting = {
             prettierd.enable = true;
             stylua.enable = true;
-            alejandra.enable = true;
             sqruff.enable = true;
             isort.enable = true;
             black.enable = true;
@@ -253,6 +252,9 @@
             enable = true;
             settings = {
               nil = {
+                formatting = {
+                  command = "alejandra";
+                };
                 diagnostics.autoArchive = true;
                 nix = {
                   pkgs = "github:NixOS/nixpkgs/nixos-25.05";

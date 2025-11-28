@@ -37,7 +37,7 @@
           "nixd.formatting.command" = [ "alejandra" ];
         };
         "[nix]" = {
-          "editor.defaultFormatter" = "kamadorueda.alejandra";
+          "editor.defaultFormatter" = "jnoortheen.nix-ide";
           "editor.formatOnSave" = true;
         };
         "git.openRepositoryInParentFolders" = "always";

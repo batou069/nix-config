@@ -1,4 +1,7 @@
-# modules/sops.nix
+# modules/hm-sops.nix
+#
+# SOPS configuration for Home Manager USER services.
+# Note: The 'owner' attribute is not supported here.
 { ... }: {
   sops = {
     defaultSopsFile = ../secrets/secrets.yaml;
@@ -14,7 +17,6 @@
       "api_keys/brave_search" = { };
       "api_keys/github_mcp" = { };
       "influxdb" = { };
-      "ssh_keys/github" = { };
     };
   };
 }
