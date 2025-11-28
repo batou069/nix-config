@@ -215,6 +215,113 @@
             end
           '';
         }
+
+        # --- Flake Inspection Functions ---
+        # Usage: flake-show github:owner/repo
+        {
+          name = "flake-show";
+          type = "function";
+          "if" = "match .Shell \"(zsh|bash)\"";
+          value = ''
+            nix flake show "$1" 2>&1 | head -100
+          '';
+        }
+        {
+          name = "flake-show";
+          type = "function";
+          "if" = "match .Shell \"fish\"";
+          value = ''
+            nix flake show $argv[1] 2>&1 | head -100
+          '';
+        }
+        # Usage: flake-pkgs github:owner/repo [system]
+        # Lists all packages in a flake
+        {
+          name = "flake-pkgs";
+          type = "function";
+          "if" = "match .Shell \"(zsh|bash)\"";
+          value = ''
+            local flake="$1"
+            local system="''${2:-x86_64-linux}"
+            nix eval "$flake#packages.$system" --apply 'x: builtins.attrNames x' 2>&1 | tr ',' '\n' | tr -d '[]" '
+          '';
+        }
+        {
+          name = "flake-pkgs";
+          type = "function";
+          "if" = "match .Shell \"fish\"";
+          value = ''
+            set flake $argv[1]
+            set system (if test (count $argv) -ge 2; echo $argv[2]; else; echo "x86_64-linux"; end)
+            nix eval "$flake#packages.$system" --apply 'x: builtins.attrNames x' 2>&1 | tr ',' '\n' | tr -d '[]" '
+          '';
+        }
+        # Usage: flake-modules github:owner/repo
+        # Lists nixosModules and homeModules
+        {
+          name = "flake-modules";
+          type = "function";
+          "if" = "match .Shell \"(zsh|bash)\"";
+          value = ''
+            local flake="$1"
+            echo "=== nixosModules ==="
+            nix eval "$flake#nixosModules" --apply 'x: builtins.attrNames x' 2>&1 | tr ',' '\n' | tr -d '[]" '
+            echo ""
+            echo "=== homeModules / homeManagerModules ==="
+            nix eval "$flake#homeModules" --apply 'x: builtins.attrNames x' 2>&1 | tr ',' '\n' | tr -d '[]" '
+            nix eval "$flake#homeManagerModules" --apply 'x: builtins.attrNames x' 2>&1 | tr ',' '\n' | tr -d '[]" '
+          '';
+        }
+        {
+          name = "flake-modules";
+          type = "function";
+          "if" = "match .Shell \"fish\"";
+          value = ''
+            set flake $argv[1]
+            echo "=== nixosModules ==="
+            nix eval "$flake#nixosModules" --apply 'x: builtins.attrNames x' 2>&1 | tr ',' '\n' | tr -d '[]" '
+            echo ""
+            echo "=== homeModules / homeManagerModules ==="
+            nix eval "$flake#homeModules" --apply 'x: builtins.attrNames x' 2>&1 | tr ',' '\n' | tr -d '[]" '
+            nix eval "$flake#homeManagerModules" --apply 'x: builtins.attrNames x' 2>&1 | tr ',' '\n' | tr -d '[]" '
+          '';
+        }
+        # Usage: flake-overlays github:owner/repo
+        {
+          name = "flake-overlays";
+          type = "function";
+          "if" = "match .Shell \"(zsh|bash)\"";
+          value = ''
+            local flake="$1"
+            nix eval "$flake#overlays" --apply 'x: builtins.attrNames x' 2>&1 | tr ',' '\n' | tr -d '[]" '
+          '';
+        }
+        {
+          name = "flake-overlays";
+          type = "function";
+          "if" = "match .Shell \"fish\"";
+          value = ''
+            nix eval "$argv[1]#overlays" --apply 'x: builtins.attrNames x' 2>&1 | tr ',' '\n' | tr -d '[]" '
+          '';
+        }
+        # Usage: flake-info github:owner/repo
+        # Shows metadata about a flake
+        {
+          name = "flake-info";
+          type = "function";
+          "if" = "match .Shell \"(zsh|bash)\"";
+          value = ''
+            nix flake metadata "$1" 2>&1
+          '';
+        }
+        {
+          name = "flake-info";
+          type = "function";
+          "if" = "match .Shell \"fish\"";
+          value = ''
+            nix flake metadata $argv[1] 2>&1
+          '';
+        }
       ];
       env = [
         # --- ENVIRONMENT VARIABLES (Simple) ---

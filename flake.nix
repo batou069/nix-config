@@ -173,10 +173,7 @@
       url = "git+https://github.com/utensils/mcp-nixos";
     };
     hyprviz.url = "git+https://github.com/timasoft/hyprviz";
-    serena = {
-      url = "git+https://github.com/oraios/serena";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # serena is now provided by mcp-servers-nix (natsukium)
     plasma-manager = {
       url = "git+https://github.com/nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -255,12 +252,15 @@
 
           devShells.default = pkgs.mkShell {
             name = "nix-config-shell";
-            inputsFrom = [ config.treefmt.package ];
-            packages = [
-              pkgs.pre-commit
-              pkgs.gh
-              pkgs.gum
-            ];
+            inputsFrom = [ config.treefmt.build.wrapper ];
+            packages =
+              [
+                config.treefmt.build.wrapper
+                pkgs.pre-commit
+                pkgs.gh
+                pkgs.gum
+              ]
+              ++ (builtins.attrValues config.treefmt.build.programs);
             shellHook = ''
               echo "Welcome to the Nix config dev shell!"
 

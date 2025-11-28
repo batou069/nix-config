@@ -3,6 +3,7 @@ repos:
     hooks:
       - id: treefmt
         name: treefmt
-        entry: treefmt
+        entry: treefmt --fail-on-change
         language: system
-        files: \.(nix|sh|md|json|yaml|yml|py)$
+        pass_filenames: false
+        files: \.(nix|sh|md|json|yaml|yml|py|lua|sql|fish)$

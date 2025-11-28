@@ -206,7 +206,22 @@ in
     ])
     ++ [
       r-with-packages # Add the R environment
-    ];
+    ]
+    ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
+      qwen-code
+      openspec
+      openskills
+      nanocoder
+      kilocode-cli
+      handy
+      # groq-code-cli
+      goose-cli
+      forge
+      droid
+      crush
+      coderabbit-cli
+      backlog-md
+    ]);
 
   programs = {
     zoom-us.enable = true;
