@@ -7,7 +7,14 @@
     enableFishIntegration = true;
     settings = {
       inline_height = 30;
-      style = "compact";
+      style = "full";
+      filter_mode_shell_up_key_binding = "session";
+      workspaces = true;
+      history_filter = [
+        "^_"
+        "^set-env "
+        "^export "
+      ];
       history_format = "{time} - {duration} - {directory} - {command}";
       store_failed = false;
       enter_accept = true;
@@ -16,6 +23,7 @@
       records = true;
       search_mode = "skim";
       secrets_filter = true;
+      show_preview = true;
     };
     daemon = {
       enable = true;
@@ -23,7 +31,6 @@
     };
     flags = [
       "--disable-up-arrow"
-      # "--disable-ctrl-r"
     ];
     themes = {
       "catppuccin-frappe-peach" = {

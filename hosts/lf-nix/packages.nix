@@ -151,7 +151,7 @@ in
       lazyjournal
       bitwarden-menu
       chromium
-      lagrange
+      # lagrange # Gemini browser
       # FROM ZaneyOS
       appimage-run # Needed For AppImage Support
       hyprpicker # Color Picker
@@ -212,7 +212,7 @@ in
       openspec
       openskills
       nanocoder
-      kilocode-cli
+      # kilocode-cli
       handy
       # groq-code-cli
       goose-cli

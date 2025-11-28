@@ -6,13 +6,23 @@
       formats
       query
       skim
-      net
+      # net ---broken
       units
       gstat
     ];
     extraConfig = ''
       $env.config.show_banner = true
       $env.config.edit_mode = "vi"
+      $env.config = (
+      $env.config | upsert keybindings (
+        $env.config.keybindings | append {
+            name: atuin_search
+            modifier: control
+            keycode: char_p
+            mode: [emacs, vi_normal, vi_insert]
+            event: { send: executehostcommand cmd: (_atuin_search_cmd "--shell-up-key-binding") }
+          }
+        )
     '';
     settings = {
       show_banner = true;

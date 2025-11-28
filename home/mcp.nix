@@ -62,7 +62,7 @@ in
 
       # --- Servers from natsukium's mcp-servers-nix ---
       serena = {
-        command = "${mcp-natsukium.mcp-server-serena}/bin/mcp-server-serena";
+        command = "${mcp-natsukium.serena}/bin/serena";
         args = [
           "--project"
           "${config.home.homeDirectory}/nix"

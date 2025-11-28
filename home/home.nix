@@ -17,8 +17,8 @@ let
         plotly
         isort
         alive-progress
-        spacy
-        spacy-models.en_core_web_sm
+        # spacy
+        # spacy-models.en_core_web_sm
         nltk
         huggingface-hub
         torchvision
@@ -55,7 +55,7 @@ let
         jupyterlab
         jupyter
         pillow
-        opencv-python
+        # opencv-python
         tqdm
         plotly
         pytest
@@ -76,8 +76,7 @@ let
         google-auth-httplib2
         google-api-python-client
         # llama-index
-        chromadb
-        typer
+        # chromadb
         mcp
         httpx
         fastmcp
@@ -478,8 +477,6 @@ in
       pkgs.rofi-rbw-wayland # Rofi-frontend for Bitwarden
       pkgs.wtype
       pkgs.rbw
-      pkgs.pinentry-rofi
-      pkgs.pinentry
       pkgs.alsa-ucm-conf # maybe this fixed sound issue?
       # pkgs.tradingview
       pkgs.neovide

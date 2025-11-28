@@ -110,6 +110,11 @@ lib
             system
             username
             ;
+          pkgs-unstable = import inputs.nixpkgs-unstable {
+            inherit system;
+            config = pkgs.config;
+            overlays = pkgs.overlays;
+          };
           dotfiles = inputs.dotfiles-src;
           libOverlay = helpers.libOverlay;
           libPkg = helpers.libPkg;
@@ -123,6 +128,7 @@ lib
           # 3. Load other common modules
           inputs.nur.modules.homeManager.default
           inputs.nix-doom-emacs-unstraightened.homeModule
+          inputs.stylix.homeModules.stylix
         ]
         # 4. Finally, load the host-specific modules (like home.nix)
         ++ modules;
