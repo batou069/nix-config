@@ -59,7 +59,8 @@ in
       # mcp-server-filesystem
       # mcp-server-memory
       (callPackage ../../overlays/wrapped-mcp-server-memory.nix {
-        original-mcp-server-memory = inputs.nix-mcp-servers.packages.${pkgs.system}.mcp-server-memory;
+        original-mcp-server-memory =
+          inputs.nix-mcp-servers.packages.${pkgs.system}.mcp-server-memory;
       })
       # mcp-server-git
       # tavily-mcp

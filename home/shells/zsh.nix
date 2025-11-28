@@ -1,6 +1,4 @@
-{ config
-, ...
-}: {
+{ config, ... }: {
   imports = [ ../lessfilter.nix ];
   programs.zsh = {
     enable = true;

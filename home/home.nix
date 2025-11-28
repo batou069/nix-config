@@ -112,6 +112,12 @@ in
 
     # Centralized MCP Server Configuration
 
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+      # Shell integrations are auto-enabled when the shell is enabled
+    };
+
     bluetuith = {
       enable = true;
       settings = {
@@ -308,6 +314,10 @@ in
           {
             trigger = ":now";
             replace = "{{currentdate}} {{currenttime}}";
+          }
+          {
+            trigger = ":code";
+            replace = "```\n$|$\n```";
           }
         ];
         global_vars = {

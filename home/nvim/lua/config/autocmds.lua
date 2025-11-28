@@ -45,15 +45,12 @@ autocmd("BufEnter", {
   command = "set fo-=c fo-=r fo-=o",
 })
 
-
-autocmd({'BufEnter', 'BufWinEnter'}, {
-  pattern = {'*.xsh'},
-  callback = function ()
-    vim.opt_local.syntax = 'python'
+autocmd({ "BufEnter", "BufWinEnter" }, {
+  pattern = { "*.xsh" },
+  callback = function()
+    vim.opt_local.syntax = "python"
   end,
 })
-
-
 
 -----------------------------------------------------------
 -- Settings for filetypes
@@ -71,7 +68,7 @@ autocmd("Filetype", {
 augroup("setIndent", { clear = true })
 autocmd("Filetype", {
   group = "setIndent",
-  pattern = { "xml", "html", "xhtml", "css", "scss", "javascript", "typescript", "yaml", "lua", "nix"},
+  pattern = { "xml", "html", "xhtml", "css", "scss", "javascript", "typescript", "yaml", "lua", "nix" },
   command = "setlocal shiftwidth=2 tabstop=2",
 })
 

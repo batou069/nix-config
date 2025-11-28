@@ -1,6 +1,4 @@
-{ pkgs
-, ...
-}: {
+{ pkgs, ... }: {
   programs.fzf = {
     enable = true;
     # enableZshIntegration = true; # We will set FZF_DEFAULT_OPTS manually

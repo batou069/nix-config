@@ -176,7 +176,7 @@ opt.virtualedit = "block"
 opt.cursorcolumn = false
 opt.wrapscan = false
 opt.fillchars = { eob = " " }
-opt.wrap = true; -- Enable line wrapping
+opt.wrap = true -- Enable line wrapping
 
 -- cmd("let g:netrw_liststyle = 3")
 -- cmd([[highlight WinSeparator guibg = None]])

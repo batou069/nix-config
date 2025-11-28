@@ -42,7 +42,7 @@
           command = "bash";
           args = [
             "-c"
-            "GITHUB_TOKEN=$(cat /run/secrets/api_keys/github_mcp 2>/dev/null || echo '') ${mcp-pkgs.github-mcp-server}/bin/github-mcp-server"
+            "export GITHUB_TOKEN=$(cat ${config.sops.secrets."api_keys/github_mcp".path}) && ${mcp-pkgs.github-mcp-server}/bin/github-mcp-server"
           ];
         };
         "brave-search" = {
