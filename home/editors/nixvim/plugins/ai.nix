@@ -1,4 +1,5 @@
 { lib
+, pkgs
 , pkgs-unstable
 , ...
 }: {
@@ -9,6 +10,8 @@
     };
     avante = {
       enable = false;
+      # Use the package from flake input (via overlay)
+      package = pkgs.vimPlugins.avante-nvim;
       settings = {
         provider = "gemini";
         providers = {
@@ -51,4 +54,11 @@
     };
     copilot-cmp.enable = false;
   };
+
+  # Extra plugins from flake inputs (not built-in to nixvim)
+  programs.nixvim.extraPlugins = with pkgs.vimPlugins; [
+    # minuet-ai-nvim  # AI completion - uncomment to enable
+    # vim-translator  # Translation plugin - uncomment to enable
+    # nui-nvim        # UI library (dependency for some plugins) - uncomment if needed
+  ];
 }

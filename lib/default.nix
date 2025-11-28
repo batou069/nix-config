@@ -23,8 +23,8 @@ lib
       inherit system;
       config.allowUnfree = true;
       overlays = import ../overlays/default.nix {
-        inherit inputs;
-        libOverlay = helpers.libOverlay;
+        inherit inputs system;
+        inherit (helpers) libOverlay libPkg libPkgs libVimPlugin mkVimPlugin;
       };
     };
 

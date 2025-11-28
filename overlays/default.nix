@@ -2,23 +2,34 @@
 # This file centralizes all overlays for your Nix configurations.
 { inputs
 , libOverlay
+, libPkg
+, libPkgs
+, libVimPlugin
 , ...
 }: [
-  # Use the libOverlay helper for flake inputs
+  # Use the libOverlay helper for flake inputs that provide overlays
   (libOverlay inputs.nur)
   (libOverlay inputs.mcp-servers-nix)
   (libOverlay inputs.emacs-overlay)
   (libOverlay inputs.nix-doom-emacs-unstraightened)
 
-  # Keep custom overlay functions as they are
+  # Custom packages and vim plugins from flake inputs
   (_final: prev: {
-    claudia = inputs.claudia.packages.${prev.system}.default;
-    firefox-addons = inputs.firefox-addons.packages.${prev.system};
+    # Packages from flake inputs using helpers
+    claudia = libPkg inputs.claudia;
+    firefox-addons = libPkgs inputs.firefox-addons;
+
+    # Neovim plugins from flake inputs
+    # libVimPlugin auto-detects: packages output vs source-only input
     vimPlugins =
       prev.vimPlugins
       // {
-        none-ls-nvim = inputs.none-ls-nvim;
-        blink-cmp = inputs.blink-cmp.packages.${prev.system}.default;
+        none-ls-nvim = libVimPlugin prev inputs.none-ls-nvim "none-ls.nvim";
+        blink-cmp = libVimPlugin prev inputs.blink-cmp "blink.cmp";
+        avante-nvim = libVimPlugin prev inputs.avante-nvim "avante.nvim";
+        minuet-ai-nvim = libVimPlugin prev inputs.minuet-ai-nvim "minuet-ai.nvim";
+        vim-translator = libVimPlugin prev inputs.vim-translator "vim-translator";
+        nui-nvim = libVimPlugin prev inputs.nui-nvim "nui.nvim";
       };
   })
   (_final: prev: {

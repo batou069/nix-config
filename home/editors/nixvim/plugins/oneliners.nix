@@ -3,7 +3,7 @@
     plugins = {
       nvim-surround.enable = true;
       nix-develop.enable = true;
-      lualine.enable = true;
+      # lualine.enable = true;
       bufferline.enable = true;
       luasnip.enable = true;
       rainbow-delimiters.enable = true;

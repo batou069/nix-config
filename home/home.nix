@@ -100,7 +100,6 @@ in
     ./mcp.nix
     # ./zen-browser.nix
     ./mpd.nix
-    ./mcp.nix
     ./gemini.nix
   ];
 
