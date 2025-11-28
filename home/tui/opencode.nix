@@ -5,7 +5,14 @@
     enableMcpIntegration = true;
     settings = {
       "$schema" = "https://opencode.ai/config.json";
-
+      permissions = {
+        edit = "ask";
+        bash = "ask";
+        webfetch = "allow";
+        doom_loop = "ask";
+        external_directory = "ask";
+      };
+      plugins = [ "opencode-skills" ];
       autoupdate = false;
       tui = {
         scroll_acceleration.enabled = true;

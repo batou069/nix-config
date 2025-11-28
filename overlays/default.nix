@@ -32,14 +32,14 @@
         nui-nvim = libVimPlugin prev inputs.nui-nvim "nui.nvim";
       };
   })
-  (_final: prev: {
-    python312 = prev.python312.override {
-      packageOverrides = self: super: {
-        scann = self.callPackage ../pkgs/scann.nix { };
-        opencv4 = super.opencv4.override { enableGtk2 = true; };
-      };
-    };
-  })
+  # (_final: prev: {
+  #   python312 = prev.python312.override {
+  #     packageOverrides = self: super: {
+  #       scann = self.callPackage ../pkgs/scann.nix { };
+  #       opencv4 = super.opencv4.override { enableGtk2 = true; };
+  #     };
+  #   };
+  # })
   (_final: prev: {
     faiss = prev.faiss.override { cudaSupport = false; };
     python311 = prev.python311.override {

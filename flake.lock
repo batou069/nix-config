@@ -52,11 +52,11 @@
     "avante-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1764062335,
-        "narHash": "sha256-NngX7f8hBEHJ/R3xGsKRVIf53S9wCiMtYUe4ILNDKz0=",
+        "lastModified": 1764331438,
+        "narHash": "sha256-HjMfeW5d0MpBSV1u+5pYgCoJYf1QjcVZZ8wyNTYMK5U=",
         "ref": "refs/heads/main",
-        "rev": "5df39b480d438a46afa1571db6480210bccea21b",
-        "revCount": 1542,
+        "rev": "4d9d2de6fe9325a11aea7fed653478cb5b2b728b",
+        "revCount": 1544,
         "type": "git",
         "url": "https://github.com/yetone/avante.nvim"
       },
@@ -231,11 +231,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1764250936,
-        "narHash": "sha256-fwwd6/j9QsL++TiNHZy2258NDkJiTi9B5cUyOntlR2g=",
+        "lastModified": 1764325801,
+        "narHash": "sha256-LQ7tsrXs1wuB6KBwUctL3JlUsG/FWI2pCI6NkoO52dk=",
         "ref": "refs/heads/main",
-        "rev": "c11bfcf5671358a12fa2d906e7c859d0644d9b2d",
-        "revCount": 557,
+        "rev": "a696fed6b9b6aa89ef495842cdca3fc2a7cef0de",
+        "revCount": 559,
         "type": "git",
         "url": "https://github.com/catppuccin/nix"
       },
@@ -310,11 +310,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1764110879,
-        "narHash": "sha256-xanUzIb0tf3kJ+PoOFmXEXV1jM3PjkDT/TQ5DYeNYRc=",
+        "lastModified": 1764350888,
+        "narHash": "sha256-6Rp18zavTlnlZzcoLoBTJMBahL2FycVkw2rAEs3cQvo=",
         "ref": "refs/heads/master",
-        "rev": "aecba248f9a7d68c5d1ed15de2d1c8a4c994a3c5",
-        "revCount": 1288,
+        "rev": "2055a08fd0e2fd41318279a5355eb8a161accf26",
+        "revCount": 1289,
         "type": "git",
         "url": "https://github.com/nix-community/disko"
       },
@@ -360,11 +360,11 @@
         "nixpkgs-stable": "nixpkgs-stable"
       },
       "locked": {
-        "lastModified": 1764293112,
-        "narHash": "sha256-tqsgectrs/TDa5Y4JZULeOi4irdOb1LQz4iZU8UFeCs=",
+        "lastModified": 1764347182,
+        "narHash": "sha256-gFHc+BCB4Ifw+j+jp6A7f6GR0IXZj5lydSXT9sui/Ac=",
         "ref": "refs/heads/master",
-        "rev": "1d46a96fa80e9c65bfef87fda1623063040a4ac6",
-        "revCount": 17765,
+        "rev": "6f2683c7c916b7e6d5e4fe01268a24f78c6483e4",
+        "revCount": 17768,
         "type": "git",
         "url": "https://github.com/nix-community/emacs-overlay"
       },
@@ -383,11 +383,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1764232198,
-        "narHash": "sha256-3Kyi0L/HvyGn0gHoe5KS7xMTUj/WtRQiMV/ORvkMtNI=",
+        "lastModified": 1764318588,
+        "narHash": "sha256-RjrXvTOmTFmuU1K77oAFh/LotHhrrexjXXAVc2+DJ4c=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "16743d1e188db896098e16c996e7568aba825334",
+        "rev": "ac6b5a15663639d4059c200c05f45c0a9716faf7",
         "type": "github"
       },
       "original": {
@@ -449,11 +449,11 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1764216254,
-        "narHash": "sha256-QyDEdfh+G9FyuAlC+gfcut21TwL66STZ6XZd7TyFTog=",
+        "lastModified": 1764332086,
+        "narHash": "sha256-sQTS3T4nNU/he+X62q5aflqSLx2zs4A8/cx3QsLc0Vw=",
         "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "869a8140b9bc9ade32a091cabfa9126cda8f193d",
+        "rev": "fdc5a0a8a7cf1eb4d134ee42f62c56f293781a0e",
         "type": "gitlab"
       },
       "original": {
@@ -796,11 +796,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1764194569,
-        "narHash": "sha256-iUM9ktarEzThkayyZrzQ7oycPshAY2XRQqVKz0xX/L0=",
+        "lastModified": 1764304195,
+        "narHash": "sha256-bO7FN/bF6gG7TlZpKAZjO3VvfsLaPFkefeUfJJ7F/7w=",
         "ref": "refs/heads/master",
-        "rev": "9651819d75f6c7ffaf8a9227490ac704f29659f0",
-        "revCount": 5827,
+        "rev": "86ff0ef506c209bb397849706e85cc3a913cb577",
+        "revCount": 5839,
         "type": "git",
         "url": "https://github.com/nix-community/home-manager/"
       },
@@ -1123,11 +1123,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1764006184,
-        "narHash": "sha256-0As26RTHAvmm7aqEZV2x563MgPatGl227TkZOJIZQ44=",
+        "lastModified": 1764337734,
+        "narHash": "sha256-c276I8+fhNzDFfTWUm/T9LE9ykd11wOc9U3ReiRJLhc=",
         "ref": "refs/heads/main",
-        "rev": "b6dfeec9fe12c3c660d91ad8128d216f13556382",
-        "revCount": 349,
+        "rev": "7c44ad071c473cd16abeb2ead293bc91d319d301",
+        "revCount": 351,
         "type": "git",
         "url": "https://github.com/timasoft/hyprviz"
       },
@@ -1291,11 +1291,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1764278335,
-        "narHash": "sha256-HxX9Xc/KqTXgTmX8pANdMkPofEB9LSOUkAj47GVOFO4=",
+        "lastModified": 1764340535,
+        "narHash": "sha256-qRLqQc98qfdZc8I1C5oBIiy4BhZBIOt5CrKrMnLaguY=",
         "owner": "numtide",
         "repo": "nix-ai-tools",
-        "rev": "91d3dd200e33798574219721b596c39c9557e277",
+        "rev": "46a17ca03373dd5e24d77e38bd87eeeeb1784b7a",
         "type": "github"
       },
       "original": {
@@ -1314,11 +1314,11 @@
         "systems": "systems_8"
       },
       "locked": {
-        "lastModified": 1764233106,
-        "narHash": "sha256-//n+q0jfvmMFdNCTTr0QQuNXCmvf79UYL7X3x8Y740s=",
+        "lastModified": 1764319514,
+        "narHash": "sha256-1ghJw3n+1e7upVw8dn1haCcsZcbmjddjBocXV2X5kfU=",
         "ref": "refs/heads/main",
-        "rev": "8b1103280b0fdfb0b66ce6ce2ff14551c09677e4",
-        "revCount": 917,
+        "rev": "a918cadfd17c134a8658ecf29c2dc47ce6e10bb3",
+        "revCount": 918,
         "type": "git",
         "url": "https://github.com/marienz/nix-doom-emacs-unstraightened"
       },
@@ -1369,11 +1369,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1764208554,
-        "narHash": "sha256-9cHI5OyIcTuaWYrgq3ng7W0q+wgX8II2fkqCHNot5jY=",
+        "lastModified": 1764294946,
+        "narHash": "sha256-8BObMeUmCAZW1BTMUQGRGiz9tpNkVt/6/+blpS9Xxgk=",
         "ref": "refs/heads/master",
-        "rev": "8cd52edf9dea91d1610c50b494dc20636b61b862",
-        "revCount": 1863,
+        "rev": "134c052c3213dc69ed881e41383b8ed29c5ffe72",
+        "revCount": 1864,
         "type": "git",
         "url": "https://github.com/nix-community/nix-vscode-extensions"
       },
@@ -1414,11 +1414,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1764230686,
-        "narHash": "sha256-nrYYXatTtHtKOn3B6BFX0KWSGKy77bCLbvL1nSWKmYU=",
+        "lastModified": 1764347286,
+        "narHash": "sha256-AqhVZYYtr5Yz7EHchBxQauyfbanAhTiwkMyCopTi5jA=",
         "ref": "refs/heads/main",
-        "rev": "59ec57381d39bb6f7776094372093dfcfa6c55a5",
-        "revCount": 626,
+        "rev": "b7e0bafd7c4b81ad85bdcd22129927268231d525",
+        "revCount": 628,
         "type": "git",
         "url": "https://github.com/kaylorben/nixcord"
       },
@@ -1503,11 +1503,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1763966396,
-        "narHash": "sha256-6eeL1YPcY1MV3DDStIDIdy/zZCDKgHdkCmsrLJFiZf0=",
+        "lastModified": 1764242076,
+        "narHash": "sha256-sKoIWfnijJ0+9e4wRvIgm/HgE27bzwQxcEmo2J/gNpI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "5ae3b07d8d6527c42f17c876e404993199144b6a",
+        "rev": "2fad6eac6077f03fe109c4d4eb171cf96791faa4",
         "type": "github"
       },
       "original": {
@@ -1615,11 +1615,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1763421233,
-        "narHash": "sha256-Stk9ZYRkGrnnpyJ4eqt9eQtdFWRRIvMxpNRf4sIegnw=",
+        "lastModified": 1763966396,
+        "narHash": "sha256-6eeL1YPcY1MV3DDStIDIdy/zZCDKgHdkCmsrLJFiZf0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "89c2b2330e733d6cdb5eae7b899326930c2c0648",
+        "rev": "5ae3b07d8d6527c42f17c876e404993199144b6a",
         "type": "github"
       },
       "original": {
@@ -1804,11 +1804,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1764293217,
-        "narHash": "sha256-H43i7AXrMysPiCIWPsEzZ6JyvLDkowBEPQ+44kT6mbI=",
+        "lastModified": 1764358209,
+        "narHash": "sha256-nfyNvTK7ijeTfJj8MyyO6il76z/bj+wa7/BYI8DYh2A=",
         "ref": "refs/heads/main",
-        "rev": "290f40cd19544714d5badc06380b62dcb3e54baa",
-        "revCount": 36662,
+        "rev": "2b0076f7b0c6d75ad76e4096a45130b6c15d7934",
+        "revCount": 36687,
         "type": "git",
         "url": "https://github.com/nix-community/NUR"
       },

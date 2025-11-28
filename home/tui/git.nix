@@ -7,7 +7,7 @@ let
   enableDelta = true;
 
   # Inherit the delta package from the gitAndTools package set for easy access.
-  inherit (pkgs.gitAndTools) delta;
+  inherit (pkgs) delta;
 in
 {
   # Configure Git
