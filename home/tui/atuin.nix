@@ -1,6 +1,7 @@
-{ ... }: {
+{ pkgs-unstable, ... }: {
   programs.atuin = {
     enable = true;
+    package = pkgs-unstable.atuin;
     enableZshIntegration = true;
     enableNushellIntegration = true;
     enableBashIntegration = true;

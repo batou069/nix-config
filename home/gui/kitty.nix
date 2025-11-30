@@ -8,7 +8,7 @@
     enableGitIntegration = true;
     settings = {
       cursor_shape = "underline"; # block, beam, underline
-      cursor_blink = true;
+      # cursor_blink = true;
       cursor_beam_thickness = 1.5;
       cursor_underline_thickness = 3.0;
       cursor_shape_unfocused = "hollow";
@@ -24,11 +24,11 @@
       tab_activity_symbol = "";
       font_size = 17.0;
       dynamic_background_opacity = "yes";
-      window_padding_width = 0;
-      window_padding_height = 0;
+      # window_padding_width = 0;
+      # window_padding_height = 0;
       background_blur = 10;
       # background_opacity = 1;
-      set_background_opacity = 1;
+      # set_background_opacity = 1;
       placement_strategy = "top";
       cursor_trail = 10;
       cursor_trail_start_threshold = 0;

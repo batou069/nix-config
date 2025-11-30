@@ -1,5 +1,6 @@
 { pkgs
 , lib
+, pkgs-unstable
 , ...
 }:
 let
@@ -13,6 +14,7 @@ in
   # Configure Git
   programs.git = {
     enable = true;
+    package = pkgs-unstable.git;
 
     # We merge the base settings with the conditional delta config.
     settings = lib.mkMerge [
@@ -54,6 +56,7 @@ in
           branch = "always";
           interactive = "always";
           status = "always";
+          diff = true;
         };
         column.ui = "auto";
         commit.verbose = true;
@@ -61,6 +64,14 @@ in
           autoSetupRemote = true;
           default = "simple";
         };
+        pull = {
+          ff = "only";
+          rebase = false;
+          autostash = true;
+        };
+        init.defaultBranch = "main";
+        merge.conflictstyle = "diff3";
+        fetch.prune = true;
         rebase = {
           autosquash = true;
           autostash = true;
@@ -68,6 +79,11 @@ in
         pager = {
           # The option name is the sub-key (e.g., log)
           log = "emojify";
+        };
+        core = {
+          quotePath = false;
+          ignorecase = false;
+          autocrlf = false;
         };
       }
 
@@ -85,6 +101,38 @@ in
       })
     ];
   };
+
+  # programs.lazygit = {
+  #   enable = true;
+  #   settings = {
+  #     gui = {
+  #       language = "en";
+  #       nerdFontsVersion = "3";
+  #       sidePanelWidth = 0.30;
+  #       expandFocusedSidePanel = true;
+  #       commitLogSize = 2;
+  #       showUntrackedFiles = true;
+  #       authorColors = {"*" = "#b7bdf8";};
+  #       theme = {
+  #         lightTheme = true;
+  #         activeBorderColor = ["#f5a97f" "bold"];
+  #         inactiveBorderColor = ["#494d64"];
+  #         optionsTextColor = ["#8aadf4"];
+  #         selectedLineBgColor = ["#363a4f"];
+  #         cherryPickedCommitBgColor = ["#363a4f"];
+  #         cherryPickedCommitFgColor = ["#cad3f5"];
+  #         unstagedChangesColor = ["#ed8796"];
+  #         defaultFgColor = ["#cad3f5"];
+  #         searchingActiveBorderColor = ["#eed49f"];
+  #       };
+  #     };
+  #     git.pagers = [
+  #       {
+  #         pager = "delta --paging=never";
+  #       }
+  #     ];
+  #   };
+  # };
 
   # Conditionally add the delta package to the user's environment.
   home.packages = lib.mkIf enableDelta [ delta ];

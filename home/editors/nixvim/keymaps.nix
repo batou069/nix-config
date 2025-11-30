@@ -253,6 +253,12 @@
         action = "<cmd>w<CR><cmd>term pytest -s %:p<CR>";
         options.desc = "PyTest";
       }
+      {
+        mode = "n";
+        key = "<leader>cm";
+        action = "<cmd>MCPHub<cr>";
+        options.desc = "Open (MCPHub)";
+      }
     ];
   };
 }

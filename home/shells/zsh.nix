@@ -33,14 +33,24 @@
       share = true;
       # findNoDups = true;
       # saveNoDups = true;
-      # ignoreAllDups = true;
-      # ignoreDups = true;
+      ignoreAllDups = true;
+      expireDuplicatesFirst = true;
+      ignoreDups = true;
       # hist_verify = true;
       ignoreSpace = true;
       path = "${config.xdg.dataHome}/.zsh_history";
       size = 100000;
       save = 100000;
       extended = true;
+      ignorePatterns = [
+        "rm *"
+        "pkill *"
+        "shutdown"
+        "reboot"
+        "ls *"
+        "exit"
+        "clear"
+      ];
     };
     autocd = true;
     defaultKeymap = "emacs";
@@ -49,11 +59,11 @@
       enable = true;
       plugins = [
         "z-shell/F-Sy-H" # Syntax Highlightling
-        "hlissner/zsh-autopair" # Autopair
+        # "hlissner/zsh-autopair" # Autopair
         "MichaelAquilina/zsh-you-should-use" # Auto best Practice settings
-        "olets/zsh-abbr" # use G instead of `<...> | grep <...>`
-        "casonadams/bitwarden.zsh" # Bitwarden 1 (?)
-        "kalsowerus/zsh-bitwarden" # Bitwarden 2 (?)
+        # "olets/zsh-abbr" # use G instead of `<...> | grep <...>`
+        # "casonadams/bitwarden.zsh" # Bitwarden 1 (?)
+        # "kalsowerus/zsh-bitwarden" # Bitwarden 2 (?)
         # "zshzoo/cd-ls"                      # Auto LS after cd
         "muepatrick/zsh-ai-commands" # "/home/lf/nix/tmp/zsh-ai-commands"    # CTRL+O to send prompt to LLM
         "wfxr/forgit" # Git aliases with fzf-like menues

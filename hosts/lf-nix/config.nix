@@ -199,7 +199,7 @@ in
       authorizedKeysFiles = [ config.sops.secrets."ssh_keys/github".path ];
     };
     logind = {
-      lidSwitch = "hybrid-sleep";
+      lidSwitch = "sleep";
       lidSwitchExternalPower = "ignore";
       lidSwitchDocked = "ignore";
     };
@@ -460,7 +460,8 @@ in
       extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" ];
     };
     extraOptions = ''
-      access-tokens = github.com=${config.sops.secrets."api_keys/github_mcp".path}
+      # access-tokens = github.com=${config.sops.secrets."api_keys/github_mcp".path}
+      !include ${config.sops.secrets."github_pat".path}
     '';
     gc = {
       automatic = true;

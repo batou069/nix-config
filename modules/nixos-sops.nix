@@ -9,6 +9,7 @@
     secrets = {
       # Secrets needed for NixOS system-level configuration
       "api_keys/github_mcp" = { owner = "root"; };
+      "github_pat" = { owner = "root"; };
       "api_keys/openai" = { };
       "api_keys/gemini" = { };
       "api_keys/anthropic" = { };

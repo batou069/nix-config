@@ -2,7 +2,7 @@
   programs.nixvim = {
     dependencies = {
       bat.enable = true;
-      fzf.enable = true;
+      fzf.enable = false;
       # gemini.enable = true;
       git.enable = true;
       lazygit.enable = true;

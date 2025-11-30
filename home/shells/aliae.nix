@@ -184,10 +184,10 @@
                 --tiebreak=begin \
                 --prompt=' Man > '  \
                 --preview-window '50%,rounded,<50(up,85%,border-bottom)' \
-                --preview "''${batman}" \
-                --bind "enter:execute(''${manpage} | xargs -r man)" \
+                --preview "batman" \
+                --bind "enter:execute(manpage | xargs -r man)" \
                 --bind "alt-c:+change-preview(cht.sh {1})+change-prompt(ﯽ Cheat > )" \
-                --bind "alt-m:+change-preview(''${batman})+change-prompt( Man > )" \
+                --bind "alt-m:+change-preview(batman)+change-prompt( Man > )" \
                 --bind "alt-t:+change-preview(tldr --color=always {1})+change-prompt(ﳁ TLDR > )"
             zle reset-prompt
           '';
@@ -355,7 +355,7 @@
           value = "$HOME/nix";
         }
         {
-          name = "D";
+          name = "DL";
           value = "$HOME/Downloads";
         }
 
@@ -394,7 +394,7 @@
           delimiter = " ";
           value = [
             # --- PREVIEW ---
-            "--preview '{{ .Home }}/.local/bin/lessfilter.sh {}'"
+            "--preview '~/.local/bin/lessfilter.sh {}'"
             "--preview-window 'right:60%:wrap'"
             "--bind '?:toggle-preview'"
             "--bind 'ctrl-/:change-preview-window(60%|30%|hidden|)'"
@@ -402,7 +402,7 @@
             # --- APPEARANCE ---
             "--height=50%"
             "--layout=reverse"
-            "--border rounded"
+            "--border=rounded"
             "--border-label='╢ FZF ╟'"
             "--prompt=' '"
             "--pointer='▶'"
@@ -410,11 +410,11 @@
             "--info=inline"
             "--ghost='Search ...'"
             "--color preview-fg:#ddc8c8"
-
+            "--ansi"
             # --- MARGINS ---
             # Note: Quotes are tricky here, we use simple strings
-            "padding='10%,0%,0%,0%'"
-            "margin='10%,30%,0%,0%'"
+            "--padding='10%,0%,0%,0%'"
+            "--margin='10%,30%,0%,0%'"
 
             # --- BEHAVIOR ---
             "--multi"
@@ -473,22 +473,22 @@
         # }
 
         # Theming and shell appearance
-        {
-          name = "BASE16_SHELL";
-          value = "$HOME/.config/base16-shell";
-        }
-        {
-          name = "TERM_ITALICS";
-          value = "true";
-        }
-        {
-          name = "BAT_THEME";
-          value = "base16";
-        }
-        {
-          name = "BASE16_SHELL";
-          value = "$HOME/.config/base16-shell/";
-        }
+        # {
+        #   name = "BASE16_SHELL";
+        #   value = "$HOME/.config/base16-shell";
+        # }
+        # {
+        #   name = "TERM_ITALICS";
+        #   value = "true";
+        # }
+        # {
+        #   name = "BAT_THEME";
+        #   value = "base16";
+        # }
+        # {
+        #   name = "BASE16_SHELL";
+        #   value = "$HOME/.config/base16-shell/";
+        # }
         {
           name = "LESSOPEN";
           value = "|{{ .Home }}/.local/bin/lessfilter.sh %s";
@@ -496,10 +496,6 @@
         {
           name = "LESS";
           value = "-R";
-        }
-        {
-          name = "FZF_DEFAULT_OPTS";
-          value = "--ansi";
         }
 
         # --- Directory Navigation & Base Configs ---
@@ -511,11 +507,11 @@
           # Automatically joins the array with spaces
         }
         # Dynamic LS_COLORS (executed by the shell at runtime)
-        {
-          name = "LS_COLORS";
-          value = "$(vivid generate molokai)";
-          "if" = "hasCommand \"vivid\"";
-        }
+        # {
+        #   name = "LS_COLORS";
+        #   value = "$(vivid generate molokai)";
+        #   "if" = "hasCommand \"vivid\"";
+        # }
       ];
       path = [
         {
@@ -537,7 +533,7 @@
             hash -d gp={{ .Home }}/git/py
 
             # --- Base16 Shell ---
-            [ -n "$PS1" ] && [ -s "$BASE16_SHELL/profile_helper.sh" ] && source "$BASE16_SHELL/profile_helper.sh"
+            # [ -n "$PS1" ] && [ -s "$BASE16_SHELL/profile_helper.sh" ] && source "$BASE16_SHELL/profile_helper.sh"
 
             # --- Keybindings ---
             # Note: We must ensure the widget is defined before binding.

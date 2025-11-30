@@ -2,4 +2,6 @@
 secrects/age-key.txt
 *.log
 *.bak
+.null-ls_*
 ./hosts/default/
+.direnv/

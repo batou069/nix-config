@@ -1,6 +1,7 @@
-{ ... }: {
+{ pkgs-unstable, ... }: {
   programs.sesh = {
     enable = true;
+    package = pkgs-unstable.sesh;
     enableAlias = true;
     enableTmuxIntegration = true;
     tmuxKey = "s";

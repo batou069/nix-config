@@ -1,4 +1,4 @@
-{ ... }: {
+{ pkgs-unstable, ... }: {
   programs.television = {
     enable = true;
     # channels = {
@@ -40,6 +40,7 @@
     #     ];
     #   };
     # };
+    package = pkgs-unstable.television;
     enableZshIntegration = true;
     enableBashIntegration = true;
     enableFishIntegration = true;

@@ -1,10 +1,10 @@
-{ pkgs, ... }: {
+{ pkgs-unstable, ... }: {
   programs.lsd = {
     enable = true;
+    package = pkgs-unstable.lsd;
     enableBashIntegration = true;
     enableZshIntegration = true;
     enableFishIntegration = true;
-    package = pkgs.lsd;
     settings = {
       date = "relative"; # Show relative dates
       icons = {
