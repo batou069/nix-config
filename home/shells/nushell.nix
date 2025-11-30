@@ -7,12 +7,12 @@
       query
       skim
       # net ---broken
-      units
+      # units ---broken
       gstat
     ];
     extraConfig = ''
-      $env.config.show_banner = true
-      $env.config.edit_mode = "vi"
+      # $env.config.show_banner = true
+      # $env.config.edit_mode = "vi"
       $env.config = (
       $env.config | upsert keybindings (
         $env.config.keybindings | append {
@@ -26,6 +26,11 @@
     '';
     settings = {
       show_banner = true;
+      edit_mode = "vi";
+      cursor_shape = {
+        vi_normal = "block";
+        vi_insert = "line";
+      };
       enable_color = true;
       enable_command_completion = true;
       enable_command_suggestions = true;

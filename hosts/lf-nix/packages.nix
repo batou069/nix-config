@@ -195,7 +195,6 @@ in
       bitwarden-desktop
       twingate
       hyprls
-      lazygit
       pipx
       lm_sensors # Used For Getting Hardware Temps
       sof-firmware

@@ -1,5 +1,6 @@
 { lib
 , pkgs
+, pkgs-unstable
 , ...
 }: {
   xdg.configFile = {
@@ -25,8 +26,12 @@
     newSession = true;
     shortcut = "a";
     sensibleOnTop = true;
-    terminal = "xterm-kitty";
+    terminal = "screen-256color"; # "xterm-kitty";
+    shell = "${pkgs.zsh}/bin/zsh";
     tmuxinator.enable = true;
+    customPaneNavigationAndResize = true;
+    historyLimit = 9999999;
+    resizeAmount = 5;
     keyMode = "vi";
     plugins = [
       pkgs.tmuxPlugins.vim-tmux-navigator
@@ -36,7 +41,7 @@
       # pkgs.tmuxPlugins.tmux-sessionx
       # pkgs.tmuxPlugins.tmux-powerline
       pkgs.tmuxPlugins.tmux-floax
-      pkgs.tmuxPlugins.tmux-fzf
+      pkgs-unstable.tmuxPlugins.tmux-fzf
       # pkgs.tmuxPlugins.session-wizard
       pkgs.tmuxPlugins.resurrect
       pkgs.tmuxPlugins.prefix-highlight

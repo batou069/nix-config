@@ -1,4 +1,5 @@
 { config
+, inputs
 , pkgs
 , lib
 , pkgs-unstable
@@ -113,6 +114,9 @@ in
     direnv = {
       enable = true;
       nix-direnv.enable = true;
+      config = {
+        hide_env_diff = true;
+      };
       # Shell integrations are auto-enabled when the shell is enabled
     };
 
@@ -191,6 +195,7 @@ in
     vivid = {
       enable = true;
       enableZshIntegration = true;
+      activeTheme = "molokai";
       themes = {
         ayu = builtins.fetchurl {
           url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/ayu.yml";
@@ -255,11 +260,33 @@ in
     uv.enable = true;
     nixvim = {
       enable = true;
+      package = inputs.neovim-nightly.packages.${pkgs.system}.default;
+
+      nixpkgs.config = {
+        allowBroken = true;
+        allowUnfree = true;
+      };
+
+      defaultEditor = true;
+
+      performance = {
+        byteCompileLua.enable = true;
+      };
+
       vimAlias = true;
       viAlias = true;
       extraConfigLuaPre = ''
         vim.loader.enable()
+
+        require("mcphub").setup({
+          auto_approve = true,
+          mcp_request_timeout = 120000,
+        })
       '';
+      luaLoader.enable = true;
+      extraPlugins = [
+        inputs.mcp-hub-nvim.packages.${pkgs.system}.default
+      ];
     };
     # aria2 = {
     #   enable = true;
@@ -300,24 +327,26 @@ in
         };
       };
       matches = {
-        matches = [
-          {
-            trigger = ":nrs";
-            replace = "nix nixos-rebuild switch --flake $N";
-          }
-          {
-            trigger = ":lf";
-            replace = "Laurent Flaster";
-          }
-          {
-            trigger = ":now";
-            replace = "{{currentdate}} {{currenttime}}";
-          }
-          {
-            trigger = ":code";
-            replace = "```\n$|$\n```";
-          }
-        ];
+        default = {
+          matches = [
+            {
+              trigger = ":nrs";
+              replace = "nix nixos-rebuild switch --flake $N";
+            }
+            {
+              trigger = ":lf";
+              replace = "Laurent Flaster";
+            }
+            {
+              trigger = ":now";
+              replace = "{{currentdate}} {{currenttime}}";
+            }
+            {
+              trigger = ":code";
+              replace = "```\n$|$\n```";
+            }
+          ];
+        };
         global_vars = {
           global_vars = [
             {
@@ -442,18 +471,19 @@ in
       (pkgs.writeShellApplication {
         name = "ns";
         runtimeInputs = with pkgs; [
-          fzf
+          pkgs-unstable.fzf
           nix-search-tv
         ];
         text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
+        excludeShellChecks = [ "SC2016" ];
       })
-      pkgs.treefmt
-      pkgs.spotify-player
+      pkgs-unstable.treefmt
+      pkgs-unstable.spotify-player
       pythonEnv312
       customWaybar
       pkgs.blender # 3D creation suite
-      pkgs.fpp
-      pkgs.igrep # Improved grep with context and file filtering
+      pkgs-unstable.fpp
+      pkgs-unstable.igrep # Improved grep with context and file filtering
       # pkgs.base16-shell-preview # Set of shell scripts to change terminal colors using
       # pkgs.base16-schemes # Collection of base16 color schemes
       pkgs-unstable.manix
@@ -461,15 +491,15 @@ in
       pkgs.rtaudio # Real-time audio I/O library
       pkgs.erdtree # Visualize directory structure as a tree
       pkgs.cmake
-      pkgs.meld
+      pkgs-unstable.meld
       pkgs-unstable.normcap
-      pkgs.repgrep # A more powerful ripgrep with additional features
-      pkgs.ripgrep-all
-      pkgs.alejandra
+      pkgs-unstable.repgrep # A more powerful ripgrep with additional features
+      pkgs-unstable.ripgrep-all
+      pkgs-unstable.alejandra
       pkgs-unstable.pre-commit
       pkgs.nodejs # Provides npm
       pkgs.kdePackages.okular
-      pkgs.vgrep # User-friendly pager for grep/git-grep/ripgrep
+      pkgs-unstable.vgrep # User-friendly pager for grep/git-grep/ripgrep
       # xonsh # Python-ish, BASHwards-compatible shell
       pkgs.vimPluginsUpdater
       pkgs.vimgolf # Interactive Vim golf game, train you vim skills
@@ -479,7 +509,7 @@ in
       pkgs.rbw
       pkgs.alsa-ucm-conf # maybe this fixed sound issue?
       # pkgs.tradingview
-      pkgs.neovide
+      pkgs-unstable.neovide
       pkgs.appimage-run
       pkgs.codex # Claude Assistant CLI
       pkgs.claudia
@@ -498,11 +528,10 @@ in
       pkgs.libnotify
       pkgs.papirus-icon-theme
       pkgs.pcmanfm-qt
-      pkgs.zed-editor # Code Editor
       pkgs.pnpm # npm package manager
       pkgs.git-filter-repo
       pkgs.sof-tools
-      pkgs.fabric-ai
+      pkgs-unstable.fabric-ai
       pkgs.faiss # Command line tool for interacting with Generative AI models
       # (pkgs.callPackage ./ipython-ai.nix { inherit pkgs-unstable; }).out
 
@@ -618,7 +647,7 @@ in
     };
   };
 
-  fonts.fontconfig.enable = false;
+  fonts.fontconfig.enable = true;
 
   xdg = {
     mimeApps = {

@@ -100,6 +100,12 @@
       url = "git+https://github.com/nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+
+    neovim-nightly = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake/beta";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -132,48 +138,62 @@
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
+    mcp-hub.url = "github:ravitemer/mcp-hub";
+    mcp-hub-nvim.url = "git+https://github.com/ravitemer/mcphub.nvim";
+
     #plugins list
     avante-nvim = {
       url = "git+https://github.com/yetone/avante.nvim";
       flake = false;
     };
+
     minuet-ai-nvim = {
       url = "git+https://github.com/milanglacier/minuet-ai.nvim";
       flake = false;
     };
+
     blink-cmp.url = "git+https://github.com/saghen/blink.cmp";
+
     vim-translator = {
       url = "git+https://github.com/voldikss/vim-translator";
       flake = false;
     };
+
     none-ls-nvim = {
       url = "git+https://github.com/nvimtools/none-ls.nvim";
       flake = false;
     };
+
     nui-nvim = {
       url = "git+https://github.com/MunifTanjim/nui.nvim";
       flake = false;
     };
+
     emacs-overlay = {
       url = "git+https://github.com/nix-community/emacs-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nix-doom-emacs-unstraightened = {
       url = "git+https://github.com/marienz/nix-doom-emacs-unstraightened";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     # mango = {
     #   url = "git+https://github.com/DreamMaoMao/mangowc";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+
     nix-mcp-servers = {
       url = "git+https://github.com/cameronfyfe/nix-mcp-servers";
     };
+
     mcp-nixos = {
       url = "git+https://github.com/utensils/mcp-nixos";
     };
-    hyprviz.url = "git+https://github.com/timasoft/hyprviz";
-    # serena is now provided by mcp-servers-nix (natsukium)
+    hyprviz.
+    url = "git+https://github.com/timasoft/hyprviz";
+
     plasma-manager = {
       url = "git+https://github.com/nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";

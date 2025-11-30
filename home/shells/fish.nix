@@ -1,4 +1,7 @@
-{ pkgs, ... }: {
+{ pkgs
+, pkgs-unstable
+, ...
+}: {
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
@@ -13,7 +16,7 @@
       # FZF support for Fish
       {
         name = "fzf-fish";
-        src = pkgs.fishPlugins.fzf-fish.src;
+        src = pkgs-unstable.fishPlugins.fzf-fish.src;
       }
       # Syntax highlighting is native, but "done" adds nicer patterns
       {

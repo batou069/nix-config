@@ -1,7 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs-unstable, ... }: {
   programs.bat = {
     enable = true;
-    extraPackages = with pkgs.bat-extras; [
+    package = pkgs-unstable.bat;
+    extraPackages = with pkgs-unstable.bat-extras; [
       batdiff
       batman
       prettybat

@@ -18,7 +18,7 @@
     kdePackages.krohnkite
     kdotool
     libnotify
-    tela-circle-icon-theme
+    # tela-circle-icon-theme
   ];
 
   services = {

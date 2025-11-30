@@ -265,12 +265,15 @@
           };
           gopls.enable = true;
           clangd.enable = true;
-          bashls.enable = true;
+          bashls = {
+            enable = true;
+            filetypes = [ "sh" "zsh" ];
+          };
           jsonls.enable = true;
           # ts_ls.enable = true;
           dockerls = {
             enable = true;
-            package = pkgs.nodePackages.dockerfile-language-server;
+            package = pkgs.nodePackages.dockerfile-language-server-nodejs;
           };
           ruff = {
             enable = true;
@@ -386,4 +389,10 @@
     #       };
     #     };
   };
+  home.packages = with pkgs; [
+    shellcheck
+    shellharden
+    shfmt
+    nodePackages.bash-language-server
+  ];
 }

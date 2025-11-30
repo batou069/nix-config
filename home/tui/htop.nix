@@ -1,6 +1,10 @@
-{ config, ... }: {
+{ pkgs-unstable
+, config
+, ...
+}: {
   programs.htop = {
     enable = true;
+    package = pkgs-unstable.htop;
     settings =
       {
         tree_view = 1;
