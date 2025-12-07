@@ -1,7 +1,4 @@
-{ pkgs
-, pkgs-unstable
-,
-}:
+{ pkgs, ... }:
 let
   # Path to the dedicated config file for ipython-ai
   # This will be copied into the derivation.
@@ -157,7 +154,7 @@ let
       # Other dependencies that were previously in the pip install list
       ipython
       google-generativeai
-      (pkgs-unstable.python312Packages.langchain-google-genai)
+      langchain-google-genai
       prompt_toolkit
       langchain-core
       line-profiler

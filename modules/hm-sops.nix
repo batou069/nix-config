@@ -17,6 +17,7 @@
       "api_keys/brave_search" = { };
       "api_keys/github_mcp" = { };
       "influxdb" = { };
+      "email/password" = { };
     };
   };
 }

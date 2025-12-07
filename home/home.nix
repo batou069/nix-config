@@ -2,11 +2,11 @@
 , inputs
 , pkgs
 , lib
-, pkgs-unstable
+, libPkg
 , ...
 }:
 let
-  pythonEnv312 = pkgs-unstable.python312.withPackages (
+  pythonEnv312 = pkgs.python312.withPackages (
     ps:
       with ps; [
         pnglatex
@@ -72,7 +72,7 @@ let
         scikit-image
         debugpy
         sqlalchemy
-        pkgs-unstable.pyprland
+        pkgs.pyprland
         google-auth-oauthlib
         google-auth-httplib2
         google-api-python-client
@@ -86,6 +86,7 @@ let
   customWaybar = pkgs.waybar.overrideAttrs (oldAttrs: {
     mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
   });
+  tclint-dummy = pkgs.writeShellScriptBin "tclint" "exit 0";
 in
 {
   news.display = "show";
@@ -101,15 +102,25 @@ in
     # ./zen-browser.nix
     ./mpd.nix
     ./gemini.nix
+    ./email.nix
   ];
 
   programs = {
     # Tell the unstable Home Manager module which package to use for activation.
     home-manager = {
-      package = pkgs-unstable.home-manager;
+      package = pkgs.home-manager;
     };
 
     # Centralized MCP Server Configuration
+
+    # astroid = {
+    #   enable = true;
+    # };
+    #
+    # notmuch = {
+    #   enable = true;
+    # };
+    lesspipe.enable = true;
 
     direnv = {
       enable = true;
@@ -130,24 +141,24 @@ in
       };
     };
 
-    fuzzel = {
-      enable = true;
-      # settings = {
-      #   # colors = {
-      #   #   # background = "24273add";
-      #   #   text = "cad3f5ff";
-      #   #   prompt = "b8c0e0ff";
-      #   #   placeholder = "8087a2ff";
-      #   #   input = "cad3f5ff";
-      #   #   match = "f5a97fff";
-      #   #   selection = "5b6078ff";
-      #   #   selection-text = "cad3f5ff";
-      #   #   selection-match = "f5a97fff";
-      #   #   counter = "8087a2ff";
-      #   #   border = "f5a97fff";
-      #   # };
-      # };
-    };
+    # fuzzel = {
+    #   enable = true;
+    #   # settings = {
+    #   #   # colors = {
+    #   #   #   # background = "24273add";
+    #   #   #   text = "cad3f5ff";
+    #   #   #   prompt = "b8c0e0ff";
+    #   #   #   placeholder = "8087a2ff";
+    #   #   #   input = "cad3f5ff";
+    #   #   #   match = "f5a97fff";
+    #   #   #   selection = "5b6078ff";
+    #   #   #   selection-text = "cad3f5ff";
+    #   #   #   selection-match = "f5a97fff";
+    #   #   #   counter = "8087a2ff";
+    #   #   #   border = "f5a97fff";
+    #   #   # };
+    #   # };
+    # };
     retroarch = {
       cores = {
         mgba.enable = true;
@@ -170,7 +181,7 @@ in
 
     zapzap.enable = true;
     claude-code.enable = true;
-    claude-code.package = pkgs-unstable.claude-code;
+    claude-code.package = pkgs.claude-code;
     hyprshot.enable = true;
     hyprshot.saveLocation = "$HOME/Pictures/Screenshots";
     satty.enable = true;
@@ -195,7 +206,7 @@ in
     vivid = {
       enable = true;
       enableZshIntegration = true;
-      activeTheme = "molokai";
+      # activeTheme = "molokai";
       themes = {
         ayu = builtins.fetchurl {
           url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/ayu.yml";
@@ -209,28 +220,20 @@ in
       };
     };
 
-    cudatext.enable = true;
-    cudatext.lexerSettings = {
-      Python = {
-        numbers_center = false;
-        numbers_style = 1;
-      };
-    };
-    nvchecker.enable = true;
     aider-chat.enable = true;
     aider-chat.settings = {
       cache-prompts = true;
-      lint = true;
+      # lint = true;
       verify-ssl = false;
     };
     fabric-ai = {
       enable = true;
+      package = pkgs.fabric-ai;
       enableZshIntegration = true;
       enableYtAlias = true;
       enablePatternsAliases = true;
     };
 
-    anvil-editor.enable = true;
     anime-downloader.enable = true;
     amber.enable = true;
     amber.ambsSettings = {
@@ -246,26 +249,21 @@ in
       color = true;
       file = true;
       skip_vcs = true;
-      skip_gitignore = true;
+      skip_gitignore = false;
       fixed_order = true;
       parent_ignore = true;
       line_by_match = false;
     };
     ruff = {
       enable = true;
-      package = pkgs-unstable.ruff;
+      package = pkgs.ruff;
       settings = { };
     };
     hyprpanel.enable = false;
     uv.enable = true;
     nixvim = {
       enable = true;
-      package = inputs.neovim-nightly.packages.${pkgs.system}.default;
-
-      nixpkgs.config = {
-        allowBroken = true;
-        allowUnfree = true;
-      };
+      package = libPkg inputs.neovim-nightly;
 
       defaultEditor = true;
 
@@ -285,7 +283,7 @@ in
       '';
       luaLoader.enable = true;
       extraPlugins = [
-        inputs.mcp-hub-nvim.packages.${pkgs.system}.default
+        (libPkg inputs.mcp-hub-nvim)
       ];
     };
     # aria2 = {
@@ -345,6 +343,10 @@ in
               trigger = ":code";
               replace = "```\n$|$\n```";
             }
+            {
+              trigger = ":rebuild";
+              replace = "sudo nixos-rebuild switch --flake $N#lf-nix -vv";
+            }
           ];
         };
         global_vars = {
@@ -380,37 +382,39 @@ in
         aw-watcher-window-wayland = {
           package = pkgs.aw-watcher-window-wayland;
         };
-        aw-watcher-afk = {
-          package = pkgs.aw-watcher-afk;
-          settings = {
-            timeout = 180;
-            poll_time = 5;
-          };
-        };
+        # aw-watcher-afk = {
+        #   enable = false;
+        #   package = pkgs.aw-watcher-afk;
+        #   settings = {
+        #     timeout = 180;
+        #     poll_time = 5;
+        #   };
+        # };
 
-        aw-watcher-window = {
-          package = pkgs.aw-watcher-window;
-          settings = {
-            poll_time = 4;
-            exclude_title = true;
-          };
-        };
+        # aw-watcher-window = {
+        #   package = pkgs.aw-watcher-window;
+        #   settings = {
+        #     poll_time = 4;
+        #     exclude_title = true;
+        #   };
+        # };
       };
     };
+
     tomat = {
       enable = true;
-      package = pkgs-unstable.tomat;
+      package = pkgs.tomat;
     };
     emacs = {
       enable = true;
       client.enable = true;
     };
-    cliphist.enable = true;
+    # cliphist.enable = true;
     tldr-update.enable = true;
     home-manager.autoUpgrade.useFlake = true;
     home-manager.autoUpgrade.flakeDir = "${config.home.homeDirectory}/nix";
-    wl-clip-persist.enable = true;
-    wl-clip-persist.clipboardType = "regular"; # Type: one of "regular", "primary", "both"
+    # wl-clip-persist.enable = false;
+    # wl-clip-persist.clipboardType = "regular"; # Type: one of "regular", "primary", "both"
     # wl-clip-persist.extraOptions = [
     # # Available options include:
     # - --write-timeout : Timeout for writing clipboard data (default: 3000.
@@ -438,19 +442,24 @@ in
 
   systemd.user.startServices = "sd-switch";
 
-  systemd.user.services.waybar = {
-    Unit = {
-      Description = "Waybar";
-      PartOf = [ "graphical-session.target" ];
+  systemd.user.services = {
+    waybar = {
+      Unit = {
+        Description = "Waybar";
+        PartOf = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.waybar}/bin/waybar";
+        Restart = "on-failure";
+        RestartSec = 1;
+      };
+      Install = {
+        WantedBy = [ "hyprland-session.target" ];
+      };
     };
-    Service = {
-      ExecStartPre = "${pkgs.bash}/bin/bash -c '[[ \"$XDG_CURRENT_DESKTOP\" == \"Hyprland\" ]] || exit 0'";
-      ExecStart = "${pkgs.waybar}/bin/waybar";
-      Restart = "on-failure";
-      RestartSec = 1;
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
+
+    activitywatch-watcher-aw-watcher-window-wayland = {
+      Unit.ConditionEnvironment = "HYPRLAND_INSTANCE_SIGNATURE";
     };
   };
 
@@ -466,40 +475,40 @@ in
     homeDirectory = "/home/lf";
 
     packages = [
-      pkgs-unstable.home-manager
+      pkgs.home-manager
       pkgs.tree-sitter
       (pkgs.writeShellApplication {
         name = "ns";
         runtimeInputs = with pkgs; [
-          pkgs-unstable.fzf
+          fzf
           nix-search-tv
         ];
         text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
         excludeShellChecks = [ "SC2016" ];
       })
-      pkgs-unstable.treefmt
-      pkgs-unstable.spotify-player
+      pkgs.treefmt
+      pkgs.spotify-player
       pythonEnv312
       customWaybar
       pkgs.blender # 3D creation suite
-      pkgs-unstable.fpp
-      pkgs-unstable.igrep # Improved grep with context and file filtering
+      pkgs.fpp
+      pkgs.igrep # Improved grep with context and file filtering
       # pkgs.base16-shell-preview # Set of shell scripts to change terminal colors using
       # pkgs.base16-schemes # Collection of base16 color schemes
-      pkgs-unstable.manix
-      pkgs-unstable.rmpc
+      pkgs.manix
+      pkgs.rmpc
       pkgs.rtaudio # Real-time audio I/O library
       pkgs.erdtree # Visualize directory structure as a tree
       pkgs.cmake
-      pkgs-unstable.meld
-      pkgs-unstable.normcap
-      pkgs-unstable.repgrep # A more powerful ripgrep with additional features
-      pkgs-unstable.ripgrep-all
-      pkgs-unstable.alejandra
-      pkgs-unstable.pre-commit
+      pkgs.meld
+      pkgs.normcap
+      pkgs.repgrep # A more powerful ripgrep with additional features
+      pkgs.ripgrep-all
+      pkgs.alejandra
+      pkgs.pre-commit
       pkgs.nodejs # Provides npm
       pkgs.kdePackages.okular
-      pkgs-unstable.vgrep # User-friendly pager for grep/git-grep/ripgrep
+      pkgs.vgrep # User-friendly pager for grep/git-grep/ripgrep
       # xonsh # Python-ish, BASHwards-compatible shell
       pkgs.vimPluginsUpdater
       pkgs.vimgolf # Interactive Vim golf game, train you vim skills
@@ -509,7 +518,7 @@ in
       pkgs.rbw
       pkgs.alsa-ucm-conf # maybe this fixed sound issue?
       # pkgs.tradingview
-      pkgs-unstable.neovide
+      pkgs.neovide
       pkgs.appimage-run
       pkgs.codex # Claude Assistant CLI
       pkgs.claudia
@@ -531,49 +540,19 @@ in
       pkgs.pnpm # npm package manager
       pkgs.git-filter-repo
       pkgs.sof-tools
-      pkgs-unstable.fabric-ai
       pkgs.faiss # Command line tool for interacting with Generative AI models
-      # (pkgs.callPackage ./ipython-ai.nix { inherit pkgs-unstable; }).out
+      # (pkgs.callPackage ./ipython-ai.nix { inherit pkgs; }).out
 
       pkgs.dosbox-staging
+
       pkgs.dosbox-x
+
       pkgs.google-chrome
-      # pkgs-unstable.antigravity-fhs
+
+      # pkgs.antigravity-fhs
+
+      tclint-dummy
     ];
-
-    sessionVariables = {
-      # Personal directory shortcuts
-      P = "$HOME/git/py";
-      C = "$HOME/.config";
-      G = "$HOME/git";
-      R = "$HOME/repos";
-      O = "$HOME/Obsidian";
-      D = "$HOME/dotfiles";
-      N = "$HOME/nix";
-      DL = "$HOME/Downloads";
-
-      # Personal application preferences
-      TERM = "xterm-kitty";
-      VISUAL = "nvim";
-      EDITOR = "nvim";
-      PAGER = "less";
-      LESS = "-R";
-
-      # Secrets
-      GITHUB_PERSONAL_ACCESS_TOKEN = config.sops.secrets.github_pat.path;
-      OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
-      GEMINI_API_KEY = config.sops.secrets."api_keys/gemini".path;
-      GOOGLE_API_KEY = config.sops.secrets."api_keys/gemini".path;
-      ZSH_AI_COMMANDS_OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
-      ANTHROPIC_API_KEY = config.sops.secrets."api_keys/anthropic".path;
-      BW_SESSION = config.sops.secrets.bitwarden.path;
-      INFLUX_TOKEN = config.sops.secrets.influxdb.path;
-      # Keys for MCP Servers
-      TAVILY_API_KEY = config.sops.secrets."api_keys/tavily".path;
-      BRAVE_API_KEY = config.sops.secrets."api_keys/brave_search".path;
-      GITHUB_TOKEN = config.sops.secrets."api_keys/github_mcp".path;
-      # Theming and shell appearance
-    };
 
     file = {
       ".pre-commit-config.yaml" = {
@@ -661,7 +640,6 @@ in
         "text/html" = "firefox.desktop";
         "x-scheme-handler/http" = "firefox.desktop";
         "x-scheme-handler/https" = "firefox.desktop";
-        "x-scheme-handler/mailto" = "firefox.desktop";
         "x-scheme-handler/vscode" = "vscode.desktop";
         "image/jpeg" = "loupe.desktop";
         "image/png" = "loupe.desktop";
@@ -740,6 +718,7 @@ in
     base16Scheme = ../assets/base16_themes/catppuccin-macchiato.yaml;
     image = ../assets/wallpapers/astronaut_jellyfish.jpg; # ../../assets/base16_themes/cupcake.yaml;
 
+    targets.qt.platform = lib.mkForce "qtct";
     polarity = "dark";
     targets.font-packages.enable = true;
 
@@ -775,12 +754,12 @@ in
       serif = {
         # package = pkgs.noto-fonts-cjk-sans;
         # name = "Noto Sans CJK JP";
-        package = pkgs-unstable.maple-mono.NF;
+        package = pkgs.maple-mono.NF;
         name = "Maple Mono NF";
       };
 
       monospace = {
-        package = pkgs-unstable.maple-mono.NF;
+        package = pkgs.maple-mono.NF;
         name = "Maple Mono NF Bold";
       };
 

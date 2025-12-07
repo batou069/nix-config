@@ -1,12 +1,11 @@
-{ pkgs-unstable
+{ pkgs
 , # lib,
   ...
 }: {
   programs.gemini-cli = {
     enable = true;
 
-    # Use the latest version from nixpkgs-unstable
-    package = pkgs-unstable.gemini-cli;
+    package = pkgs.gemini-cli;
 
     # Set the default model
     defaultModel = "gemini-3-pro-preview";

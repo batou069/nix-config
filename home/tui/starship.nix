@@ -1,10 +1,10 @@
 { lib
-, pkgs-unstable
+, pkgs
 , ...
 }: {
   programs.starship = {
     enable = true;
-    package = pkgs-unstable.starship;
+    package = pkgs.starship;
     enableTransience = true;
     enableFishIntegration = true;
     enableNushellIntegration = true;
@@ -115,9 +115,7 @@
           am_or_rebase = "am/rebase";
         };
 
-        sudo = {
-          disabled = false;
-        };
+        sudo = { disabled = false; };
 
         git_metrics = {
           disabled = false;
@@ -139,11 +137,7 @@
         python = {
           style = darkgray;
           format = "[$symbol$pyenv_prefix($version )(($virtualenv) )]($style)";
-          python_binary = [
-            "python"
-            "python3"
-            "python2"
-          ];
+          python_binary = [ "python" "python3" "python2" ];
           # pyenv_prefix = "PyEnv ";
           pyenv_version_name = true;
           version_format = "v$raw";
@@ -212,7 +206,7 @@
             }
             {
               # 50% to 90%
-              style = "bold blink ${green}";
+              style = "bold ${green}";
               threshold = 90;
             }
           ];
@@ -233,58 +227,28 @@
         os = {
           disabled = false;
           format = " [$symbol]($style)";
-          style = "bold blink${mauve}";
+          style = "bold ${mauve}";
         };
         #	character = {
         #	error_symbol = "";
         #	success_symbol = "❯(bold green)";
         #	};
         # SYMBOLS
-        git_commit = {
-          tag_symbol = "  ";
-        };
-        golang = {
-          symbol = " ";
-        };
-        guix_shell = {
-          symbol = " ";
-        };
-        haskell = {
-          symbol = " ";
-        };
-        haxe = {
-          symbol = " ";
-        };
-        hg_branch = {
-          symbol = " ";
-        };
-        java = {
-          symbol = " ";
-        };
-        julia = {
-          symbol = " ";
-        };
-        kotlin = {
-          symbol = " ";
-        };
-        lua = {
-          symbol = " ";
-        };
-        memory_usage = {
-          symbol = "󰍛 ";
-        };
-        meson = {
-          symbol = "󰔷 ";
-        };
-        nim = {
-          symbol = "󰆥 ";
-        };
-        nodejs = {
-          symbol = " ";
-        };
-        ocaml = {
-          symbol = " ";
-        };
+        git_commit = { tag_symbol = "  "; };
+        golang = { symbol = " "; };
+        guix_shell = { symbol = " "; };
+        haskell = { symbol = " "; };
+        haxe = { symbol = " "; };
+        hg_branch = { symbol = " "; };
+        java = { symbol = " "; };
+        julia = { symbol = " "; };
+        kotlin = { symbol = " "; };
+        lua = { symbol = " "; };
+        memory_usage = { symbol = "󰍛 "; };
+        meson = { symbol = "󰔷 "; };
+        nim = { symbol = "󰆥 "; };
+        nodejs = { symbol = " "; };
+        ocaml = { symbol = " "; };
         os.symbols = {
           Alpaquita = " ";
           Alpine = " ";
@@ -331,42 +295,18 @@
           Windows = "󰍲 ";
         };
 
-        package = {
-          symbol = "󰏗 ";
-        };
-        perl = {
-          symbol = " ";
-        };
-        php = {
-          symbol = " ";
-        };
-        pijul_channel = {
-          symbol = " ";
-        };
-        python = {
-          symbol = " ";
-        };
-        rlang = {
-          symbol = "󰟔 ";
-        };
-        ruby = {
-          symbol = " ";
-        };
-        rust = {
-          symbol = "󱘗 ";
-        };
-        scala = {
-          symbol = " ";
-        };
-        swift = {
-          symbol = " ";
-        };
-        zig = {
-          symbol = " ";
-        };
-        gradle = {
-          symbol = " ";
-        };
+        package = { symbol = "󰏗 "; };
+        perl = { symbol = " "; };
+        php = { symbol = " "; };
+        pijul_channel = { symbol = " "; };
+        python = { symbol = " "; };
+        rlang = { symbol = "󰟔 "; };
+        ruby = { symbol = " "; };
+        rust = { symbol = "󱘗 "; };
+        scala = { symbol = " "; };
+        swift = { symbol = " "; };
+        zig = { symbol = " "; };
+        gradle = { symbol = " "; };
       };
   };
 }

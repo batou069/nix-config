@@ -13,7 +13,7 @@
     input = {
       keyboard = {
         xkb = {
-          layout = "en,us, il";
+          layout = "us,il";
         };
 
         #repeat-delay = 150;

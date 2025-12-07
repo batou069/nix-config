@@ -6,11 +6,11 @@
     };
 
     # --- Nix & Home-Manager ---
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     home-manager = {
       url = "git+https://github.com/nix-community/home-manager/";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # --- Nix Addons ---
@@ -23,8 +23,7 @@
     };
 
     stylix = {
-      url = "github:nix-community/stylix/release-25.05";
-      # url = "github:nix-community/stylix";
+      url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -65,15 +64,18 @@
 
     # --- HYPRLAND stuff ---
 
-    hyprland.url = "github:hyprwm/Hyprland/v0.50.0"; # TODO upgrae to 0.52.0
+    hyprland = {
+      url = "github:hyprwm/Hyprland/v0.52.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins/v0.50.0";
+      url = "github:hyprwm/hyprland-plugins/v0.52.0";
       inputs.hyprland.follows = "hyprland";
     };
     rose-pine-hyprcursor = {
       # url = "github:ndom91/rose-pine-hyprcursor";
       url = "git+https://github.com/ndom91/rose-pine-hyprcursor";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.hyprlang.follows = "hyprland/hyprlang";
     };
 
@@ -82,10 +84,10 @@
     #   inputs.hyprland.follows = "hyprland"; # to make sure that the plugin is built for the correct version of hyprland
     # };
 
-    # hyprpanel = {
-    #   url = "git+https://github.com/Jas-SinghFSU/HyprPanel";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    hyprpanel = {
+      url = "git+https://github.com/Jas-SinghFSU/HyprPanel";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     hy3 = {
       url = "git+https://github.com/outfoxxed/hy3/"; # hl0.50.0";
@@ -98,12 +100,12 @@
 
     nixvim = {
       url = "git+https://github.com/nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
 
     neovim-nightly = {
       url = "github:nix-community/neovim-nightly-overlay";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     zen-browser = {
@@ -188,11 +190,8 @@
       url = "git+https://github.com/cameronfyfe/nix-mcp-servers";
     };
 
-    mcp-nixos = {
-      url = "git+https://github.com/utensils/mcp-nixos";
-    };
-    hyprviz.
-    url = "git+https://github.com/timasoft/hyprviz";
+    mcp-nixos = { url = "git+https://github.com/utensils/mcp-nixos"; };
+    hyprviz.url = "git+https://github.com/timasoft/hyprviz";
 
     plasma-manager = {
       url = "git+https://github.com/nix-community/plasma-manager";
@@ -225,7 +224,8 @@
             config.allowUnfree = true;
           };
           # Import the new helper functions
-          lib-helpers = import ./modules/lib-helpers.nix { inherit inputs system; };
+          lib-helpers =
+            import ./modules/lib-helpers.nix { inherit inputs system; };
         in
         {
           _module.args = {
@@ -234,9 +234,7 @@
             libPkg = lib-helpers.libPkg;
           };
 
-          packages = {
-            vscode-fhs = pkgs-unfree.vscode-fhs;
-          };
+          packages = { vscode-fhs = pkgs-unfree.vscode-fhs; };
 
           # Configure treefmt-nix
           treefmt = {
@@ -274,12 +272,7 @@
             name = "nix-config-shell";
             inputsFrom = [ config.treefmt.build.wrapper ];
             packages =
-              [
-                config.treefmt.build.wrapper
-                pkgs.pre-commit
-                pkgs.gh
-                pkgs.gum
-              ]
+              [ config.treefmt.build.wrapper pkgs.pre-commit pkgs.gh pkgs.gum ]
               ++ (builtins.attrValues config.treefmt.build.programs);
             shellHook = ''
               echo "Welcome to the Nix config dev shell!"
@@ -307,25 +300,24 @@
           hosts = import ./lib/hosts.nix { inherit inputs; };
         in
         {
-          nixosConfigurations =
-            lib.mapAttrs'
-              (name: config:
-                lib.nameValuePair name (lib.buildNixosSystem (config
-                  // {
-                  host = name;
-                  inherit inputs;
-                })))
-              hosts.nixos;
+          nixosConfigurations = lib.mapAttrs'
+            (name: config:
+              lib.nameValuePair name (lib.buildNixosSystem (config
+                // {
+                host = name;
+                username = config.username;
+                inherit inputs;
+              })))
+            hosts.nixos;
 
-          homeConfigurations =
-            lib.mapAttrs'
-              (name: config:
-                lib.nameValuePair name (lib.buildHomeConfiguration (config
-                  // {
-                  username = name;
-                  inherit inputs;
-                })))
-              hosts.home;
+          homeConfigurations = lib.mapAttrs'
+            (name: config:
+              lib.nameValuePair name (lib.buildHomeConfiguration (config
+                // {
+                username = name;
+                inherit inputs;
+              })))
+            hosts.home;
         };
     };
 }

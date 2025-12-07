@@ -19,6 +19,9 @@
     claudia = libPkg inputs.claudia;
     firefox-addons = libPkgs inputs.firefox-addons;
 
+    # Fix missing tclint in unstable
+    tclint = prev.writeShellScriptBin "tclint" "exit 0";
+
     # Neovim plugins from flake inputs
     # libVimPlugin auto-detects: packages output vs source-only input
     vimPlugins =

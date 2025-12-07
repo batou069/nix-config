@@ -1,7 +1,7 @@
-{ pkgs-unstable, ... }: {
+{ pkgs, ... }: {
   programs.lsd = {
     enable = true;
-    package = pkgs-unstable.lsd;
+    package = pkgs.lsd;
     enableBashIntegration = true;
     enableZshIntegration = true;
     enableFishIntegration = true;

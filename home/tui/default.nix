@@ -18,7 +18,7 @@
     ./sesh.nix
     ./starship.nix
     ./superfile.nix
-    ./television.nix
+    # ./television.nix
     ./tmux.nix
     ./zellij.nix
     ./zoxide.nix

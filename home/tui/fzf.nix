@@ -1,11 +1,12 @@
-{ pkgs-unstable
+{ pkgs
 , # , config
   ...
 }: {
   programs.fzf = {
     enable = true;
-    # enableZshIntegration = true; # We will set FZF_DEFAULT_OPTS manually
-    package = pkgs-unstable.fzf;
+    enableZshIntegration = true; # We will set FZF_DEFAULT_OPTS manually
+    enableFishIntegration = true;
+    package = pkgs.fzf;
     # defaultCommand = "fd --type f --hidden --follow --exclude .git";
     # defaultOptions = [
     # "--preview"
@@ -18,7 +19,7 @@
     # "rounded"
     # "--prompt=' ' --pointer='▶' --marker=''"
     # "--info=inline"
-    # "--bind 'ctrl-r:reload(${pkgs-unstable.fd}/bin/fd --type f --hidden --follow --exclude .git)'"
+    # "--bind 'ctrl-r:reload(${pkgs.fd}/bin/fd --type f --hidden --follow --exclude .git)'"
     # "--bind 'ctrl-/:change-preview-window(60%|30%|hidden|)'"
     # "--bind 'ctrl-a:select-all'"
     # "--bind 'ctrl-k:kill-line'"

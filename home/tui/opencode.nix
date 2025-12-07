@@ -1,7 +1,7 @@
-{ pkgs-unstable, ... }: {
+{ pkgs, ... }: {
   programs.opencode = {
     enable = true;
-    package = pkgs-unstable.opencode;
+    package = pkgs.opencode;
     enableMcpIntegration = true;
     settings = {
       "$schema" = "https://opencode.ai/config.json";

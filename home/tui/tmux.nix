@@ -1,6 +1,5 @@
 { lib
 , pkgs
-, pkgs-unstable
 , ...
 }: {
   xdg.configFile = {
@@ -41,7 +40,7 @@
       # pkgs.tmuxPlugins.tmux-sessionx
       # pkgs.tmuxPlugins.tmux-powerline
       pkgs.tmuxPlugins.tmux-floax
-      pkgs-unstable.tmuxPlugins.tmux-fzf
+      pkgs.tmuxPlugins.tmux-fzf
       # pkgs.tmuxPlugins.session-wizard
       pkgs.tmuxPlugins.resurrect
       pkgs.tmuxPlugins.prefix-highlight

@@ -22,6 +22,15 @@ in
       #!/usr/bin/env bash
       export PATH=${pkgs.lib.makeBinPath scriptPkgs}:$PATH
 
+      if [ ! -e "$1" ]; then
+        # If input is not a file/dir, just cat it (or echo if it's a string not in fs)
+        # However, fzf passes the string. If it's not a file, just echo it.
+        # But wait, if it's a long string, bat is nice.
+        # We can try to pipe it to bat as plain text.
+        echo "$1" | bat --language=txt --style=plain --color=always
+        exit 0
+      fi
+
       mime=$(file -bL --mime-type "$1")
       category=''${mime%%/*}
       kind=''${mime##*/}

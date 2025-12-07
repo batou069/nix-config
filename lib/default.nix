@@ -57,14 +57,14 @@ lib
             host
             system
             ;
-          pkgs-unstable = import inputs.nixpkgs-unstable {
+          pkgs-stable = import inputs.nixpkgs-stable {
             inherit system;
-            config = pkgs.config;
-            overlays = pkgs.overlays;
+            inherit (pkgs) config overlays;
+            # config = pkgs.config;
+            # overlays = pkgs.overlays;
           };
-          dotfiles = inputs.dotfiles-src;
-          libOverlay = helpers.libOverlay;
-          libPkg = helpers.libPkg;
+          inherit (inputs) dotfiles-src;
+          inherit (helpers) libOverlay libPkg libPkgs;
         };
       modules =
         modules
@@ -97,11 +97,7 @@ lib
       helpers = lib-helpers system;
     in
     inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = import inputs.nixpkgs-unstable {
-        inherit system;
-        config = pkgs.config;
-        overlays = pkgs.overlays;
-      };
+      inherit pkgs;
       extraSpecialArgs =
         extraSpecialArgs
         // {
@@ -110,14 +106,13 @@ lib
             system
             username
             ;
-          pkgs-unstable = import inputs.nixpkgs-unstable {
+          pkgs-stable = import inputs.nixpkgs-stable {
             inherit system;
             config = pkgs.config;
             overlays = pkgs.overlays;
           };
           dotfiles = inputs.dotfiles-src;
-          libOverlay = helpers.libOverlay;
-          libPkg = helpers.libPkg;
+          inherit (helpers) libOverlay libPkg libPkgs;
         };
       modules =
         [

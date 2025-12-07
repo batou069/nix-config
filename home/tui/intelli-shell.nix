@@ -1,7 +1,7 @@
-{ pkgs-unstable, ... }: {
+{ pkgs, ... }: {
   programs.intelli-shell = {
     enable = true;
-    package = pkgs-unstable.intelli-shell;
+    package = pkgs.intelli-shell;
     enableZshIntegration = true;
     enableNushellIntegration = true;
     enableFishIntegration = true;

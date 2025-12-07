@@ -1,7 +1,7 @@
-{ pkgs-unstable, ... }: {
+{ pkgs, ... }: {
   programs.carapace = {
     enable = true;
-    package = pkgs-unstable.carapace;
+    package = pkgs.carapace;
     enableZshIntegration = true;
     enableFishIntegration = true;
     enableNushellIntegration = true;

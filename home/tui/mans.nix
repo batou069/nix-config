@@ -1,8 +1,12 @@
 { ... }: {
-  programs.man.enable = true; # lib.mkDefault false;
+  programs.man = {
+    enable = false; # lib.mkDefault false;
+    # package = pkgs-stable.man;
+  };
 
   manual = {
-    html.enable = true;
-    manpages.enable = true;
+    html.enable = false;
+    manpages.enable = false;
+    json.enable = false;
   };
 }

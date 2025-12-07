@@ -1,9 +1,12 @@
 repos:
   - repo: local
     hooks:
-      - id: treefmt
-        name: treefmt
-        entry: treefmt --fail-on-change
+      - id: nix-fmt
+        name: nix fmt
+        entry: nix fmt
         language: system
         pass_filenames: false
+        # The file filter is optional since treefmt handles it,
+        # but keeping it prevents nix fmt from running on commits that touch only ignored files.
         files: \.(nix|sh|md|json|yaml|yml|py|lua|sql|fish)$
+        exclude: hypr-mount/scripts/RofiEmoji.sh
