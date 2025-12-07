@@ -1,4 +1,4 @@
-{ nixvim, ... }: {
+{ ... }: {
   programs.nixvim = {
     plugins = {
       yanky = {

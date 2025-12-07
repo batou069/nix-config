@@ -120,11 +120,10 @@ in
       enable = true;
       vt = 1;
       settings = {
-        default_session = {
-          user = username;
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet
-          --time --cmd Hyprland";
-        };
+      default_session = {
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        user = "greeter";
+      };
       };
     };
 

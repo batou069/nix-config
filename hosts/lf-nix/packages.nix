@@ -1,6 +1,8 @@
 { pkgs
-, pkgs-unstable
+, pkgs-stable
 , inputs
+, libPkg
+, libPkgs
 , ...
 }:
 let
@@ -36,7 +38,7 @@ in
 
       dreamchess
       lc0
-      pkgs-unstable.stockfish
+      stockfish
       pandoc
       emojify
       oath-toolkit
@@ -45,22 +47,16 @@ in
       catppuccin-plymouth
       cargo-seek
       # System Packages
+      gamescope
       alsa-utils
       isd # interactively interact with systemd
       baobab
       btrfs-progs
       clang
 
-      # MCP SERVERS
-
-      # mcp-server-fetch
-      # mcp-server-sequential-thinking
-      # context7-mcp
-      # mcp-server-filesystem
-      # mcp-server-memory
-      (callPackage ../../overlays/wrapped-mcp-server-memory.nix {
-        original-mcp-server-memory = inputs.nix-mcp-servers.packages.${pkgs.system}.mcp-server-memory;
-      })
+      # (callPackage ../../overlays/wrapped-mcp-server-memory.nix {
+      #   original-mcp-server-memory = (libPkgs inputs.nix-mcp-servers).mcp-server-memory;
+      # })
       # mcp-server-git
       # tavily-mcp
       # github-mcp-server
@@ -87,7 +83,7 @@ in
 
       # (mpv.override {scripts = [mpvScripts.mpris];}) # with tray
       # ranger
-      inputs.zen-browser.packages."${system}".default
+      (libPkg inputs.zen-browser)
       # Hyprland Stuff
       #ags
       # inputs.ags.packages.${pkgs.system}.default
@@ -120,7 +116,7 @@ in
       kdePackages.qt6ct
       kdePackages.qtwayland
       kdePackages.qtstyleplugin-kvantum # kvantum
-      rofi-wayland
+      rofi
       slurp
       swaynotificationcenter
       unzip
@@ -173,14 +169,7 @@ in
 
       seahorse
       brightnessctl
-      # zsh-f-sy-h
-      # zsh-forgit
-      # zsh-autopair
-      # zsh-you-should-use
-      # zsh-history-to-fish
-      # End Dev Stuff
-    ])
-    ++ (with pkgs-unstable; [
+
       nixfmt
       nixd
       bc
@@ -198,15 +187,17 @@ in
       pipx
       lm_sensors # Used For Getting Hardware Temps
       sof-firmware
-      inputs.hyprviz.packages.${pkgs.system}.default
-      inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
+      (libPkg inputs.hyprviz)
+      (libPkg inputs.rose-pine-hyprcursor)
       hyprshade
       antigravity
+    ])
+    ++ (with pkgs-stable; [
     ])
     ++ [
       r-with-packages # Add the R environment
     ]
-    ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
+    ++ (with libPkgs inputs.nix-ai-tools; [
       qwen-code
       openspec
       openskills

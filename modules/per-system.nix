@@ -6,7 +6,7 @@
     }:
     let
       pkgs-unfree = import inputs.nixpkgs {
-        system = pkgs.system;
+        system = pkgs.stdenv.hostPlatform.system;
         config.allowUnfree = true;
       };
     in

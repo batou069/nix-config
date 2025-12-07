@@ -1,4 +1,4 @@
-{ pkgs-unstable, ... }: {
+{ pkgs, ... }: {
   programs.ghostty = {
     enable = true;
     systemd.enable = true;
@@ -7,7 +7,7 @@
     enableFishIntegration = true;
     installBatSyntax = true;
     installVimSyntax = true;
-    package = pkgs-unstable.ghostty;
+    package = pkgs.ghostty;
     settings = {
       font-family = "Maple Mono Italic SemiBold";
       font-thicken = true;

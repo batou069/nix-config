@@ -1,11 +1,11 @@
 { config
 , pkgs
-, pkgs-unstable
 , host
 , username
 , options
 , inputs
 , lib
+, libPkgs
 , ...
 }:
 let
@@ -43,6 +43,8 @@ in
     ../../modules/local-hardware-clock.nix
     # "${inputs.nix-mineral}/nix-mineral.nix"
   ];
+
+  drivers.intel.enable = true;
 
   # nixpkgs.pkgs is set via readOnlyPkgs in lib/default.nix
   # The pkgs is pre-configured with allowUnfree and overlays there
@@ -199,9 +201,11 @@ in
       authorizedKeysFiles = [ config.sops.secrets."ssh_keys/github".path ];
     };
     logind = {
-      lidSwitch = "sleep";
-      lidSwitchExternalPower = "ignore";
-      lidSwitchDocked = "ignore";
+      settings.Login = {
+        HandleLidSwitch = "sleep";
+        HandleLidSwitchExternalPower = "ignore";
+        HandleLidSwitchDocked = "ignore";
+      };
     };
     power-profiles-daemon.enable = false;
     fprintd.enable = false;
@@ -267,10 +271,11 @@ in
 
     greetd = {
       enable = true;
-      vt = 1;
+      # vt = 1;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --sessions /run/current-system/sw/share/wayland-sessions";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+          user = "greeter";
         };
       };
     };
@@ -495,12 +500,9 @@ in
       NIXOS_OZONE_WL = "1"; # Enable Wayland Ozone platform for Electron apps
       NIXOS_WAYLAND = "1"; # Force Wayland
       ELECTRON_OZONE_PLATFORM_HINT = "wayland"; # Or "AUTO"
+      QT_QPA_PLATFORM_THEME = "qt6ct";
       # ELECTRON_ENABLE_WAYLAND = "1";
       NH_FLAKE = "${config.users.users.lf.home}/nix";
-      ZSH_AI_COMMANDS_OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
-      OPENAI_API_KEY = config.sops.secrets."api_keys/openai".path;
-      GEMINI_API_KEY = config.sops.secrets."api_keys/gemini".path;
-      ANTHROPIC_API_KEY = config.sops.secrets."api_keys/anthropic".path;
       INFLUX_TOKEN = config.sops.secrets."influxdb".path;
     };
     variables = {
@@ -513,27 +515,14 @@ in
 
   programs = {
     hyprland = {
-      # let
-      # Create a pristine pkgs set without any overlays to avoid conflicts from NUR.
-      # pkgs-pristine = import inputs.nixpkgs {
-      # system = pkgs.system;
-      # config.allowUnfree = true; # Keep this for consistency
-      # };
-      # Define plugins in a let block for clarity and robustness
-      # plugin-pkgs = with inputs; [
-      # hypr-dynamic-cursors.packages.${pkgs.system}.hypr-dynamic-cursors
-      # hyprland-plugins.packages.${pkgs.system}.hyprbars
-      # hyprland-plugins.packages.${pkgs.system}.hyprscrolling
-      # hyprland-plugins.packages.${pkgs.system}.hyprexpo
-      # hyprland-plugins.packages.${pkgs.system}.xtra-dispatchers
-      # hy3.packages.${pkgs.system}.hy3
-      # ];
-      # in {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      package = (libPkgs inputs.hyprland).hyprland;
       xwayland.enable = true;
-      withUWSM = false;
-      # plugins = plugin-pkgs;
+      withUWSM = true;
+      extraConfig = ''
+        exec-once = wl-paste --type text --watch cliphist store
+        exec-once = wl-paste --type image --watch cliphist store
+      '';
     };
     # Zsh configuration
     zsh = {
@@ -571,7 +560,7 @@ in
       victor-mono
       nerd-fonts.im-writing
       nerd-fonts.fantasque-sans-mono
-      pkgs-unstable.maple-mono.NF
+      maple-mono.NF
       recursive
       cascadia-code
 
@@ -584,7 +573,7 @@ in
 
       # Noto Fonts
       noto-fonts
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
       noto-fonts-monochrome-emoji
@@ -620,10 +609,11 @@ in
     autoEnable = true;
     # targets.hyprland.enable = false;
     enableReleaseChecks = true;
-    base16Scheme = ../../assets/base16_themes/catppuccin-mocha.yaml;
+    base16Scheme = ../../assets/base16_themes/catppuccin-frappe.yaml;
     # image = "/home/lf/Pictures/wallpapers/City-Night.png";
 
     overlays.enable = true;
+    targets.qt.platform = lib.mkForce "qtct";
     homeManagerIntegration = {
       autoImport = true;
       followSystem = true;

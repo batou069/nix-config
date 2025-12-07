@@ -1,7 +1,7 @@
-{ pkgs-unstable, ... }: {
+{ pkgs, ... }: {
   programs.nix-search-tv = {
     enable = true;
-    package = pkgs-unstable.nix-search-tv;
+    package = pkgs.nix-search-tv;
     enableTelevisionIntegration = true;
   };
 }

@@ -11,7 +11,7 @@
   # Usage: libPkg inputs.claudia
   libPkg = input:
     input.packages.${system}.default
-      or (throw "Flake has no packages.${system}.default");
+      or (throw "Flake (keys: ${toString (builtins.attrNames input)}) has no packages.${system}.default");
 
   # Get all packages for the current system from a flake input
   # Usage: libPkgs inputs.firefox-addons

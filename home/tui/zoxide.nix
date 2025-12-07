@@ -1,7 +1,7 @@
-{ pkgs-unstable, ... }: {
+{ pkgs, ... }: {
   programs.zoxide = {
     enable = true;
-    package = pkgs-unstable.zoxide;
+    package = pkgs.zoxide;
     enableZshIntegration = true;
     enableFishIntegration = true;
     enableNushellIntegration = true;

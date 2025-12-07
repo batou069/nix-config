@@ -1,10 +1,15 @@
-{ pkgs, ... }: {
+{ pkgs
+, config
+, lib
+, ...
+}: {
   programs.aliae = {
     enable = true;
     enableZshIntegration = true;
     enableFishIntegration = true;
     enableBashIntegration = true;
     enableNushellIntegration = true;
+
     settings = {
       alias = [
         # --- ALIASES (Simple) ---
@@ -122,6 +127,16 @@
           name = "mans";
           value = "man -k . | fzf --border-label='Man Pages' | awk '{print $1}' | xargs -r man";
         }
+        {
+          name = "s";
+          value = "sesh connect $(sesh list --icons | fzf --ansi)";
+          "if" = "match .Shell \"(bash|zsh)\"";
+        }
+        {
+          name = "s";
+          value = "sesh connect (sesh list --icons | fzf --ansi)";
+          "if" = "match .Shell \"(fish|nushell)\"";
+        }
         # {
         #   name = "gv";
         #   type = "git";
@@ -218,6 +233,26 @@
 
         # --- Flake Inspection Functions ---
         # Usage: flake-show github:owner/repo
+        {
+          name = "flake-browse";
+          type = "function";
+          "if" = "match .Shell \"(zsh|bash)\"";
+          value = ''
+                 local flake="$1"
+                 if [[ -z "$flake" ]]; then
+                   echo "Usage: flake-browse <flake-url>"
+                   return 1
+                 fi
+                 local selected_pkg
+                 selected_pkg=$(nix eval "$flake#packages.x86_64-linux" --apply 'x: builtins.attrNames x' 2>/dev/null
+            tr -d '[]" ' | tr ' ' '\n' | fzf --prompt="Browse packages in $flake > " --preview="nix search $flake {}"
+                 if [[ -n "$selected_pkg" ]]; then
+                   echo "Selected: $selected_pkg"
+                   # Optional: uncomment to immediately build the selected package
+                   # nix build "$flake#$selected_pkg"
+                 fi
+          '';
+        }
         {
           name = "flake-show";
           type = "function";
@@ -391,8 +426,7 @@
         }
         {
           name = "FZF_DEFAULT_OPTS";
-          delimiter = " ";
-          value = [
+          value = lib.concatStringsSep " " [
             # --- PREVIEW ---
             "--preview '~/.local/bin/lessfilter.sh {}'"
             "--preview-window 'right:60%:wrap'"
@@ -400,12 +434,12 @@
             "--bind 'ctrl-/:change-preview-window(60%|30%|hidden|)'"
 
             # --- APPEARANCE ---
-            "--height=50%"
+            "--height=70%"
             "--layout=reverse"
             "--border=rounded"
-            "--border-label='╢ FZF ╟'"
+            "--border-label='   󱢃 󰴂 '"
             "--prompt=' '"
-            "--pointer='▶'"
+            "--pointer='󰈑'"
             "--marker=''"
             "--info=inline"
             "--ghost='Search ...'"
@@ -414,7 +448,7 @@
             # --- MARGINS ---
             # Note: Quotes are tricky here, we use simple strings
             "--padding='10%,0%,0%,0%'"
-            "--margin='10%,30%,0%,0%'"
+            "--margin='10%,10%,0%,0%'" # was 10 30 0 0
 
             # --- BEHAVIOR ---
             "--multi"
@@ -432,49 +466,181 @@
             "--bind 'ctrl-y:execute-silent(echo {+} | wl-copy)'"
           ];
         }
-        # Secrets (Using the same shell command substitution from your config)
-        # { name = "OPENAI_API_KEY"; value = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')"; }
+        # --- Secrets ---
+        # POSIX Shells (bash, zsh)
         # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
+        #   name = "OPENAI_API_KEY";
+        #   value = "$(cat ${config.sops.secrets."api_keys/openai".path} 2>/dev/null || echo '')";
+        # }
+        # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
         #   name = "GEMINI_API_KEY";
-        #   value = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
+        #   value = "$(cat ${config.sops.secrets."api_keys/gemini".path} 2>/dev/null || echo '')";
         # }
         # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
         #   name = "GOOGLE_API_KEY";
-        #   value = "$(cat /run/secrets/api_keys/gemini 2>/dev/null || echo '')";
+        #   value = "$(cat ${config.sops.secrets."api_keys/gemini".path} 2>/dev/null || echo '')";
         # }
         # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
         #   name = "ZSH_AI_COMMANDS_OPENAI_API_KEY";
-        #   value = "$(cat /run/secrets/api_keys/openai 2>/dev/null || echo '')";
+        #   value = "$(cat ${config.sops.secrets."api_keys/openai".path} 2>/dev/null || echo '')";
         # }
         # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
         #   name = "ANTHROPIC_API_KEY";
-        #   value = "$(cat /run/secrets/api_keys/anthropic 2>/dev/null || echo '')";
+        #   value = "$(cat ${config.sops.secrets."api_keys/anthropic".path} 2>/dev/null || echo '')";
         # }
         # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
         #   name = "BW_SESSION";
-        #   value = "$(cat /run/secrets/bitwarden 2>/dev/null || echo '')";
+        #   value = "$(cat ${config.sops.secrets.bitwarden.path} 2>/dev/null || echo '')";
         # }
         # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
         #   name = "INFLUX_TOKEN";
-        #   value = "$(cat /run/secrets/influxdb 2>/dev/null || echo '')";
+        #   value = "$(cat ${config.sops.secrets.influxdb.path} 2>/dev/null || echo '')";
         # }
-        # # Keys for MCP Servers
         # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
         #   name = "TAVILY_API_KEY";
-        #   value = "$(cat /run/secrets/api_keys/tavily 2>/dev/null || echo '')";
+        #   value = "$(cat ${config.sops.secrets."api_keys/tavily".path} 2>/dev/null || echo '')";
         # }
         # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
         #   name = "BRAVE_API_KEY";
-        #   value = "$(cat /run/secrets/api_keys/brave_search 2>/dev/null || echo '')";
+        #   value = "$(cat ${config.sops.secrets."api_keys/brave_search".path} 2>/dev/null || echo '')";
         # }
         # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
         #   name = "GITHUB_TOKEN";
-        #   value = "$(cat /run/secrets/api_keys/github_mcp 2>/dev/null || echo '')";
+        #   value = "$(cat ${config.sops.secrets."api_keys/github_mcp".path} 2>/dev/null || echo '')";
         # }
+        # {
+        #   "if" = "match .Shell \"bash\" \"zsh\"";
+        #   name = "GITHUB_PERSONAL_ACCESS_TOKEN";
+        #   value = "$(cat ${config.sops.secrets.github_pat.path} 2>/dev/null || echo '')";
+        # }
+
+        # Fish Shell
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "OPENAI_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/openai".path} 2>/dev/null; or echo '')";
+        }
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "GEMINI_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/gemini".path} 2>/dev/null; or echo '')";
+        }
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "GOOGLE_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/gemini".path} 2>/dev/null; or echo '')";
+        }
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "ZSH_AI_COMMANDS_OPENAI_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/openai".path} 2>/dev/null; or echo '')";
+        }
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "ANTHROPIC_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/anthropic".path} 2>/dev/null; or echo '')";
+        }
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "BW_SESSION";
+          value = "(cat ${config.sops.secrets.bitwarden.path} 2>/dev/null; or echo '')";
+        }
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "INFLUX_TOKEN";
+          value = "(cat ${config.sops.secrets.influxdb.path} 2>/dev/null; or echo '')";
+        }
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "TAVILY_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/tavily".path} 2>/dev/null; or echo '')";
+        }
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "BRAVE_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/brave_search".path} 2>/dev/null; or echo '')";
+        }
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "GITHUB_TOKEN";
+          value = "(cat ${config.sops.secrets."api_keys/github_mcp".path} 2>/dev/null; or echo '')";
+        }
+        {
+          "if" = "match .Shell \"fish\"";
+          name = "GITHUB_PERSONAL_ACCESS_TOKEN";
+          value = "(cat ${config.sops.secrets.github_pat.path} 2>/dev/null; or echo '')";
+        }
+
+        # Nushell
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "OPENAI_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/openai".path} | from ssv | get column1)";
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "GEMINI_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/gemini".path} | from ssv | get column1)";
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "GOOGLE_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/gemini".path} | from ssv | get column1)";
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "ZSH_AI_COMMANDS_OPENAI_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/openai".path} | from ssv | get column1)";
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "ANTHROPIC_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/anthropic".path} | from ssv | get column1)";
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "BW_SESSION";
+          value = "(cat ${config.sops.secrets.bitwarden.path} | from ssv | get column1)";
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "INFLUX_TOKEN";
+          value = "(cat ${config.sops.secrets.influxdb.path} | from ssv | get column1)";
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "TAVILY_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/tavily".path} | from ssv | get column1)";
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "BRAVE_API_KEY";
+          value = "(cat ${config.sops.secrets."api_keys/brave_search".path} | from ssv | get column1)";
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "GITHUB_TOKEN";
+          value = "(cat ${config.sops.secrets."api_keys/github_mcp".path} | from ssv | get column1)";
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          name = "GITHUB_PERSONAL_ACCESS_TOKEN";
+          value = "(cat ${config.sops.secrets.github_pat.path} | from ssv | get column1)";
+        }
 
         # Theming and shell appearance
         # {
-        #   name = "BASE16_SHELL";
+        # name = "BASE16_SHELL";
         #   value = "$HOME/.config/base16-shell";
         # }
         # {
@@ -524,7 +690,7 @@
         {
           "if" = "match .Shell \"zsh\"";
           value = ''
-            zmodload zsh/zprof
+            # zmodload zsh/zprof
 
             # --- Directory Hashes (Specific to Zsh) ---
             hash -d nhl={{ .Home }}/nix/hosts/lf-nix
@@ -562,7 +728,7 @@
             # --- FZF Tab Styles ---
             zstyle ':fzf-tab:*' use-fzf-default-opts yes
             zstyle ':fzf-tab:complete:*:options' fzf-preview
-            zstyle ':fzf-tab:complete:kill:*' fzf-preview 'htop -p {1}'
+
 
             # --- Global Aliases (Zsh Specific) ---
             # Aliae standard aliases are command-position only.
@@ -584,7 +750,7 @@
             # hash -d n={{ .Home }}/nix
 
 
-            zprof
+            # zprof
           '';
         }
         {

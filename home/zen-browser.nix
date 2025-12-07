@@ -1,5 +1,5 @@
 { inputs
-, pkgs
+, libPkg
 , ...
 }: {
   imports = [
@@ -64,7 +64,7 @@
   # programs.zen-browser.profiles.default.spaces.work.position = 2;
 
   programs.zen-browser.profiles.default.spacesForce = true;
-  programs.zen-browser.package = inputs.zen-browser.packages.${pkgs.system}.default;
+  programs.zen-browser.package = libPkg inputs.zen-browser;
   # Policies
   programs.zen-browser.policies =
     let

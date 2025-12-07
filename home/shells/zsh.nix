@@ -5,6 +5,29 @@
     enableCompletion = true;
     historySubstringSearch.enable = true;
 
+    envExtra = ''
+      _export_secret() {
+        local val="$(cat "$1" 2>/dev/null)"
+        if [ -n "$val" ]; then
+          export "$2"="$val"
+        fi
+      }
+
+      _export_secret "${config.sops.secrets."api_keys/openai".path}" "OPENAI_API_KEY"
+      _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GEMINI_API_KEY"
+      _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GOOGLE_API_KEY"
+      _export_secret "${config.sops.secrets."api_keys/openai".path}" "ZSH_AI_COMMANDS_OPENAI_API_KEY"
+      _export_secret "${config.sops.secrets."api_keys/anthropic".path}" "ANTHROPIC_API_KEY"
+      _export_secret "${config.sops.secrets.bitwarden.path}" "BW_SESSION"
+      _export_secret "${config.sops.secrets.influxdb.path}" "INFLUX_TOKEN"
+      _export_secret "${config.sops.secrets."api_keys/tavily".path}" "TAVILY_API_KEY"
+      _export_secret "${config.sops.secrets."api_keys/brave_search".path}" "BRAVE_API_KEY"
+      _export_secret "${config.sops.secrets."api_keys/github_mcp".path}" "GITHUB_TOKEN"
+      _export_secret "${config.sops.secrets.github_pat.path}" "GITHUB_PERSONAL_ACCESS_TOKEN"
+
+      unset -f _export_secret
+    '';
+
     completionInit = ''
       autoload -U compinit && compinit
       zstyle ':completion:*' menu select
@@ -13,11 +36,7 @@
     autosuggestion = {
       enable = true;
       highlight = "fg=#8b8e9fff,italic";
-      strategy = [
-        "completion"
-        "match_prev_cmd"
-        "history"
-      ];
+      strategy = [ "completion" "match_prev_cmd" "history" ];
     };
     zsh-abbr = {
       enable = true;
@@ -42,15 +61,7 @@
       size = 100000;
       save = 100000;
       extended = true;
-      ignorePatterns = [
-        "rm *"
-        "pkill *"
-        "shutdown"
-        "reboot"
-        "ls *"
-        "exit"
-        "clear"
-      ];
+      ignorePatterns = [ "rm *" "pkill *" "shutdown" "reboot" "ls *" "exit" "clear" ];
     };
     autocd = true;
     defaultKeymap = "emacs";

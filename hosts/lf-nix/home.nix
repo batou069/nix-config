@@ -1,7 +1,11 @@
 # This is a NixOS module that configures the home-manager service for a specific user.
 { username
 , inputs
-, pkgs-unstable
+, pkgs
+, libPkg
+, libPkgs
+, libOverlay
+, pkgs-stable
 , ...
 }: {
   # Use the NixOS pkgs (which has our overlays applied)
@@ -9,7 +13,7 @@
   home-manager.useUserPackages = true;
 
   # Pass inputs to Home Manager modules
-  home-manager.extraSpecialArgs = { inherit inputs pkgs-unstable; };
+  home-manager.extraSpecialArgs = { inherit inputs pkgs libPkg libPkgs libOverlay pkgs-stable; };
 
   home-manager.users.${username} = {
     # This is where we import all the modules for this user's Home Manager configuration.

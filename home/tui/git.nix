@@ -1,6 +1,5 @@
 { pkgs
 , lib
-, pkgs-unstable
 , ...
 }:
 let
@@ -14,7 +13,7 @@ in
   # Configure Git
   programs.git = {
     enable = true;
-    package = pkgs-unstable.git;
+    package = pkgs.git;
 
     # We merge the base settings with the conditional delta config.
     settings = lib.mkMerge [

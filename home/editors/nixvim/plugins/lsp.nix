@@ -273,7 +273,7 @@
           # ts_ls.enable = true;
           dockerls = {
             enable = true;
-            package = pkgs.nodePackages.dockerfile-language-server-nodejs;
+            package = pkgs.dockerfile-language-server;
           };
           ruff = {
             enable = true;

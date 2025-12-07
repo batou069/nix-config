@@ -1,9 +1,9 @@
-{ pkgs-unstable, ... }: {
+{ pkgs, ... }: {
   programs.eza = {
     enable = true;
-    package = pkgs-unstable.eza;
+    package = pkgs.eza;
     enableFishIntegration = true;
-    enableNushellIntegration = false;
+    enableNushellIntegration = true;
     enableZshIntegration = true;
     enableBashIntegration = true;
     colors = "always";
