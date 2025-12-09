@@ -1,7 +1,6 @@
-{ config
-, ...
-}: {
+{ config, ... }: {
   programs.mbsync.enable = true;
+  programs.msmtp.enable = true;
   programs.notmuch.enable = true;
   programs.astroid.enable = true;
 
@@ -34,11 +33,16 @@
         patterns = [ "*" ]; # Sync all folders
       };
 
+      msmtp.enable = true;
+
       notmuch.enable = true;
-      astroid.enable = true;
+
+      astroid = {
+        enable = true;
+        sendMailCommand = "msmtp -t";
+      };
     };
   };
-
   # Set default application for email links
   xdg.mimeApps.defaultApplications = {
     "x-scheme-handler/mailto" = "astroid.desktop";

@@ -10,6 +10,10 @@ let
   mcp-pkgs = libPkgs inputs.nix-mcp-servers;
   # natsukium's mcp-servers-nix - has serena and others
   mcp-natsukium = libPkgs inputs.mcp-servers-nix;
+
+  serena-with-tk = mcp-natsukium.serena.overrideAttrs (old: {
+    propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ pkgs.python3Packages.tkinter ];
+  });
 in
 {
   programs.mcp = {
@@ -64,7 +68,7 @@ in
         command = "bash";
         args = [
           "-c"
-          "export OPENAI_API_KEY=$(cat ${config.sops.secrets."api_keys/openai".path}) && export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets."api_keys/anthropic".path}) && ${mcp-natsukium.serena}/bin/serena start-mcp-server --project ${config.home.homeDirectory}/nix"
+          "export OPENAI_API_KEY=$(cat ${config.sops.secrets."api_keys/openai".path}) && export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets."api_keys/anthropic".path}) && ${serena-with-tk}/bin/serena start-mcp-server --project ${config.home.homeDirectory}/nix"
         ];
       };
 

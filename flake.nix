@@ -110,7 +110,10 @@
 
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake/beta";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
     };
     # zen-browser = {
     #   url = "git+https://github.com/benjaminkitt/zen-browser-flake";
@@ -144,10 +147,6 @@
     mcp-hub-nvim.url = "git+https://github.com/ravitemer/mcphub.nvim";
 
     #plugins list
-    avante-nvim = {
-      url = "git+https://github.com/yetone/avante.nvim";
-      flake = false;
-    };
 
     minuet-ai-nvim = {
       url = "git+https://github.com/milanglacier/minuet-ai.nvim";
@@ -300,24 +299,26 @@
           hosts = import ./lib/hosts.nix { inherit inputs; };
         in
         {
-          nixosConfigurations = lib.mapAttrs'
-            (name: config:
-              lib.nameValuePair name (lib.buildNixosSystem (config
-                // {
-                host = name;
-                username = config.username;
-                inherit inputs;
-              })))
-            hosts.nixos;
+          nixosConfigurations =
+            lib.mapAttrs'
+              (name: config:
+                lib.nameValuePair name (lib.buildNixosSystem (config
+                  // {
+                  host = name;
+                  username = config.username;
+                  inherit inputs;
+                })))
+              hosts.nixos;
 
-          homeConfigurations = lib.mapAttrs'
-            (name: config:
-              lib.nameValuePair name (lib.buildHomeConfiguration (config
-                // {
-                username = name;
-                inherit inputs;
-              })))
-            hosts.home;
+          homeConfigurations =
+            lib.mapAttrs'
+              (name: config:
+                lib.nameValuePair name (lib.buildHomeConfiguration (config
+                  // {
+                  username = name;
+                  inherit inputs;
+                })))
+              hosts.home;
         };
     };
 }

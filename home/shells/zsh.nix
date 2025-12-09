@@ -1,5 +1,11 @@
 { config, ... }: {
   imports = [ ../lessfilter.nix ];
+
+  programs.sheldon = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -16,6 +22,7 @@
       _export_secret "${config.sops.secrets."api_keys/openai".path}" "OPENAI_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GEMINI_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GOOGLE_API_KEY"
+      _export_secret "${config.sops.secrets."api_keys/openrouter".path}" "OPENROUTER_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/openai".path}" "ZSH_AI_COMMANDS_OPENAI_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/anthropic".path}" "ANTHROPIC_API_KEY"
       _export_secret "${config.sops.secrets.bitwarden.path}" "BW_SESSION"
@@ -24,6 +31,8 @@
       _export_secret "${config.sops.secrets."api_keys/brave_search".path}" "BRAVE_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/github_mcp".path}" "GITHUB_TOKEN"
       _export_secret "${config.sops.secrets.github_pat.path}" "GITHUB_PERSONAL_ACCESS_TOKEN"
+
+      export GEMINI_DEFAULT_AUTH_TYPE="gemini-api-key"
 
       unset -f _export_secret
     '';

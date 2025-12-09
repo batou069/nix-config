@@ -29,6 +29,9 @@ in
 {
   environment.systemPackages =
     (with pkgs; [
+      chafa
+      viu
+      ueberzugpp
       overskride
       ksnip
       ytmdl
@@ -47,7 +50,6 @@ in
       catppuccin-plymouth
       cargo-seek
       # System Packages
-      gamescope
       alsa-utils
       isd # interactively interact with systemd
       baobab
@@ -214,6 +216,10 @@ in
     ]);
 
   programs = {
+    gamescope = {
+      enable = true;
+      capSysNice = true;
+    };
     zoom-us.enable = true;
     # mangowc.enable = true;
 

@@ -18,7 +18,8 @@
           };
         };
       };
-      lsp-status.enable = true;
+
+      lsp-status.enable = false;
       lspsaga = {
         enable = true;
         settings = {
@@ -248,21 +249,21 @@
 
         servers = {
           nixd.enable = true;
-          nil_ls = {
-            enable = true;
-            settings = {
-              nil = {
-                formatting = {
-                  command = "alejandra";
-                };
-                diagnostics.autoArchive = true;
-                nix = {
-                  pkgs = "github:NixOS/nixpkgs/nixos-25.05";
-                  "pkgs-unstable" = "github:NixOS/nixpkgs/nixos-unstable";
-                };
-              };
-            };
-          };
+          # nil_ls = {
+          #   enable = true;
+          #   settings = {
+          #     nil = {
+          #       formatting = {
+          #         command = "alejandra";
+          #       };
+          #       diagnostics.autoArchive = true;
+          #       nix = {
+          #         pkgs = "github:NixOS/nixpkgs/nixos-25.05";
+          #         "pkgs-unstable" = "github:NixOS/nixpkgs/nixos-unstable";
+          #       };
+          #     };
+          #   };
+          # };
           gopls.enable = true;
           clangd.enable = true;
           bashls = {

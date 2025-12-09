@@ -35,10 +35,10 @@
           menu.draw.treesitter = { };
           menu.auto_show = false;
           ghost_text.show_with_menu = false;
-        };
-        documentation = {
-          auto_show = true;
-          auto_show_delay_ms = 750;
+          documentation = {
+            auto_show = true;
+            auto_show_delay_ms = 750;
+          };
         };
 
         sources = {

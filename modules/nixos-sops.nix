@@ -13,6 +13,7 @@
       "api_keys/openai" = { };
       "api_keys/gemini" = { };
       "api_keys/anthropic" = { };
+      "api_keys/openrouter" = { };
       "influxdb" = { };
       "ssh_keys/github" = { };
     };

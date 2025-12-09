@@ -29,7 +29,7 @@
       // {
         none-ls-nvim = libVimPlugin prev inputs.none-ls-nvim "none-ls.nvim";
         blink-cmp = libVimPlugin prev inputs.blink-cmp "blink.cmp";
-        avante-nvim = libVimPlugin prev inputs.avante-nvim "avante.nvim";
+
         minuet-ai-nvim = libVimPlugin prev inputs.minuet-ai-nvim "minuet-ai.nvim";
         vim-translator = libVimPlugin prev inputs.vim-translator "vim-translator";
         nui-nvim = libVimPlugin prev inputs.nui-nvim "nui.nvim";

@@ -1,32 +1,32 @@
-{ lib
-, pkgs
-, pkgs-unstable
-, ...
-}: {
+{ pkgs, ... }: {
   programs.nixvim.plugins = {
-    sidekick = {
-      enable = false;
-      package = pkgs-unstable.vimPlugins.sidekick-nvim;
+    codecompanion = {
+      enable = true;
+    };
+    copilot-chat = {
+      enable = true;
     };
     avante = {
-      enable = false;
+      enable = true;
       # Use the package from flake input (via overlay)
       package = pkgs.vimPlugins.avante-nvim;
       settings = {
         provider = "gemini";
         providers = {
           gemini = {
-            model = "gemini-pro";
+            model = "gemini-2.0-flash-exp";
             endpoint = "https://generativelanguage.googleapis.com/v1beta";
             # You'll need to set the GOOGLE_API_KEY environment variable
-            api_key = lib.nixvim.mkRaw "vim.env.GOOGLE_API_KEY";
+            api_key_name = "GEMINI_API_KEY";
           };
         };
       };
     };
+    sidekick = {
+      enable = false;
+      package = pkgs.vimPlugins.sidekick-nvim;
+    };
     # opencode = {
-    # enable = true;
-    # package = pkgs-unstable.vimPlugins.opencode-nvim;
     # settings = {
     #   # Assuming the zen opencode api is compatible with the openai format
     #   # and you have a local server running.
