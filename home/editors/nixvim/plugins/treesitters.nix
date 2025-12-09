@@ -82,7 +82,6 @@
           javascript
           json
           lua
-          nix
           python
           markdown
           markdown_inline
@@ -91,7 +90,6 @@
           toml
           typescript
           yaml
-          python
           hyprlang
         ];
         settings = {

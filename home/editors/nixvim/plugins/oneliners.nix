@@ -30,7 +30,7 @@
       comment.enable = true;
       comment-box.enable = true;
       notify.enable = true;
-      barbecue.enable = true;
+      barbecue.enable = false; # Conflicts with lspsaga winbar & causes navic errors
       leap = {
         enable = true;
         # defaultMappings = false;
@@ -58,7 +58,17 @@
       flash.enable = true;
       noice = {
         enable = true;
-        settings.presets.lsp_doc_border = true;
+        settings = {
+          presets = {
+            bottom_search = true;
+            command_palette = true;
+            long_message_to_split = true;
+            lsp_doc_border = true;
+          };
+          cmdline = {
+            view = "cmdline";
+          };
+        };
       };
     };
   };

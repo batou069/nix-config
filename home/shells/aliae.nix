@@ -164,6 +164,10 @@
           name = "add_secret";
           value = "nix-shell -p sops --run \"SOPS_AGE_KEY_FILE=secrets/age-key.txt sops secrets/secrets.yaml\"";
         }
+        {
+          name = "qrify";
+          value = "{{ .Home }}/nix/home/scripts/qrify.sh";
+        }
 
         # --- FUNCTIONS (Type = "function") ---
         {

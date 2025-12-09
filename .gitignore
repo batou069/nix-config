@@ -5,3 +5,4 @@ secrects/age-key.txt
 .null-ls_*
 ./hosts/default/
 .direnv/
+hypr-mount/

@@ -12,6 +12,7 @@
       "api_keys/openai" = { };
       "api_keys/anthropic" = { };
       "api_keys/gemini" = { };
+      "api_keys/openrouter" = { };
       "bitwarden" = { };
       "api_keys/tavily" = { };
       "api_keys/brave_search" = { };

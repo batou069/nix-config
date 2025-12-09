@@ -6,83 +6,86 @@
 , ...
 }:
 let
-  pythonEnv312 = pkgs.python312.withPackages (
-    ps:
-      with ps; [
-        pnglatex
-        plotly
-        kaleido
-        pyperclip
-        flask
-        black
-        plotly
-        isort
-        alive-progress
-        # spacy
-        # spacy-models.en_core_web_sm
-        nltk
-        huggingface-hub
-        torchvision
-        torchaudio
-        diffusers
-        transformers
-        tokenizers
-        accelerate
-        imageio
-        imageio-ffmpeg
-        easydict
-        ftfy
-        addict
-        beautifulsoup4
-        tensorboard
-        torchvision
-        deepface
-        facenet-pytorch
-        torch
-        tsfresh
-        optuna
-        pyquery
-        imbalanced-learn
-        scipy
-        requests
-        rich
-        polars
-        pandas
-        numpy
-        matplotlib
-        pymilvus
-        #     scann
-        pygame
-        jupyterlab
-        jupyter
-        pillow
-        # opencv-python
-        tqdm
-        plotly
-        pytest
-        imageio
-        seaborn
-        python-dotenv
-        regex
-        tabulate
-        ipykernel
-        aiofiles
-        pip
-        scikit-learn
-        scikit-image
-        debugpy
-        sqlalchemy
-        pkgs.pyprland
-        google-auth-oauthlib
-        google-auth-httplib2
-        google-api-python-client
-        # llama-index
-        # chromadb
-        mcp
-        httpx
-        fastmcp
-      ]
-  );
+  pythonEnv312 = pkgs.python312.withPackages (ps:
+    with ps; [
+      tkinter
+      pnglatex
+      plotly
+      kaleido
+      pyperclip
+      flask
+      black
+      plotly
+      isort
+      alive-progress
+      # spacy
+      # spacy-models.en_core_web_sm
+      nltk
+      huggingface-hub
+      torchvision
+      torchaudio
+      diffusers
+      transformers
+      tokenizers
+      accelerate
+      imageio
+      imageio-ffmpeg
+      easydict
+      ftfy
+      addict
+      beautifulsoup4
+      tensorboard
+      torchvision
+      deepface
+      facenet-pytorch
+      torch
+      tsfresh
+      optuna
+      pyquery
+      imbalanced-learn
+      scipy
+      requests
+      rich
+      polars
+      pandas
+      numpy
+      matplotlib
+      pymilvus
+      #     scann
+      pygame
+      jupyterlab
+      jupyter
+      pillow
+      # opencv-python
+      tqdm
+      plotly
+      pytest
+      imageio
+      seaborn
+      python-dotenv
+      regex
+      tabulate
+      ipykernel
+      aiofiles
+      pip
+      scikit-learn
+      scikit-image
+      debugpy
+      sqlalchemy
+      pkgs.pyprland
+      google-auth-oauthlib
+      google-auth-httplib2
+      google-api-python-client
+      # llama-index
+      # chromadb
+      mcp
+      httpx
+      fastmcp
+      pnglatex
+      plotly
+      kaleido
+      pyperclip
+    ]);
   customWaybar = pkgs.waybar.overrideAttrs (oldAttrs: {
     mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
   });
@@ -107,9 +110,7 @@ in
 
   programs = {
     # Tell the unstable Home Manager module which package to use for activation.
-    home-manager = {
-      package = pkgs.home-manager;
-    };
+    home-manager = { package = pkgs.home-manager; };
 
     # Centralized MCP Server Configuration
 
@@ -125,9 +126,7 @@ in
     direnv = {
       enable = true;
       nix-direnv.enable = true;
-      config = {
-        hide_env_diff = true;
-      };
+      config = { hide_env_diff = true; };
       # Shell integrations are auto-enabled when the shell is enabled
     };
 
@@ -267,9 +266,7 @@ in
 
       defaultEditor = true;
 
-      performance = {
-        byteCompileLua.enable = true;
-      };
+      performance = { byteCompileLua.enable = true; };
 
       vimAlias = true;
       viAlias = true;
@@ -282,9 +279,7 @@ in
         })
       '';
       luaLoader.enable = true;
-      extraPlugins = [
-        (libPkg inputs.mcp-hub-nvim)
-      ];
+      extraPlugins = [ (libPkg inputs.mcp-hub-nvim) ];
     };
     # aria2 = {
     #   enable = true;
@@ -341,7 +336,10 @@ in
             }
             {
               trigger = ":code";
-              replace = "```\n$|$\n```";
+              replace = ''
+                ```
+                $|$
+                ```'';
             }
             {
               trigger = ":rebuild";
@@ -453,9 +451,7 @@ in
         Restart = "on-failure";
         RestartSec = 1;
       };
-      Install = {
-        WantedBy = [ "hyprland-session.target" ];
-      };
+      Install = { WantedBy = [ "hyprland-session.target" ]; };
     };
 
     activitywatch-watcher-aw-watcher-window-wayland = {
@@ -479,10 +475,7 @@ in
       pkgs.tree-sitter
       (pkgs.writeShellApplication {
         name = "ns";
-        runtimeInputs = with pkgs; [
-          fzf
-          nix-search-tv
-        ];
+        runtimeInputs = with pkgs; [ fzf nix-search-tv ];
         text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
         excludeShellChecks = [ "SC2016" ];
       })
@@ -550,6 +543,11 @@ in
       pkgs.google-chrome
 
       # pkgs.antigravity-fhs
+
+      pkgs.ghostscript
+      pkgs.tectonic
+      pkgs.mermaid-cli
+      pkgs.cliphist
 
       tclint-dummy
     ];
@@ -620,13 +618,29 @@ in
         set -e
         # Ensure the target directory exists
         mkdir -p "$HOME/.gemini"
-        # Create the symlink, overwriting if it already exists
-        ln -sf "$HOME/.config/mcp/mcp.json" "$HOME/.gemini/settings.json"
+
+        MCP_JSON="$HOME/.config/mcp/mcp.json"
+        SETTINGS_JSON="$HOME/.gemini/settings.json"
+        SECRET_PATH="${config.sops.secrets."api_keys/gemini".path}"
+
+        # If we have both the MCP config and the secret, merge them.
+        # This injects the apiKey into the settings file so gemini-cli picks it up.
+        if [ -f "$MCP_JSON" ] && [ -f "$SECRET_PATH" ]; then
+          # Force remove the symlink (from HM or previous fallback) to allow writing
+          rm -f "$SETTINGS_JSON"
+          API_KEY=$(cat "$SECRET_PATH")
+          ${pkgs.jq}/bin/jq --arg key "$API_KEY" 'del(.security) | . + {apiKey: $key}' "$MCP_JSON" > "$SETTINGS_JSON"
+          chmod 600 "$SETTINGS_JSON"
+        else
+          # Fallback to symlink if something is missing
+          rm -f "$SETTINGS_JSON"
+          ln -sf "$MCP_JSON" "$SETTINGS_JSON"
+        fi
       '';
     };
   };
 
-  fonts.fontconfig.enable = true;
+  fonts.fontconfig.enable = false;
 
   xdg = {
     mimeApps = {
@@ -654,12 +668,7 @@ in
         "audio/*" = [ "vlc.desktop" ];
         "video/*" = [ "vlc.desktop" ];
       };
-      defaultApplicationPackages = [
-        pkgs.gnome-text-editor
-        pkgs.loupe
-        pkgs.totem
-        pkgs.vscode-fhs
-      ];
+      defaultApplicationPackages = [ pkgs.gnome-text-editor pkgs.loupe pkgs.totem pkgs.vscode-fhs ];
     };
     userDirs = {
       enable = true;
@@ -680,10 +689,7 @@ in
         pkgs.gnome-keyring
       ];
       config.hyprland = {
-        default = [
-          "hyprland"
-          "gtk"
-        ];
+        default = [ "hyprland" "gtk" ];
         "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
         "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
         "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
@@ -716,7 +722,8 @@ in
       kitty.enable = true;
     };
     base16Scheme = ../assets/base16_themes/catppuccin-macchiato.yaml;
-    image = ../assets/wallpapers/astronaut_jellyfish.jpg; # ../../assets/base16_themes/cupcake.yaml;
+    image =
+      ../assets/wallpapers/astronaut_jellyfish.jpg; # ../../assets/base16_themes/cupcake.yaml;
 
     targets.qt.platform = lib.mkForce "qtct";
     polarity = "dark";
@@ -747,8 +754,8 @@ in
       sansSerif = {
         # package = pkgs.aleo-fonts;
         # name = "Aleo";
-        package = pkgs.nerd-fonts.fantasque-sans-mono;
-        name = "Fantasque";
+        package = pkgs.maple-mono.NF;
+        name = "Maple Mono NF";
       };
 
       serif = {

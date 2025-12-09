@@ -7,6 +7,9 @@
     plugins.snacks = {
       enable = true;
       settings = {
+        # Disable checkhealth integration to keep it standard
+        checkhealth.enabled = false;
+
         snackline = {
           enabled = true;
         };
