@@ -9,6 +9,7 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
+    initExtra = "source ${./zsh_ai_fix.zsh}";
     historySubstringSearch.enable = true;
 
     envExtra = ''
@@ -21,7 +22,7 @@
 
       _export_secret "${config.sops.secrets."api_keys/openai".path}" "OPENAI_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GEMINI_API_KEY"
-      _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GOOGLE_API_KEY"
+      # _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GOOGLE_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/openrouter".path}" "OPENROUTER_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/openai".path}" "ZSH_AI_COMMANDS_OPENAI_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/anthropic".path}" "ANTHROPIC_API_KEY"
@@ -35,6 +36,11 @@
       export GEMINI_DEFAULT_AUTH_TYPE="gemini-api-key"
 
       unset -f _export_secret
+
+      # Fzf-tab configuration
+      zstyle ':fzf-tab:*' use-fzf-default-opts yes
+      zstyle ':fzf-tab:*' fzf-flags --scheme=path
+      zstyle ':fzf-tab:*' switch-group ',' '.'
     '';
 
     completionInit = ''
@@ -85,8 +91,8 @@
         # "casonadams/bitwarden.zsh" # Bitwarden 1 (?)
         # "kalsowerus/zsh-bitwarden" # Bitwarden 2 (?)
         # "zshzoo/cd-ls"                      # Auto LS after cd
-        "muepatrick/zsh-ai-commands" # "/home/lf/nix/tmp/zsh-ai-commands"    # CTRL+O to send prompt to LLM
-        "wfxr/forgit" # Git aliases with fzf-like menues
+        # "muepatrick/zsh-ai-commands" # "/home/lf/nix/tmp/zsh-ai-commands"    # CTRL+O to send prompt to LLM
+        "wfxr/forgit" # Git aliases with fzf-like menus
         "Aloxaf/fzf-tab" # Tab autocomplete menu
       ];
     };
