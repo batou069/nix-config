@@ -718,6 +718,7 @@
 
             # Source fzf completions for fzf-tab, without sourcing keybindings
             # source "${pkgs.fzf}/share/fzf/completion.zsh"
+            source "${./zsh_ai_fix.zsh}"
 
             # Tmux Which Key
             tmux-which-key() { tmux show-wk-menu-root ; }

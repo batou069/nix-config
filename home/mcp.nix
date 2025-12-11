@@ -11,9 +11,18 @@ let
   # natsukium's mcp-servers-nix - has serena and others
   mcp-natsukium = libPkgs inputs.mcp-servers-nix;
 
-  serena-with-tk = mcp-natsukium.serena.overrideAttrs (old: {
-    propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ pkgs.python3Packages.tkinter ];
-  });
+  serena-with-tk = pkgs.symlinkJoin {
+    name = "serena-with-tk";
+    paths = [ mcp-natsukium.serena ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/serena \
+        --prefix PYTHONPATH : "${pkgs.python3Packages.tkinter}/lib/python3.12/site-packages" \
+        --prefix LD_LIBRARY_PATH : "${pkgs.tk}/lib"
+    '';
+  };
+  # serena-with-tk = mcp-natsukium.serena.overrideAttrs (old: {
+  # propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ pkgs.python3Packages.tkinter ];});
 in
 {
   programs.mcp = {

@@ -26,16 +26,21 @@
         add_newline = true;
         command_timeout = 300;
         continuation_prompt = "[▶▶ ](Subtext1) ";
-        format = lib.concatStrings [
-          "\\["
-          "$battery"
-          " $username\\]"
-          "\\["
-          "$directory\\]"
-          # "\\["
-          # "$nix_shell\\]"
-          "$character"
-        ];
+        # format = lib.concatStrings [
+        #   "\\["
+        #   "$battery"
+        #   " $username\\]"
+        #   "\\["
+        #   "$directory\\]"
+        #   # "\\["
+        #   # "$nix_shell\\]"
+        #   "$character"
+        # ];
+        format = ''
+          [ ╭──── $username @ $directory ─── 󰇘 ](peach)
+          [ │ $battery ](red) $git_branch $git_state $git_status
+          [ ╰─$character ](peach)'';
+
         right_format = lib.concatStrings [
           "\\["
           "$git_branch"
@@ -51,7 +56,7 @@
           style = " ${peach}";
           truncate_to_repo = true;
           truncation_length = 4;
-          truncation_symbol = " ";
+          # truncation_symbol = " ";
           repo_root_format = "[$before_root_path]($style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) ";
           # read_only = " !";
           # read_only = "";
@@ -199,16 +204,16 @@
               style = "bold blink ${red}";
               threshold = 15;
             }
-            {
-              # 15% to 50%
-              style = "bold ${peach}";
-              threshold = 50;
-            }
-            {
-              # 50% to 90%
-              style = "bold ${green}";
-              threshold = 90;
-            }
+            # {
+            #   # 15% to 50%
+            #   style = "bold ${peach}";
+            #   threshold = 50;
+            # }
+            # {
+            #   # 50% to 90%
+            #   style = "bold ${green}";
+            #   threshold = 90;
+            # }
           ];
         };
 
