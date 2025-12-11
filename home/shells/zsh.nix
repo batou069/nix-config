@@ -9,6 +9,7 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
+    initExtra = "source ${./zsh_ai_fix.zsh}";
     historySubstringSearch.enable = true;
 
     envExtra = ''
@@ -85,8 +86,8 @@
         # "casonadams/bitwarden.zsh" # Bitwarden 1 (?)
         # "kalsowerus/zsh-bitwarden" # Bitwarden 2 (?)
         # "zshzoo/cd-ls"                      # Auto LS after cd
-        "muepatrick/zsh-ai-commands" # "/home/lf/nix/tmp/zsh-ai-commands"    # CTRL+O to send prompt to LLM
-        "wfxr/forgit" # Git aliases with fzf-like menues
+        # "muepatrick/zsh-ai-commands" # "/home/lf/nix/tmp/zsh-ai-commands"    # CTRL+O to send prompt to LLM
+        "wfxr/forgit" # Git aliases with fzf-like menus
         "Aloxaf/fzf-tab" # Tab autocomplete menu
       ];
     };

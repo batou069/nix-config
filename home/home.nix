@@ -542,7 +542,7 @@ in
 
       pkgs.google-chrome
 
-      # pkgs.antigravity-fhs
+      pkgs.antigravity-fhs
 
       pkgs.ghostscript
       pkgs.tectonic
