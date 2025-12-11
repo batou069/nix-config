@@ -36,6 +36,8 @@
       disable_ligatures = "never";
       # background_image = "/home/lf/Pictures/wallpapers/Minimal_Squares.png";
       # background_image_layout = "centered";
+      scrollback_lines = 10000;
+      scrollbar = "scrolled-and-hovered";
     };
     quickAccessTerminalConfig = {
       start_as_hidden = false;

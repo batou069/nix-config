@@ -1,8 +1,6 @@
 { config
-, inputs
 , pkgs
 , lib
-, libPkg
 , ...
 }:
 let
@@ -94,8 +92,8 @@ in
 {
   news.display = "show";
   imports = [
-    # inputs.nixvim.homeModules.nixvim
-    # inputs.zen-browser.homeModules.default
+    ./gtk.nix
+    ./stylix.nix
     ./tui
     ./editors # Import all editors
     ./gui
@@ -130,15 +128,15 @@ in
       # Shell integrations are auto-enabled when the shell is enabled
     };
 
-    bluetuith = {
-      enable = true;
-      settings = {
-        keybindings = {
-          adapter = "hci0";
-          Menu = "Alt+m";
-        };
-      };
-    };
+    # bluetuith = {
+    #   enable = true;
+    #   settings = {
+    #     keybindings = {
+    #       adapter = "hci0";
+    #       Menu = "Alt+m";
+    #     };
+    #   };
+    # };
 
     # fuzzel = {
     #   enable = true;
@@ -202,22 +200,22 @@ in
         transparent = false;
       };
     };
-    vivid = {
-      enable = true;
-      enableZshIntegration = true;
-      # activeTheme = "molokai";
-      themes = {
-        ayu = builtins.fetchurl {
-          url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/ayu.yml";
-          sha256 = "sha256:02fj9y2857rhv3hdcn1xijxwims5x3caxg2qs8g85nvp2xbvz3gl";
-        };
+    # vivid = {
+    #   enable = true;
+    #   enableZshIntegration = true;
+    #   # activeTheme = "molokai";
+    #   themes = {
+    #     ayu = builtins.fetchurl {
+    #       url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/ayu.yml";
+    #       sha256 = "sha256:02fj9y2857rhv3hdcn1xijxwims5x3caxg2qs8g85nvp2xbvz3gl";
+    #     };
 
-        mocha = builtins.fetchurl {
-          url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/catppuccin-macchiato.yml";
-          sha256 = "02np9axddfl4wyw31xvdn2hj7hi8wgd5knqp10gwl2hzk775ql5l";
-        };
-      };
-    };
+    #     mocha = builtins.fetchurl {
+    #       url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/catppuccin-macchiato.yml";
+    #       sha256 = "02np9axddfl4wyw31xvdn2hj7hi8wgd5knqp10gwl2hzk775ql5l";
+    #     };
+    #   };
+    # };
 
     aider-chat.enable = true;
     aider-chat.settings = {
@@ -228,7 +226,7 @@ in
     fabric-ai = {
       enable = true;
       package = pkgs.fabric-ai;
-      enableZshIntegration = true;
+      # enableZshIntegration = true;
       enableYtAlias = true;
       enablePatternsAliases = true;
     };
@@ -258,29 +256,9 @@ in
       package = pkgs.ruff;
       settings = { };
     };
-    hyprpanel.enable = false;
+    # hyprpanel.enable = false;
     uv.enable = true;
-    nixvim = {
-      enable = true;
-      package = libPkg inputs.neovim-nightly;
 
-      defaultEditor = true;
-
-      performance = { byteCompileLua.enable = true; };
-
-      vimAlias = true;
-      viAlias = true;
-      extraConfigLuaPre = ''
-        vim.loader.enable()
-
-        require("mcphub").setup({
-          auto_approve = true,
-          mcp_request_timeout = 120000,
-        })
-      '';
-      luaLoader.enable = true;
-      extraPlugins = [ (libPkg inputs.mcp-hub-nvim) ];
-    };
     # aria2 = {
     #   enable = true;
     #   settings = {
@@ -289,25 +267,6 @@ in
     #     rpcSecretFile = "/home/lf/.config/aria2-rpc-secret";
     #   };
     # };
-  };
-
-  gtk = {
-    enable = true;
-    iconTheme = {
-      package = lib.mkForce config.stylix.icons.package;
-      name = lib.mkForce config.stylix.icons.${config.stylix.polarity};
-    };
-    colorScheme = "dark";
-    gtk3 = {
-      bookmarks = [
-        "file://${config.home.homeDirectory}/Documents"
-        "file://${config.home.homeDirectory}/Downloads"
-        "file://${config.home.homeDirectory}/Pictures"
-        "file://${config.home.homeDirectory}/Videos"
-        "file://${config.home.homeDirectory}/Downloads"
-        "file://${config.home.homeDirectory}/repos"
-      ];
-    };
   };
 
   services = {
@@ -338,9 +297,10 @@ in
               trigger = ":code";
               replace = ''
                 ```
-                $|$
+                \$|\$
                 ```'';
             }
+
             {
               trigger = ":rebuild";
               replace = "sudo nixos-rebuild switch --flake $N#lf-nix -vv";
@@ -438,24 +398,25 @@ in
     # };
   };
 
-  systemd.user.startServices = "sd-switch";
+  systemd.user = {
+    startServices = "sd-switch";
+    services = {
+      # waybar = {
+      #   Unit = {
+      #     Description = "Waybar";
+      #     PartOf = [ "graphical-session.target" ];
+      #   };
+      #   Service = {
+      #     ExecStart = "${pkgs.waybar}/bin/waybar";
+      #     Restart = "on-failure";
+      #     RestartSec = 1;
+      #   };
+      #   Install = { WantedBy = [ "hyprland-session.target" ]; };
+      # };
 
-  systemd.user.services = {
-    waybar = {
-      Unit = {
-        Description = "Waybar";
-        PartOf = [ "graphical-session.target" ];
+      activitywatch-watcher-aw-watcher-window-wayland = {
+        Unit.ConditionEnvironment = "HYPRLAND_INSTANCE_SIGNATURE";
       };
-      Service = {
-        ExecStart = "${pkgs.waybar}/bin/waybar";
-        Restart = "on-failure";
-        RestartSec = 1;
-      };
-      Install = { WantedBy = [ "hyprland-session.target" ]; };
-    };
-
-    activitywatch-watcher-aw-watcher-window-wayland = {
-      Unit.ConditionEnvironment = "HYPRLAND_INSTANCE_SIGNATURE";
     };
   };
 
@@ -533,7 +494,7 @@ in
       pkgs.pnpm # npm package manager
       pkgs.git-filter-repo
       pkgs.sof-tools
-      pkgs.faiss # Command line tool for interacting with Generative AI models
+      pkgs.faiss
       # (pkgs.callPackage ./ipython-ai.nix { inherit pkgs; }).out
 
       pkgs.dosbox-staging
@@ -542,7 +503,7 @@ in
 
       pkgs.google-chrome
 
-      # pkgs.antigravity-fhs
+      pkgs.antigravity-fhs
 
       pkgs.ghostscript
       pkgs.tectonic
@@ -656,7 +617,7 @@ in
         "x-scheme-handler/https" = "firefox.desktop";
         "x-scheme-handler/vscode" = "vscode.desktop";
         "image/jpeg" = "loupe.desktop";
-        "image/png" = "loupe.desktop";
+        "image/png" = [ "satty.desktop" "loupe.desktop" ];
         "image/gif" = "loupe.desktop";
         "image/bmp" = "loupe.desktop";
         "image/svg+xml" = "loupe.desktop";
@@ -693,93 +654,6 @@ in
         "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
         "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
         "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-      };
-    };
-  };
-
-  stylix = {
-    enable = true;
-    enableReleaseChecks = false;
-    autoEnable = true;
-    targets = {
-      ghostty.enable = false;
-      bat.enable = false;
-      tmux.enable = false;
-      neovim = {
-        enable = false;
-        # plugin = "base16-nvim";
-        transparentBackground = {
-          main = true;
-          numberLine = true;
-          signColumn = true;
-        };
-      };
-      starship.enable = false;
-      wofi.enable = false;
-      fzf.enable = false;
-      hyprland.enable = false;
-      vscode.enable = false;
-      kitty.enable = true;
-    };
-    base16Scheme = ../assets/base16_themes/catppuccin-macchiato.yaml;
-    image =
-      ../assets/wallpapers/astronaut_jellyfish.jpg; # ../../assets/base16_themes/cupcake.yaml;
-
-    targets.qt.platform = lib.mkForce "qtct";
-    polarity = "dark";
-    targets.font-packages.enable = true;
-
-    icons = {
-      enable = true;
-      package = pkgs.juno-theme;
-      dark = "Juno-ocean";
-      light = "Juno-mirage";
-    };
-
-    # rose-pine-cursor , bibata-cursors, phinger-cursors-dark
-    cursor = {
-      name = "Rose Pine";
-      size = 40;
-      package = pkgs.rose-pine-cursor;
-    };
-
-    opacity = {
-      applications = 1.5;
-      desktop = 1.5;
-      popups = 0.8;
-      terminal = 1.0;
-    };
-
-    fonts = {
-      sansSerif = {
-        # package = pkgs.aleo-fonts;
-        # name = "Aleo";
-        package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF";
-      };
-
-      serif = {
-        # package = pkgs.noto-fonts-cjk-sans;
-        # name = "Noto Sans CJK JP";
-        package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF";
-      };
-
-      monospace = {
-        package = pkgs.maple-mono.NF;
-        name = "Maple Mono NF Bold";
-      };
-
-      emoji = {
-        package = pkgs.noto-fonts-color-emoji;
-        name = "Noto Color Emoji";
-      };
-
-      sizes = {
-        applications = 10;
-        desktop = 12;
-        popups = 14;
-        terminal = 14;
       };
     };
   };

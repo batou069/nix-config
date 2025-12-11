@@ -12,6 +12,11 @@
 
     settings = {
       alias = [
+        {
+          name = "ng";
+          valie = "cd {{ .Home }}/nix && gemini --include-directories '{{ .Home
+          }}/.config/hypr/' --extensions '' --allowed-mcp-server-names 'nixos'";
+        }
         # --- ALIASES (Simple) ---
         {
           name = "man";
@@ -432,7 +437,7 @@
           name = "FZF_DEFAULT_OPTS";
           value = lib.concatStringsSep " " [
             # --- PREVIEW ---
-            "--preview '~/.local/bin/lessfilter.sh {}'"
+            "--preview '{{ .Home }}/.local/bin/lessfilter.sh {}'"
             "--preview-window 'right:60%:wrap'"
             "--bind '?:toggle-preview'"
             "--bind 'ctrl-/:change-preview-window(60%|30%|hidden|)'"
@@ -718,6 +723,7 @@
 
             # Source fzf completions for fzf-tab, without sourcing keybindings
             # source "${pkgs.fzf}/share/fzf/completion.zsh"
+            source "${./zsh_ai_fix.zsh}"
 
             # Tmux Which Key
             tmux-which-key() { tmux show-wk-menu-root ; }

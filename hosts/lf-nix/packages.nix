@@ -14,7 +14,7 @@ let
       modelr
       caTools
       psych
-      devtools
+      # devtools
       sandwich
       lemon
       gridExtra
@@ -29,6 +29,15 @@ in
 {
   environment.systemPackages =
     (with pkgs; [
+      (libPkg inputs.quickshell)
+
+      # Qt6 dependencies for quickshell
+      qt6.qtbase
+      qt6.qtdeclarative
+      qt6.qtwayland
+      qt6.qtsvg
+      qt6.qtmultimedia
+
       chafa
       viu
       ueberzugpp
@@ -38,6 +47,8 @@ in
       influxdb3
       pstree
       # games
+
+      code-cursor-fhs
 
       dreamchess
       lc0
@@ -194,8 +205,7 @@ in
       hyprshade
       antigravity
     ])
-    ++ (with pkgs-stable; [
-    ])
+    ++ (with pkgs-stable; [ ])
     ++ [
       r-with-packages # Add the R environment
     ]
@@ -216,6 +226,16 @@ in
     ]);
 
   programs = {
+    dms-shell = {
+      systemd.restartIfChanged = true;
+      enableSystemMonitoring = true;
+      enableDynamicTheming = true;
+      enableClipboard = true;
+      enableCalendarEvents = true;
+      enableAudioWavelength = true;
+      enable = true;
+    };
+    bash.blesh.enable = true;
     gamescope = {
       enable = true;
       capSysNice = true;
@@ -270,14 +290,13 @@ in
   # };
 
   # # Extra Portal Configuration
-  # xdg.portal = {
-  #   enable = true;
-  #   wlr.enable = false;
-  #   extraPortals = [
-  #     pkgs.xdg-desktop-portal-hyprland
-  #     pkgs.xdg-desktop-portal-gtk
-  #   ];
-  #   config.common.default = "hyprland";
-  #   config."org.freedesktop.impl.portal.FileChooser".default = "gtk";
-  # };
+  xdg.portal = {
+    enable = true;
+    # wlr.enable = false;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    # configPackages =
+    # [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
+    #   config.common.default = "hyprland";
+    #   config."org.freedesktop.impl.portal.FileChooser".default = "gtk";
+  };
 }

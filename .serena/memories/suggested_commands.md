@@ -1,6 +1,7 @@
 # Suggested Commands
 
 ## System Management
+
 - **Apply Configuration (NixOS + Home Manager)**:
   ```bash
   nh os switch /home/lf/nix
@@ -17,6 +18,7 @@
   ```
 
 ## Development
+
 - **Format Code**:
   ```bash
   nix fmt
@@ -27,13 +29,15 @@
   ```
 
 ## Secrets (Sops)
+
 - **Edit Secrets**:
   ```bash
   nix shell nixpkgs#sops --command sops secrets/secrets.yaml
   ```
-  *(Note: Requires `secrets/age-key.txt`)*
+  _(Note: Requires `secrets/age-key.txt`)_
 
 ## Debugging
+
 - **Build with Trace**:
   ```bash
   nixos-rebuild build --flake .#lf-nix --show-trace -vv

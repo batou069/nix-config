@@ -34,6 +34,10 @@
     #   # url = "git+https://github.com/aylur/ags";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nix-mineral = {
       url = "git+https://github.com/cynicsketch/nix-mineral";
@@ -130,7 +134,7 @@
 
     # Vicinae
     vicinae.url = "github:vicinaehq/vicinae";
-    vicinae.inputs.nixpkgs.follows = "nixpkgs";
+    # vicinae.inputs.nixpkgs.follows = "nixpkgs"; remove follow to use cachix
 
     nix-vscode-extensions = {
       url = "git+https://github.com/nix-community/nix-vscode-extensions";

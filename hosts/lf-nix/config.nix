@@ -14,12 +14,11 @@ in
 {
   # Register flake inputs for nix commands
   nix.registry =
-    lib.mapAttrs (_: flake: { inherit flake; }) (lib.filterAttrs (_: lib.isType "flake") inputs)
+    lib.mapAttrs (_: flake: { inherit flake; })
+      (lib.filterAttrs (_: lib.isType "flake") inputs)
     // {
       # Add nixpkgs to the registry
-      nixpkgs = {
-        flake = inputs.nixpkgs;
-      };
+      nixpkgs = { flake = inputs.nixpkgs; };
     };
 
   # Add inputs to legacy channels
@@ -49,7 +48,8 @@ in
   # nixpkgs.pkgs is set via readOnlyPkgs in lib/default.nix
   # The pkgs is pre-configured with allowUnfree and overlays there
 
-  security.sudo.wheelNeedsPassword = false; # Allow sudo without password for wheel group
+  security.sudo.wheelNeedsPassword =
+    false; # Allow sudo without password for wheel group
   boot = {
     # kernelPackages = pkgs.linuxPackages_zen; # Performance geared
     kernelPackages = pkgs.linuxPackages_latest; # Best Balance
@@ -126,9 +126,7 @@ in
       magicOrExtension = "\\x7fELF....AI\\x02";
     };
 
-    plymouth = {
-      enable = true;
-    };
+    plymouth = { enable = true; };
   };
 
   time.hardwareClockInLocalTime = true;
@@ -270,8 +268,7 @@ in
     # };
 
     greetd = {
-      enable = true;
-      # vt = 1;
+      enable = lib.mkDefault true;
       settings = {
         default_session = {
           command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
@@ -280,10 +277,16 @@ in
       };
     };
 
-    smartd = {
-      enable = true;
-      autodetect = true;
-    };
+    # colormix doom dummy durfile gameoflife Matrix
+
+    # displayManager.ly = {
+    #   enable = true;
+    #   settings = { animation = "doom"; };
+    # };
+    # smartd = {
+    #   enable = true;
+    #   autodetect = true;
+    # };
 
     gvfs.enable = true;
     # tumbler.enable = true;
@@ -393,18 +396,16 @@ in
     logitech.wireless.enableGraphical = true;
   };
 
-  hardware.enableRedistributableFirmware = true;
-
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-
   # Bluetooth
   hardware = {
+    enableRedistributableFirmware = true;
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
     bluetooth = {
       enable = true;
-      powerOnBoot = true;
+      powerOnBoot = false;
       settings = {
         General = {
           Enable = "Source,Sink,Media,Socket";
@@ -417,25 +418,27 @@ in
   # Security / Polkit
   security = {
     rtkit.enable = true;
-    polkit.enable = true;
-    polkit.extraConfig = ''
-       polkit.addRule(function(action, subject) {
-         if (
-           subject.isInGroup("users")
-             && (
-               action.id == "org.freedesktop.login1.reboot" ||
-               action.id == "org.freedesktop.login1.reboot-multiple-sessions" ||
-               action.id == "org.freedesktop.login1.power-off" ||
-               action.id == "org.freedesktop.login1.power-off-multiple-sessions"
-             )
-           )
-         {
-           return polkit.Result.YES;
-         }
-      })
-    '';
+    polkit = {
+      enable = true;
+      extraConfig = ''
+        polkit.addRule(function(action, subject) {
+          if (
+            subject.isInGroup("users")
+              && (
+                action.id == "org.freedesktop.login1.reboot" ||
+                action.id == "org.freedesktop.login1.reboot-multiple-sessions" ||
+                action.id == "org.freedesktop.login1.power-off" ||
+                action.id == "org.freedesktop.login1.power-off-multiple-sessions"
+              )
+            )
+          {
+            return polkit.Result.YES;
+          }
+        })
+      '';
+    };
+    pam.services.hyprlock = { };
   };
-  security.pam.services.hyprlock = { };
 
   musnix = {
     enable = true;
@@ -453,43 +456,46 @@ in
     settings = {
       warn-dirty = false;
       auto-optimise-store = true;
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
+      experimental-features = [ "nix-command" "flakes" ];
       substituters = [ "https://hyprland.cachix.org" "https://numtide.cachix.org" ];
+      extra-substituters = [ "https://vicinae.cachix.org" ];
       trusted-substituters = [ "https://hyprland.cachix.org" ];
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       ];
-      extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" ];
+      extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6ZZcQjb41X0iXVXeHigGmycPPE=" "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc=" ];
+
+      extraOptions = ''
+        # access-tokens = github.com=${
+          config.sops.secrets."api_keys/github_mcp".path
+        }
+        !include ${config.sops.secrets."github_pat".path}
+      '';
+      gc = {
+        automatic = true;
+        dates = "weekly";
+        options = "--delete-older-than 7d";
+      };
+      optimise.automatic = true;
     };
-    extraOptions = ''
-      # access-tokens = github.com=${config.sops.secrets."api_keys/github_mcp".path}
-      !include ${config.sops.secrets."github_pat".path}
-    '';
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
-    optimise.automatic = true;
   };
 
   # Virtualization / Containers
-  virtualisation.libvirtd.enable = false;
-  virtualisation.podman = {
-    enable = false;
-    dockerCompat = false;
-    defaultNetwork.settings.dns_enabled = false;
-  };
+  virtualisation = {
+    libvirtd.enable = false;
+    podman = {
+      enable = false;
+      dockerCompat = false;
+      defaultNetwork.settings.dns_enabled = false;
+    };
 
-  virtualisation.docker = {
-    enable = true;
-    rootless.enable = false;
-    autoPrune.enable = true;
-    enableOnBoot = true;
-    extraPackages = [ pkgs.docker-buildx ];
+    docker = {
+      enable = true;
+      rootless.enable = false;
+      autoPrune.enable = true;
+      enableOnBoot = true;
+      extraPackages = [ pkgs.docker-buildx ];
+    };
   };
 
   console.keyMap = "${keyboardLayout}";
@@ -500,7 +506,9 @@ in
       NIXOS_OZONE_WL = "1"; # Enable Wayland Ozone platform for Electron apps
       NIXOS_WAYLAND = "1"; # Force Wayland
       ELECTRON_OZONE_PLATFORM_HINT = "wayland"; # Or "AUTO"
-      QT_QPA_PLATFORM_THEME = "qt6ct";
+      QT_QPA_PLATFORM = "wayland;xcb";
+      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+      # QT_QPA_PLATFORM_THEME = "qt6ct";
       # ELECTRON_ENABLE_WAYLAND = "1";
       NH_FLAKE = "${config.users.users.lf.home}/nix";
       INFLUX_TOKEN = config.sops.secrets."influxdb".path;
@@ -509,7 +517,7 @@ in
       # Make the fzf shell integration available to all users.
       # This path is determined by a system package (`pkgs.fzf`).
       FZF_SHELL_DIR = "${pkgs.fzf}/share/fzf";
-      QT_QPA_PLATFORM = "wayland;xcb";
+      # QT_QPA_PLATFORM = "wayland;xcb";
     };
   };
 
@@ -518,21 +526,17 @@ in
       enable = true;
       package = (libPkgs inputs.hyprland).hyprland;
       xwayland.enable = true;
-      withUWSM = true;
+      withUWSM = false;
       extraConfig = ''
         exec-once = wl-paste --type text --watch cliphist store
         exec-once = wl-paste --type image --watch cliphist store
       '';
-    };
-    # Zsh configuration
+    }; # Zsh configuration
     zsh = {
       enable = true;
       # enableCompletion = true;
       ohMyZsh.enable = false;
-      setOptions = [
-        "nonomatch"
-        "zle"
-      ];
+      setOptions = [ "nonomatch" "zle" ];
 
       # autosuggestions.enable = true;
       # syntaxHighlighting.enable = true;
@@ -542,7 +546,7 @@ in
   };
 
   fonts = {
-    enableDefaultPackages = false;
+    enableDefaultPackages = true;
     packages = with pkgs; [
       # General Purpose / Sans-Serif Fonts
       # dejavu_fonts
@@ -581,27 +585,6 @@ in
       # Niche/Specific Fonts
       minecraftia
     ];
-    /*
-      fontconfig = {
-      defaultFonts = {
-      serif = [
-      "Maple Mono NF Italic"
-      "Noto Serif"
-      ];
-
-      sansserif = [
-      "Maple Mono NF Italic"
-      ];
-
-      monospace = [
-      "Maple Mono NF Italic"
-      "Cascadia Code NF"
-      ];
-      };
-
-      allowBitmaps = false;
-      };
-    */
   };
 
   stylix = {
