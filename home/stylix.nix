@@ -1,4 +1,7 @@
-{ ... }: {
+{ pkgs
+, lib
+, ...
+}: {
   stylix = {
     enable = true;
     enableReleaseChecks = false;
