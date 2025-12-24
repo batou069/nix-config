@@ -30,13 +30,36 @@
     options = [ "subvol=@home" "compress=zstd" "noatime" ];
   };
 
+  fileSystems."/var/log" = {
+    device = "/dev/disk/by-uuid/0ee40fbe-c684-46ba-a921-46cdc7b5eb4a";
+    fsType = "btrfs";
+    options = [ "subvol=@log" "compress=zstd" "noatime" ];
+  };
+
+  fileSystems."/srv" = {
+    device = "/dev/disk/by-uuid/0ee40fbe-c684-46ba-a921-46cdc7b5eb4a";
+    fsType = "btrfs";
+    options = [ "subvol=@/srv" "compress=zstd" "noatime" ];
+  };
+
+  fileSystems."/tmp" = {
+    device = "/dev/disk/by-uuid/0ee40fbe-c684-46ba-a921-46cdc7b5eb4a";
+    fsType = "btrfs";
+    options = [ "subvol=@/tmp" "compress=zstd" "noatime" ];
+  };
+
+  fileSystems."/var/tmp" = {
+    device = "/dev/disk/by-uuid/0ee40fbe-c684-46ba-a921-46cdc7b5eb4a";
+    fsType = "btrfs";
+    options = [ "subvol=@/var/tmp" "compress=zstd" "noatime" ];
+  };
+
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/E6E7-3376";
     fsType = "vfat";
     options = [ "fmask=0077" "dmask=0077" ];
   };
 
-  # Assuming no swap partition based on lsblk output
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
