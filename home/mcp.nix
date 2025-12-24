@@ -17,7 +17,7 @@ let
     buildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram $out/bin/serena \
-        --prefix PYTHONPATH : "${pkgs.python313Packages.tkinter}/lib/python3.13/site-packages" \
+        --prefix PYTHONPATH : "${pkgs.python3Packages.tkinter}/lib/python3.12/site-packages" \
         --prefix LD_LIBRARY_PATH : "${pkgs.tk}/lib"
     '';
   };
