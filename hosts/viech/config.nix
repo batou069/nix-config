@@ -19,7 +19,7 @@ in
     ../../modules/vm-guest-services.nix
     ../../modules/local-hardware-clock.nix
     "${inputs.nix-mineral}/nix-mineral.nix"
-    # ./disko.nix
+    ./disko.nix
   ];
 
   # BOOT related stuff
@@ -120,10 +120,10 @@ in
       enable = true;
       vt = 1;
       settings = {
-      default_session = {
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
-        user = "greeter";
-      };
+        default_session = {
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+          user = "greeter";
+        };
       };
     };
 
