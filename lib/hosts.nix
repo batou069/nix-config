@@ -13,7 +13,19 @@
         ../hosts/lf-nix/home.nix
       ];
     };
-    # "viech" is disabled - config files are .nox (inactive)
+    "viech" = {
+      system = "x86_64-linux";
+      username = "lf";
+      modules = [
+        inputs.home-manager.nixosModules.home-manager
+        ../hosts/viech/home.nix
+      ];
+      specialArgs = {
+        # CAUTION: Verify your disk device name (lsblk)
+        device = "/dev/nvme0n1";
+        swap = "8G";
+      };
+    };
   };
 
   # List of standalone Home Manager configurations
