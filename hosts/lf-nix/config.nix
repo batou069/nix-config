@@ -463,21 +463,21 @@ in
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       ];
-      extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6ZZcQjb41X0iXVXeHigGmycPPE=" "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc=" ];
-
-      extraOptions = ''
-        # access-tokens = github.com=${
-          config.sops.secrets."api_keys/github_mcp".path
-        }
-        !include ${config.sops.secrets."github_pat".path}
-      '';
-      gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 7d";
-      };
-      optimise.automatic = true;
+      extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc=" ];
     };
+
+    extraOptions = ''
+      # access-tokens = github.com=${
+        config.sops.secrets."api_keys/github_mcp".path
+      }
+      !include ${config.sops.secrets."github_pat".path}
+    '';
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+    optimise.automatic = true;
   };
 
   # Virtualization / Containers

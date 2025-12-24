@@ -1,28 +1,42 @@
-{ config, ... }: {
+{ config
+, pkgs
+, ...
+}: {
   imports = [ ../lessfilter.nix ];
 
   programs.sheldon = {
-    enable = true;
+    enable = false;
     enableZshIntegration = true;
   };
 
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    initExtra = "source ${./zsh_ai_fix.zsh}";
+    initExtraFirst = ''
+    '';
+    initContent = ''
+      # Starship Manual Init (to fix path issues)
+      eval "$(${pkgs.starship}/bin/starship init zsh)"
+
+      source ${./zsh_ai_fix.zsh}
+
+      # Fzf-tab configuration
+      zstyle ':fzf-tab:*' use-fzf-default-opts yes
+      zstyle ':fzf-tab:*' fzf-flags --scheme=path
+      zstyle ':fzf-tab:*' switch-group ',' '.'
+      zstyle ':fzf-tab:complete:*:*' fzf-preview '$HOME/.local/bin/lessfilter.sh $realpath'
+    '';
     historySubstringSearch.enable = true;
 
     envExtra = ''
       _export_secret() {
-        local val="$(cat "$1" 2>/dev/null)"
-        if [ -n "$val" ]; then
-          export "$2"="$val"
-        fi
+        [[ -f "$1" ]] || return
+        export "$2"="$(<"$1")"
       }
 
       _export_secret "${config.sops.secrets."api_keys/openai".path}" "OPENAI_API_KEY"
-      _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GEMINI_API_KEY"
-      # _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GOOGLE_API_KEY"
+      # _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GEMINI_API_KEY"
+      _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GOOGLE_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/openrouter".path}" "OPENROUTER_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/openai".path}" "ZSH_AI_COMMANDS_OPENAI_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/anthropic".path}" "ANTHROPIC_API_KEY"
@@ -33,18 +47,24 @@
       _export_secret "${config.sops.secrets."api_keys/github_mcp".path}" "GITHUB_TOKEN"
       _export_secret "${config.sops.secrets.github_pat.path}" "GITHUB_PERSONAL_ACCESS_TOKEN"
 
-      export GEMINI_DEFAULT_AUTH_TYPE="gemini-api-key"
+      GOOGLE_GENAI_USE_VERTEXAI=true
+      GEMINI_DEFAULT_AUTH_TYPE="vertex-ai"
 
       unset -f _export_secret
-
-      # Fzf-tab configuration
-      zstyle ':fzf-tab:*' use-fzf-default-opts yes
-      zstyle ':fzf-tab:*' fzf-flags --scheme=path
-      zstyle ':fzf-tab:*' switch-group ',' '.'
     '';
 
     completionInit = ''
-      autoload -U compinit && compinit
+      setopt extendedglob
+      autoload -U compinit
+      local zcompdump="''${ZDOTDIR:-$HOME}/.zcompdump"
+
+      if [[ -n "$zcompdump"(#qN.mh+24) ]]; then
+        compinit -d "$zcompdump"
+        zcompile "$zcompdump"
+      else
+        compinit -C -d "$zcompdump"
+      fi
+
       zstyle ':completion:*' menu select
       zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
     '';

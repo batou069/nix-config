@@ -9,10 +9,10 @@
       backup = false; # no backup files
       completeopt = "menu,menuone,noinsert,fuzzy,popup,noselect"; # completion options
       completeitemalign = "kind,abbr,menu"; # align completion items
-      relativenumber = false; # show absolute line numbers
+      relativenumber = true; # show absolute line numbers
 
-      colorcolumn = "100"; # highlight column 100
-      cmdheight = 0; # more space in the neovim command line for displaying messages # was 0 before 1
+      # colorcolumn = "100"; # highlight column 100
+      cmdheight = 10; # more space in the neovim command line for displaying messages # was 0 before 1
       clipboard = "unnamedplus"; # use system clipboard
       confirm = true; # confirm before quitting with unsaved changes
       cursorline = true; # highlight current line

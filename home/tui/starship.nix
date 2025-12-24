@@ -1,13 +1,11 @@
-{ pkgs
-, ...
-}: {
+{ pkgs, ... }: {
   programs.starship = {
     enable = true;
     package = pkgs.starship;
     enableTransience = true;
     enableFishIntegration = true;
     enableNushellIntegration = true;
-    enableZshIntegration = true;
+    enableZshIntegration = false;
     settings =
       let
         darkgray = "242";

@@ -43,4 +43,14 @@
     };
     otter.enable = true;
   };
+  programs.nixvim.extraPython3Packages = p:
+    with p; [
+      plotly
+      pyperclip
+      # kaleido # Not currently available in nixpkgs
+      # pnglatex # Not available as a python module in nixpkgs, but the CLI tool is added below
+    ];
+  programs.nixvim.extraPackages = with pkgs; [
+    pnglatex
+  ];
 }

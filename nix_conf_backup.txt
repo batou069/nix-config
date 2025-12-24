@@ -1,0 +1,24 @@
+# WARNING: this file is generated from the nix.* options in
+# your NixOS configuration, typically
+# /etc/nixos/configuration.nix.  Do not edit it!
+allowed-users = *
+auto-optimise-store = true
+builders = 
+cores = 0
+experimental-features = nix-command flakes
+max-jobs = auto
+require-sigs = true
+sandbox = true
+sandbox-fallback = false
+substituters = https://hyprland.cachix.org https://numtide.cachix.org https://cache.nixos.org/
+system-features = nixos-test benchmark big-parallel kvm
+trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=
+trusted-substituters = https://hyprland.cachix.org
+trusted-users = root
+warn-dirty = false
+extra-sandbox-paths = 
+extra-substituters = https://vicinae.cachix.org
+extra-trusted-public-keys = numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6ZZcQjb41X0iXVXeHigGmycPPE= vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc=
+# access-tokens = github.com=/run/secrets/api_keys/github_mcp
+!include /run/secrets/github_pat
+

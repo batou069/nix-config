@@ -13,7 +13,6 @@ let
       pyperclip
       flask
       black
-      plotly
       isort
       alive-progress
       # spacy
@@ -56,7 +55,6 @@ let
       pillow
       # opencv-python
       tqdm
-      plotly
       pytest
       imageio
       seaborn
@@ -80,7 +78,6 @@ let
       httpx
       fastmcp
       pnglatex
-      plotly
       kaleido
       pyperclip
     ]);
@@ -128,6 +125,9 @@ in
       # Shell integrations are auto-enabled when the shell is enabled
     };
 
+    wayprompt = {
+      enable = true;
+    };
     # bluetuith = {
     #   enable = true;
     #   settings = {
@@ -157,6 +157,7 @@ in
     #   # };
     # };
     retroarch = {
+      enable = true;
       cores = {
         mgba.enable = true;
         genesis-plus-gx.enable = true;
@@ -179,9 +180,12 @@ in
     zapzap.enable = true;
     claude-code.enable = true;
     claude-code.package = pkgs.claude-code;
+
     hyprshot.enable = true;
     hyprshot.saveLocation = "$HOME/Pictures/Screenshots";
+
     satty.enable = true;
+
     swappy.enable = true;
     swappy.settings = {
       Default = {
@@ -200,22 +204,6 @@ in
         transparent = false;
       };
     };
-    # vivid = {
-    #   enable = true;
-    #   enableZshIntegration = true;
-    #   # activeTheme = "molokai";
-    #   themes = {
-    #     ayu = builtins.fetchurl {
-    #       url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/ayu.yml";
-    #       sha256 = "sha256:02fj9y2857rhv3hdcn1xijxwims5x3caxg2qs8g85nvp2xbvz3gl";
-    #     };
-
-    #     mocha = builtins.fetchurl {
-    #       url = "https://raw.githubusercontent.com/NearlyTRex/Vivid/refs/heads/master/themes/catppuccin-macchiato.yml";
-    #       sha256 = "02np9axddfl4wyw31xvdn2hj7hi8wgd5knqp10gwl2hzk775ql5l";
-    #     };
-    #   };
-    # };
 
     aider-chat.enable = true;
     aider-chat.settings = {
@@ -297,7 +285,7 @@ in
               trigger = ":code";
               replace = ''
                 ```
-                \$|\$
+                \\$|\\$
                 ```'';
             }
 
@@ -400,6 +388,15 @@ in
 
   systemd.user = {
     startServices = "sd-switch";
+    targets.hyprland-session = {
+      Unit = {
+        Description = "Hyprland compositor session";
+        Documentation = [ "man:systemd.special(7)" ];
+        BindsTo = [ "graphical-session.target" ];
+        Wants = [ "graphical-session-pre.target" ];
+        After = [ "graphical-session-pre.target" ];
+      };
+    };
     services = {
       # waybar = {
       #   Unit = {
@@ -422,7 +419,7 @@ in
 
   # Home Manager version
   home = {
-    # This is required because we are using the unstable version of Home Manager
+    # This is required because we are required using the unstable version of Home Manager
     # with a stable Nixpkgs release, which is intentional.
     enableNixpkgsReleaseCheck = false;
     stateVersion = "24.11";
@@ -430,6 +427,22 @@ in
     # User information
     username = "lf";
     homeDirectory = "/home/lf";
+
+    sessionVariables = {
+      GDK_BACKEND = "wayland,x11,*";
+      CLUTTER_BACKEND = "wayland";
+      XDG_CURRENT_DESKTOP = "Hyprland";
+      XDG_SESSION_DESKTOP = "Hyprland";
+      XDG_SESSION_TYPE = "wayland";
+      QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+      QT_QUICK_CONTROLS_STYLE = "org.hyprland.style";
+      GDK_SCALE = "1";
+      QT_SCALE_FACTOR = "1";
+      MOZ_ENABLE_WAYLAND = "1";
+      HYPRCURSOR_THEME = "rose-pine-hyprcursor";
+      HYPRCURSOR_SIZE = "40";
+    };
 
     packages = [
       pkgs.home-manager

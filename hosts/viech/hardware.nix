@@ -14,7 +14,7 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
-  
+
   # Ensure btrfs support is available in initrd for mounting root
   boot.initrd.supportedFilesystems = [ "btrfs" ];
 
