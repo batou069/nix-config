@@ -326,14 +326,17 @@
     "dotfiles-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1766186132,
-        "narHash": "sha256-MMt4oUWMrgQLeBWgkx+Vx5KoZ89NagNiN+23VukSySY=",
-        "path": "/home/lf/dotfiles",
-        "type": "path"
+        "lastModified": 1750513358,
+        "narHash": "sha256-7elKk8i4dYNaMh+sXdsKfcXsw6PqQ92jGr3gRkcloZw=",
+        "ref": "refs/heads/main",
+        "rev": "daf42c349e4021448c26c8671679fea6043e1b67",
+        "revCount": 2,
+        "type": "git",
+        "url": "https://github.com/batou069/dotfiles.git"
       },
       "original": {
-        "path": "/home/lf/dotfiles",
-        "type": "path"
+        "type": "git",
+        "url": "https://github.com/batou069/dotfiles.git"
       }
     },
     "emacs-overlay": {

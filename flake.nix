@@ -1,7 +1,7 @@
 {
   inputs = {
     dotfiles-src = {
-      url = "path:/home/lf/dotfiles";
+      url = "git+https://github.com/batou069/dotfiles.git";
       flake = false;
     };
 
