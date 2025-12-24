@@ -124,7 +124,7 @@ lib
           inputs.nur.modules.homeManager.default
           inputs.nix-doom-emacs-unstraightened.homeModule
           inputs.stylix.homeModules.stylix
-          inputs.vicinae.homeManagerModules.default
+          # inputs.vicinae.homeManagerModules.default
         ]
         # 4. Finally, load the host-specific modules (like home.nix)
         ++ modules;

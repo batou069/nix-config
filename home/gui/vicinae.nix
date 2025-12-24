@@ -1,23 +1,30 @@
-{ ... }: {
-  # imports = [
-  #   inputs.vicinae.homeManagerModules.default
-  # ];
+{ inputs
+, lib
+, ...
+}: {
+  imports = [
+    inputs.vicinae.homeManagerModules.default
+  ];
 
   services.vicinae = {
     enable = true;
     autoStart = true;
     settings = {
+      misc.focus_on_activate = true;
       popToRootOnClose = true;
       font.size = 11;
       faviconService = "twenty"; # twenty | google | none
       window = {
-        csd = true;
+        # csd = false;
         # opacity = 0.95;
-        rounding = 10;
+        # rounding = 10;
       };
       # window.opacity = 0.9;
     };
   };
+
+  systemd.user.services.vicinae.Service.Environment = lib.mkForce "QT_QPA_PLATFORM=xcb";
+
   # systemd.user.services.vicinae.Service.ExecStart = lib.mkForce "${libPkg inputs.vicinae}/bin/vicinae server --replace";
   # extensions = [
   #     (inputs.vicinae.mkVicinaeExtension.${pkgs.system} {

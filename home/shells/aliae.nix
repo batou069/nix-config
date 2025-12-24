@@ -65,6 +65,10 @@
           value = "nh home switch";
         }
         {
+          name = "nxg";
+          value = "cd $N && gemini";
+        }
+        {
           name = "g";
           value = "git";
         }
@@ -130,7 +134,8 @@
         }
         {
           name = "mans";
-          value = "man -k . | fzf --border-label='Man Pages' | awk '{print $1}' | xargs -r man";
+          type = "function";
+          value = "man -k . | awk '{print $1}' | fzf --preview 'batman {1}' --preview-window='right:60%:wrap' | xargs -r man";
         }
         {
           name = "s";
@@ -723,7 +728,6 @@
 
             # Source fzf completions for fzf-tab, without sourcing keybindings
             # source "${pkgs.fzf}/share/fzf/completion.zsh"
-            source "${./zsh_ai_fix.zsh}"
 
             # Tmux Which Key
             tmux-which-key() { tmux show-wk-menu-root ; }
@@ -734,11 +738,6 @@
             # Navigation
             bindkey '^[[1;5C' forward-word
             bindkey '^[[1;5D' backward-word
-
-            # --- FZF Tab Styles ---
-            zstyle ':fzf-tab:*' use-fzf-default-opts yes
-            zstyle ':fzf-tab:complete:*:options' fzf-preview
-
 
             # --- Global Aliases (Zsh Specific) ---
             # Aliae standard aliases are command-position only.

@@ -77,7 +77,7 @@ in
         command = "bash";
         args = [
           "-c"
-          "export OPENAI_API_KEY=$(cat ${config.sops.secrets."api_keys/openai".path}) && export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets."api_keys/anthropic".path}) && ${serena-with-tk}/bin/serena start-mcp-server --project ${config.home.homeDirectory}/nix"
+          "export OPENAI_API_KEY=$(cat ${config.sops.secrets."api_keys/openai".path}) && export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets."api_keys/anthropic".path}) && ${serena-with-tk}/bin/serena start-mcp-server --project ${config.home.homeDirectory}/nix --enable-gui-log-window false --trace-lsp-communication true --transport stdio"
         ];
       };
 

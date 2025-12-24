@@ -14,40 +14,41 @@ The `sops-nix` integration automatically decrypts these secrets at build time, m
 
 ## Step-by-Step: Adding a New Secret
 
-1.  **Open the Encrypted File for Editing**:
-    To securely edit the secrets file, you must provide the path to the private key. Run the following command from the root of the repository:
+1. **Open the Encrypted File for Editing**:
+   To securely edit the secrets file, you must provide the path to the private key. Run the following command from the root of the repository:
 
-    ```bash
-    nix-shell -p sops --run "SOPS_AGE_KEY_FILE=secrets/age-key.txt sops secrets/secrets.yaml"
-    ```
+   ```bash
+   nix-shell -p sops --run "SOPS_AGE_KEY_FILE=secrets/age-key.txt sops secrets/secrets.yaml"
+   ```
 
-    This command does two things:
-    - `nix-shell -p sops`: Temporarily provides the `sops` command if it's not already in your path.
-    - `SOPS_AGE_KEY_FILE=...`: Tells `sops` exactly where to find the private key needed to decrypt the file.
+   This command does two things:
+   - `nix-shell -p sops`: Temporarily provides the `sops` command if it's not already in your path.
+   - `SOPS_AGE_KEY_FILE=...`: Tells `sops` exactly where to find the private key needed to decrypt the file.
 
-    This will decrypt `secrets.yaml` into a temporary location and open it in your default command-line editor (e.g., `vim`, `nano`).
+   This will decrypt `secrets.yaml` into a temporary location and open it in your default command-line editor (e.g., `vim`, `nano`).
 
-2.  **Add Your New Secret**:
-    The file is structured in YAML format. Add your new key-value pair.
-    - **For a simple top-level secret**, add a new key:
+2. **Add Your New Secret**:
+   The file is structured in YAML format. Add your new key-value pair.
+   - **For a simple top-level secret**, add a new key:
 
-      ```yaml
-      # existing secrets...
-      github_pat: ENC[...]
-      my_new_secret: "this-is-the-secret-value"
-      ```
+     ```yaml
+     # existing secrets...
+     github_pat: ENC[...]
+     my_new_secret: "this-is-the-secret-value"
+     ```
 
-    - **For a nested secret under `api_keys`**:
-      ```yaml
-      api_keys:
-        gemini: ENC[...]
-        openai: ENC[...]
-        my_new_api: "another-secret-value"
-      # rest of the file...
-      ```
+   - **For a nested secret under `api_keys`**:
 
-3.  **Save and Quit**:
-    Save the file and exit your editor. `sops` will automatically detect the changes, re-encrypt the file with the new content, and update `secrets/secrets.yaml` in place.
+     ```yaml
+     api_keys:
+       gemini: ENC[...]
+       openai: ENC[...]
+       my_new_api: "another-secret-value"
+     # rest of the file...
+     ```
+
+3. **Save and Quit**:
+   Save the file and exit your editor. `sops` will automatically detect the changes, re-encrypt the file with the new content, and update `secrets/secrets.yaml` in place.
 
 ## Using the New Secret in Your Configuration
 
@@ -69,6 +70,7 @@ The secrets are made available under `config.sops.secrets`.
 
 - **Accessing a nested secret**:
   For a secret nested under `api_keys` like `my_new_api`, the key is represented as a path. You would reference it like this:
+
   ```nix
   { config, pkgs, ... }: {
     # Example from this repository's configuration

@@ -30,7 +30,9 @@ in
   environment.systemPackages =
     (with pkgs; [
       (libPkg inputs.quickshell)
-
+      lynx
+      gh
+      sqlite
       # Qt6 dependencies for quickshell
       qt6.qtbase
       qt6.qtdeclarative
@@ -235,6 +237,7 @@ in
       enableAudioWavelength = true;
       enable = true;
     };
+    zsh.enableCompletion = false;
     bash.blesh.enable = true;
     gamescope = {
       enable = true;
@@ -243,7 +246,7 @@ in
     zoom-us.enable = true;
     # mangowc.enable = true;
 
-    xonsh.enable = false;
+    xonsh = { enable = true; };
     hyprlock.enable = true;
 
     thunar = {

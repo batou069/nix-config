@@ -60,7 +60,7 @@
 
       treesitter = {
         enable = true;
-        folding = true;
+        folding.enable = true;
         grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
           bash
           tmux
@@ -91,6 +91,15 @@
           typescript
           yaml
           hyprlang
+          html
+          css
+          latex
+          # norg # Currently broken/missing in this context
+          scss
+          svelte
+          tsx
+          typst
+          vue
         ];
         settings = {
           # Installing tree-sitter grammars from nvim-treesitter

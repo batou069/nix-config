@@ -1,263 +1,323 @@
-# Centralized keybindings for nixvim
 { ... }: {
   programs.nixvim = {
-    # Disable all default keymaps that are not explicitly set
     globals.mapleader = " ";
     globals.maplocalleader = ",";
 
     keymaps = [
-      # General & Navigation
+      # General
       {
         key = "<leader><space>";
         action = "<cmd>nohlsearch<cr>";
-        options.desc = "Clear Search Highlight";
-      }
-      {
-        key = "n";
-        action = "nzzzv";
-        mode = "n";
-        options.desc = "Next search result (centered)";
-      }
-      {
-        key = "N";
-        action = "Nzzzv";
-        mode = "n";
-        options.desc = "Previous search result (centered)";
+        options.desc = "Clear Highlight";
       }
 
-      # Saving & Sourcing
-      {
-        key = "<leader>w";
-        action = "<cmd>w<CR>";
-        options.desc = "Save Buffer";
-      }
-      {
-        key = "<leader>q";
-        action = "<cmd>q<CR>";
-        options.desc = "Quit Buffer";
-      }
-      {
-        key = "<leader>sn";
-        action = "<cmd>noautocmd w <CR>";
-        options.desc = "Save without auto-formatting";
-      }
-      {
-        key = "<leader><leader>S";
-        action = "<cmd>source %<cr>";
-        options.desc = "Source Buffer";
-      }
-
-      # Telescope
-      {
-        key = "<leader>f";
-        action = "<Nop>";
-        options.desc = "Find (Telescope)";
-      }
-      {
-        key = "<leader>ff";
-        action = "<cmd>Telescope find_files<cr>";
-        options.desc = "Find Files";
-      }
-      {
-        key = "<leader>fg";
-        action = "<cmd>Telescope live_grep<cr>";
-        options.desc = "Live Grep";
-      }
-      {
-        key = "<leader>fb";
-        action = "<cmd>Telescope buffers<cr>";
-        options.desc = "Find Buffers";
-      }
-      {
-        key = "<leader>fh";
-        action = "<cmd>Telescope help_tags<cr>";
-        options.desc = "Help Tags";
-      }
-      {
-        key = "<leader>fo";
-        action = "<cmd>Telescope oldfiles<cr>";
-        options.desc = "Find Old Files";
-      }
-      {
-        key = "<leader>fz";
-        action = "<cmd>Telescope current_buffer_fuzzy_find<cr>";
-        options.desc = "Fuzzy Find in Buffer";
-      }
-      {
-        key = "<leader>fr";
-        action = "<cmd>Telescope session-lens search_session<cr>";
-        options.desc = "Find Session (Restore)";
-      }
-
-      # Neo-tree
-      {
-        key = "<leader>e";
-        action = "<cmd>Neotree toggle<cr>";
-        options.desc = "Toggle File Explorer";
-      }
-
-      # Git
-      {
-        key = "<leader>g";
-        action = "<Nop>";
-        options.desc = "Git";
-      }
-      {
-        key = "<leader>gg";
-        action = "<cmd>LazyGit<cr>";
-        options.desc = "LazyGit";
-      }
-      {
-        key = "<leader>gs";
-        action = "<cmd>Gitsigns stage_hunk<cr>";
-        options.desc = "Stage Hunk";
-      }
-      {
-        key = "<leader>gu";
-        action = "<cmd>Gitsigns undo_stage_hunk<cr>";
-        options.desc = "Undo Stage Hunk";
-      }
-      {
-        key = "<leader>gb";
-        action = "<cmd>GitBlameToggle<cr>";
-        options.desc = "Toggle Git Blame";
-      }
-
-      # Terminal
-      {
-        key = "<leader>t";
-        action = "<Nop>";
-        options.desc = "Terminal";
-      }
-      {
-        key = "<leader>tt";
-        action = "<cmd>toggleterm<cr>";
-        options.desc = "Toggle Floating Terminal";
-      }
-      {
-        key = "<leader>ts";
-        action = "<cmd>split<bar>terminal<bar>resize 10<cr>";
-        options.desc = "Split Terminal";
-      }
-
-      # LSP (Code Intelligence)
-      {
-        key = "<leader>c";
-        action = "<Nop>";
-        options.desc = "Code";
-      }
-      {
-        key = "<leader>ca";
-        action = "<cmd>lua vim.lsp.buf.code_action()<cr>";
-        options.desc = "Code Action";
-      }
-      {
-        key = "<leader>cd";
-        action = "<cmd>Telescope diagnostics<cr>";
-        options.desc = "Show Diagnostics";
-      }
-      {
-        key = "<leader>cr";
-        action = "<cmd>lua vim.lsp.buf.rename()<cr>";
-        options.desc = "Rename";
-      }
+      # --- Windows (w) ---
       {
         mode = "n";
-        key = "<leader>cf";
-        action = "<cmd>lua vim.lsp.buf.format()<CR>";
+        key = "<leader>ws";
+        action = "<cmd>split<CR>";
         options = {
-          desc = "Format Code";
+          desc = "Split Horizontal";
           silent = true;
         };
       }
       {
-        key = "K";
-        action = "<cmd>lua vim.lsp.buf.hover()<cr>";
         mode = "n";
-        options.desc = "Hover Documentation";
+        key = "<leader>wv";
+        action = "<cmd>vsplit<CR>";
+        options = {
+          desc = "Split Vertical";
+          silent = true;
+        };
       }
       {
-        key = "gd";
-        action = "<cmd>lua vim.lsp.buf.definition()<cr>";
         mode = "n";
-        options.desc = "Go to Definition";
+        key = "<leader>wd";
+        action = "<C-w>q";
+        options = {
+          desc = "Close Window";
+          silent = true;
+        };
       }
       {
-        key = "gr";
-        action = "<cmd>Telescope lsp_references<cr>";
         mode = "n";
-        options.desc = "Find References";
+        key = "<leader>wq";
+        action = "<C-w>q";
+        options = {
+          desc = "Close Window";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>wo";
+        action = "<C-w>o";
+        options = {
+          desc = "Close Others";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>w=";
+        action = "<C-w>=<CR>";
+        options = {
+          desc = "Balance Windows";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>wm";
+        action = "<C-w>|<C-w>_";
+        options = {
+          desc = "Maximize Window";
+          silent = true;
+        };
+      }
+      # Navigation
+      {
+        mode = "n";
+        key = "<leader>wh";
+        action = "<C-w>h";
+        options = {
+          desc = "Focus Left";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>wj";
+        action = "<C-w>j";
+        options = {
+          desc = "Focus Down";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>wk";
+        action = "<C-w>k";
+        options = {
+          desc = "Focus Up";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>wl";
+        action = "<C-w>l";
+        options = {
+          desc = "Focus Right";
+          silent = true;
+        };
+      }
+      # Move Window
+      {
+        mode = "n";
+        key = "<leader>wH";
+        action = "<C-w>H";
+        options = {
+          desc = "Move Left";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>wJ";
+        action = "<C-w>J";
+        options = {
+          desc = "Move Down";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>wK";
+        action = "<C-w>K";
+        options = {
+          desc = "Move Up";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>wL";
+        action = "<C-w>L";
+        options = {
+          desc = "Move Right";
+          silent = true;
+        };
+      }
+      # Swap
+      {
+        mode = "n";
+        key = "<leader>wx";
+        action = "<C-w>x";
+        options = {
+          desc = "Swap Next";
+          silent = true;
+        };
       }
 
-      # Commenting
+      # --- Tabs (t) ---
       {
-        key = "<leader>/";
-        action = "gcc";
         mode = "n";
-        options.remap = true;
-        options.desc = "Toggle Comment";
+        key = "<leader>tn";
+        action = "<cmd>tabnew<CR>";
+        options = {
+          desc = "New Tab";
+          silent = true;
+        };
       }
       {
-        key = "<leader>/";
-        action = "gc";
-        mode = "v";
-        options.remap = true;
-        options.desc = "Toggle Comment (Visual)";
+        mode = "n";
+        key = "<leader>tc";
+        action = "<cmd>tabclose<CR>";
+        options = {
+          desc = "Close Tab";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>tl";
+        action = "<cmd>tabnext<CR>";
+        options = {
+          desc = "Next Tab";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>th";
+        action = "<cmd>tabprevious<CR>";
+        options = {
+          desc = "Prev Tab";
+          silent = true;
+        };
       }
 
-      # Yanky (Yank History)
+      # --- Buffers (b) ---
       {
-        key = "<leader>p";
-        action = "<cmd>Telescope yank_history<cr>";
-        options.desc = "Yank History";
+        mode = "n";
+        key = "<leader>bn";
+        action = "<cmd>bnext<CR>";
+        options = {
+          desc = "Next Buffer";
+          silent = true;
+        };
       }
       {
-        key = "<c-p>";
-        action = "<Plug>(YankyPreviousEntry)";
         mode = "n";
-        options.desc = "Previous yank history";
+        key = "<leader>bp";
+        action = "<cmd>bprevious<CR>";
+        options = {
+          desc = "Prev Buffer";
+          silent = true;
+        };
       }
       {
-        key = "<c-n>";
-        action = "<Plug>(YankyNextEntry)";
         mode = "n";
-        options.desc = "Next yank history";
+        key = "<leader>bd";
+        action = "<cmd>bdelete<CR>";
+        options = {
+          desc = "Delete Buffer";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>bD";
+        action = "<cmd>bdelete!<CR>";
+        options = {
+          desc = "Force Delete";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>bo";
+        action = "<cmd>%bd|e#|bd#<CR>";
+        options = {
+          desc = "Close Other Buffers";
+          silent = true;
+        };
       }
 
-      # Leap (Motion)
+      # --- Quit (q) ---
       {
-        key = "s";
-        action = "<Plug>(leap)";
-        mode = [ "n" "x" "o" ];
-        options.desc = "Leap Forward";
-      }
-      {
-        key = "S";
-        action = "<Plug>(leap-from-window)";
         mode = "n";
-        options.desc = "Leap from Window";
-      }
-      # Python Execution
-      {
-        key = "<localleader>p";
-        action = "<Nop>";
-        options.desc = "Python";
-      }
-      {
-        key = "<localleader>pr";
-        action = "<cmd>w<CR><cmd>term python3 %:p<CR>";
-        options.desc = "Run Python File";
-      }
-      {
-        key = "<localleader>pt";
-        action = "<cmd>w<CR><cmd>term pytest -s %:p<CR>";
-        options.desc = "PyTest";
+        key = "<leader>qq";
+        action = "<cmd>qa<CR>";
+        options = {
+          desc = "Quit All";
+          silent = true;
+        };
       }
       {
         mode = "n";
-        key = "<leader>cm";
-        action = "<cmd>MCPHub<cr>";
-        options.desc = "Open (MCPHub)";
+        key = "<leader>qw";
+        action = "<cmd>q<CR>";
+        options = {
+          desc = "Quit Window";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>qQ";
+        action = "<cmd>qa!<CR>";
+        options = {
+          desc = "Force Quit All";
+          silent = true;
+        };
+      }
+
+      # --- System (s) Generic ---
+      {
+        mode = "n";
+        key = "<leader>sc";
+        action = "<cmd>checkhealth<CR>";
+        options = {
+          desc = "Check Health";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>so";
+        action = "<cmd>options<CR>";
+        options = {
+          desc = "Vim Options";
+          silent = true;
+        };
+      }
+
+      # --- Local Leader (Run/Test) ---
+      {
+        mode = "n";
+        key = "<localleader>r";
+        action.__raw = ''
+          function()
+            local ft = vim.bo.filetype
+            if ft == "python" then
+              vim.cmd("term python3 " .. vim.fn.expand("%"))
+            elseif ft == "go" then
+              vim.cmd("term go run .")
+            elseif ft == "sh" then
+              vim.cmd("term bash " .. vim.fn.expand("%"))
+            elseif ft == "nix" then
+              vim.cmd("!nix-instantiate --eval %")
+            else
+              print("No run command defined for " .. ft)
+            end
+          end
+        '';
+        options = {
+          desc = "Run File";
+          silent = true;
+        };
       }
     ];
   };

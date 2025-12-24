@@ -24,8 +24,8 @@ in
   # Add inputs to legacy channels
   nix.nixPath = [ "/etc/nix/path" ];
   environment.etc =
-    lib.mapAttrs' 
-      (name: value: { 
+    lib.mapAttrs'
+      (name: value: {
         name = "nix/path/${name}";
         value.source = value.flake;
       })
@@ -89,12 +89,12 @@ in
     # The list below was from lf-nix and might not be exact for viech,
     # but since hardware.nix is imported, it should take precedence or merge.
     # To be safe, we rely on hardware.nix for this.
-    
+
     # initrd = {
-    #   availableKernelModules = [ ... ]; 
+    #   availableKernelModules = [ ... ];
     #   kernelModules = [ "kvm-intel" ];
     # };
-    
+
     # extraModulePackages = [config.boot.kernelPackages.cpufreqtools];
     # Needed For Some Steam Games
     # kernel.sysctl = {
@@ -465,7 +465,7 @@ in
     };
 
     extraOptions = ''
-      # access-tokens = github.com=${ 
+      # access-tokens = github.com=${
         config.sops.secrets."api_keys/github_mcp".path
       }
       !include ${config.sops.secrets."github_pat".path}

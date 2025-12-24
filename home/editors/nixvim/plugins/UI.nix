@@ -14,7 +14,6 @@
         };
       };
       kitty-navigator.enable = true;
-      # kitty-scrollback.enable = true;
       alpha = {
         enable = false;
         settings.layout = [
@@ -49,49 +48,48 @@
               "              ╚═╝   ╚═╝ ╚═╝ ╚═════════════╝          "
             ];
           }
-          {
-            type = "padding";
-            val = 2;
-          }
-          {
-            type = "group";
-            val = [
-              {
-                on_press = {
-                  __raw = "function() vim.cmd[[ene]] end";
-                };
-                opts = {
-                  shortcut = "n";
-                };
-                type = "button";
-                val = "  New file";
-              }
-              {
-                on_press = {
-                  __raw = "function() vim.cmd[[qa]] end";
-                };
-                opts = {
-                  shortcut = "q";
-                };
-                type = "button";
-                val = " Quit Neovim";
-              }
-            ];
-          }
-          {
-            type = "padding";
-            val = 2;
-          }
-          {
-            opts = {
-              hl = "Keyword";
-              position = "center";
-            };
-            type = "text";
-            val = "Inspiring quote here.";
-          }
         ];
       };
     };
+
+    keymaps = [
+      # UI Toggles
+      {
+        mode = "n";
+        key = "<leader>uz";
+        action = "<cmd>ZenMode<CR>";
+        options = {
+          desc = "Toggle Zen Mode";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>ut";
+        action = "<cmd>Twilight<CR>";
+        options = {
+          desc = "Toggle Twilight";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>un";
+        action = "<cmd>Noice history<CR>";
+        options = {
+          desc = "Notification History";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>ud";
+        action = "<cmd>Noice dismiss<CR>";
+        options = {
+          desc = "Dismiss Notifications";
+          silent = true;
+        };
+      }
+    ];
   };
 }
