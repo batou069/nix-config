@@ -163,7 +163,8 @@ in
       bitwarden-menu
       chromium
       # lagrange # Gemini browser
-      # FROM ZaneyOS
+      # from ZaneyOS
+      zsh-fzf-tab
       appimage-run # Needed For AppImage Support
       hyprpicker # Color Picker
       grimblast # Screenshots
