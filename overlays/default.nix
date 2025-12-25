@@ -63,4 +63,19 @@
       };
     };
   })
+
+  # Fix anime-downloader cfscrape dependency issue with urllib3 >= 2.0
+  (_final: prev: {
+    anime-downloader = prev.anime-downloader.override {
+      cfscrape = prev.python3Packages.cfscrape.overridePythonAttrs (old: {
+        postPatch =
+          (old.postPatch or "")
+          + ''
+            substituteInPlace cfscrape/__init__.py \
+              --replace-fail "from urllib3.util.ssl_ import create_urllib3_context, DEFAULT_CIPHERS" \
+              "from urllib3.util.ssl_ import create_urllib3_context; DEFAULT_CIPHERS = 'ALL'" || true
+          '';
+      });
+    };
+  })
 ]
