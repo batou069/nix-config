@@ -14,13 +14,23 @@
     enableCompletion = true;
     initExtraFirst = ''
     '';
+    # NOTE: DO NOT RENAME initContent TO initExtra.
+    # initContent is the correct attribute for this configuration.
     initContent = ''
       # Starship Manual Init (to fix path issues)
       eval "$(${pkgs.starship}/bin/starship init zsh)"
 
       source ${./zsh_ai_fix.zsh}
 
+      # Keybindings for modern terminals
+      bindkey "^[[3~" delete-char
+      bindkey "^[OH" beginning-of-line
+      bindkey "^[OF" end-of-line
+      bindkey "^[[1;5C" forward-word
+      bindkey "^[[1;5D" backward-word
+
       # Fzf-tab configuration
+      source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
       zstyle ':fzf-tab:*' use-fzf-default-opts yes
       zstyle ':fzf-tab:*' fzf-flags --scheme=path
       zstyle ':fzf-tab:*' switch-group ',' '.'
@@ -113,7 +123,6 @@
         # "zshzoo/cd-ls"                      # Auto LS after cd
         # "muepatrick/zsh-ai-commands" # "/home/lf/nix/tmp/zsh-ai-commands"    # CTRL+O to send prompt to LLM
         "wfxr/forgit" # Git aliases with fzf-like menus
-        "Aloxaf/fzf-tab" # Tab autocomplete menu
       ];
     };
   };
