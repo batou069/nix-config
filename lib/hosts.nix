@@ -10,7 +10,7 @@
       username = "lf";
       modules = [
         inputs.home-manager.nixosModules.home-manager
-        ../hosts/lf-nix/home.nix
+        ../hosts/default/home.nix
       ];
     };
     "viech" = {
@@ -18,7 +18,7 @@
       username = "lf";
       modules = [
         inputs.home-manager.nixosModules.home-manager
-        ../hosts/viech/home.nix
+        ../hosts/default/home.nix
       ];
       specialArgs = {
         # CAUTION: Verify your disk device name (lsblk)
