@@ -50,7 +50,7 @@
         printf "Ensuring VSCode Python path is set to: %s\n" "$python_path" >&2
 
         # Ensure the directory exists
-        mkdir -p "$(dirname "$settings_file")"
+        mkdir -p "$(dirname \"$settings_file\")"
 
         # Create an empty JSON object if the file doesn't exist
         if [ ! -f "$settings_file" ]; then
