@@ -1,5 +1,6 @@
 { inputs
 , lib
+, pkgs
 , ...
 }: {
   imports = [
@@ -22,7 +23,7 @@
   ];
 
   networking.hostName = "lf-nix";
-
+  users.defaultUserShell = pkgs.nushell;
   stylix = {
     enable = true;
     autoEnable = true;

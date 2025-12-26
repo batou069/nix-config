@@ -1,0 +1,32 @@
+{ ... }: {
+  programs = {
+    wayprompt = {
+      enable = true;
+    };
+    hyprshot = {
+      enable = true;
+      saveLocation = "$HOME/Pictures/Screenshots";
+    };
+    satty.enable = true;
+    swappy = {
+      enable = true;
+      swappy.settings = {
+        Default = {
+          auto_save = false;
+          custom_color = "rgba(193,125,17,1)";
+          early_exit = false;
+          fill_shape = false;
+          line_size = 5;
+          paint_mode = "brush";
+          save_dir = "$HOME/Pictures";
+          save_filename_format = "swappy-%Y%m%d-%H%M%S.png";
+          show_panel = false;
+          text_font = "sans-serif";
+          text_size = 20;
+          transparency = 50;
+          transparent = false;
+        };
+      };
+    };
+  };
+}
