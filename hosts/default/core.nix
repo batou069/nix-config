@@ -1,7 +1,10 @@
 { pkgs
 , lib
+, libPkgs
+, username
 , config
 , options
+, inputs
 , ...
 }:
 let

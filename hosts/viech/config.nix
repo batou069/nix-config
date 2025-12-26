@@ -1,5 +1,8 @@
 # Viech
-{ lib, ... }: {
+{ lib
+, pkgs
+, ...
+}: {
   imports = [
     ./hardware.nix
 
@@ -19,7 +22,7 @@
   networking = {
     hostName = "viech";
   };
-
+  users.defaultUserShell = pkgs.zsh;
   stylix = {
     enable = true;
     autoEnable = true;
