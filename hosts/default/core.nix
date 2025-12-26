@@ -1,7 +1,9 @@
 { pkgs
 , lib
+, username
 , config
 , options
+, inputs
 , ...
 }:
 let

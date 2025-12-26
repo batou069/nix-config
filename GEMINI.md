@@ -15,8 +15,10 @@
 Flake: ./flake.nix
 Flake Output: ./lib/default.nix
 Flakle Hosts: ./lib/hosts.nix
-This Clients config: ./hosts/lf-nix/config.nix
-This Clients environment.systemPackages and programs: /hosts/lf-nix/packages.nix
+Laptop config: ./hosts/lf-nix/config.nix
+Desktop config: ./hosts/viech/config.nix
+Shared config files in: ./hosts/default/
+environment.systemPackages and programs: /hosts/[hostname]/packages.nix
 Home-Manager (more programs and services): ./home/home.nix
 Neovim/Nixvim: ./home/editors/nixvim
 Overlays: ./overlays/default.nix
