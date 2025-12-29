@@ -1,4 +1,4 @@
-{}: {
+{ ... }: {
   services = {
     signaturepdf = {
       enable = true;

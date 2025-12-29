@@ -7,7 +7,7 @@
     ./hardware.nix
 
     ../default/core.nix
-    ../default/confix.nix
+    ../default/config.nix
     ../default/kde.nix
     ../default/users.nix
     ../default/packages.nix

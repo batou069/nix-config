@@ -10,7 +10,7 @@
     satty.enable = true;
     swappy = {
       enable = true;
-      swappy.settings = {
+      settings = {
         Default = {
           auto_save = false;
           custom_color = "rgba(193,125,17,1)";

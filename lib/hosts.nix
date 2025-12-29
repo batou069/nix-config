@@ -30,11 +30,19 @@
 
   # List of standalone Home Manager configurations
   home = {
-    "lf" = {
+    "lf@lf-nix" = {
       system = "x86_64-linux";
       username = "lf";
       modules = [
-        ../home/home.nix
+        ../home/_common.nix
+      ];
+    };
+    "lf@viech" = {
+      system = "x86_64-linux";
+      username = "lf";
+      modules = [
+        ../home/_common.nix
+        ../home/_local-ai.nix
       ];
     };
   };
