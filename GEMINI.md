@@ -19,7 +19,8 @@ Laptop config: ./hosts/lf-nix/config.nix
 Desktop config: ./hosts/viech/config.nix
 Shared config files in: ./hosts/default/
 environment.systemPackages and programs: /hosts/[hostname]/packages.nix
-Home-Manager (more programs and services): ./home/home.nix
+Home-Manager (Common Modules): ./home/\_common.nix
+Home-Manager (Host Specific): ./hosts/[hostname]/home.nix
 Neovim/Nixvim: ./home/editors/nixvim
 Overlays: ./overlays/default.nix
 Main Shell: ./home/shells/zsh.nix

@@ -319,7 +319,7 @@
               (name: config:
                 lib.nameValuePair name (lib.buildHomeConfiguration (config
                   // {
-                  username = name;
+                  username = config.username or name;
                   inherit inputs;
                 })))
               hosts.home;

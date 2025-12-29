@@ -5,7 +5,7 @@
   sops = {
     defaultSopsFile = ../secrets/secrets.yaml;
     defaultSopsFormat = "yaml";
-    age.keyFile = "/home/lf/dotfiles/nix/secrets/age-key.txt";
+    age.keyFile = "/home/lf/nix/secrets/age-key.txt";
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
     secrets = {
       # Secrets needed for NixOS system-level configuration

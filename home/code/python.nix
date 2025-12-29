@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 let
   pythonEnv312 = pkgs.python312.withPackages (ps:
     with ps; [
