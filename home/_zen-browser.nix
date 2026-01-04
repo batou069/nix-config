@@ -2,9 +2,9 @@
 , libPkg
 , ...
 }: {
-  imports = [
-    inputs.zen-browser.homeModules.default
-  ];
+  # imports = [
+  #   inputs.zen-browser.homeModules.default
+  # ];
 
   # Zen browser configuration (stylix supported)
   programs.zen-browser.enable = true;
@@ -18,52 +18,52 @@
   ];
 
   # Profile
-  programs.zen-browser.profiles.default.name = "Default";
-  programs.zen-browser.profiles.default.isDefault = true;
+  programs.zen-browser.profiles.Default.name = "Default";
+  programs.zen-browser.profiles.Default.isDefault = true;
 
   # Theme
-  # programs.zen-browser.profiles.default.userChrome = builtins.readFile theme.userChrome;
-  # programs.zen-browser.profiles.default.userContent = builtins.readFile theme.userContent;
+  # programs.zen-browser.profiles.Default.userChrome = builtins.readFile theme.userChrome;
+  # programs.zen-browser.profiles.Default.userContent = builtins.readFile theme.userContent;
 
   # Search
-  programs.zen-browser.profiles.default.search.default = "google";
-  programs.zen-browser.profiles.default.search.force = true;
+  programs.zen-browser.profiles.Default.search.default = "google";
+  programs.zen-browser.profiles.Default.search.force = true;
 
   # Containers
-  programs.zen-browser.profiles.default.containers.personal.id = 0;
-  programs.zen-browser.profiles.default.containers.personal.name = "Personal";
-  programs.zen-browser.profiles.default.containers.personal.color = "blue";
-  programs.zen-browser.profiles.default.containers.personal.icon = "fingerprint";
+  programs.zen-browser.profiles.Default.containers.personal.id = 0;
+  programs.zen-browser.profiles.Default.containers.personal.name = "Personal";
+  programs.zen-browser.profiles.Default.containers.personal.color = "blue";
+  programs.zen-browser.profiles.Default.containers.personal.icon = "fingerprint";
 
-  programs.zen-browser.profiles.default.containers.college.id = 1;
-  programs.zen-browser.profiles.default.containers.college.name = "Work";
-  programs.zen-browser.profiles.default.containers.college.color = "green";
-  programs.zen-browser.profiles.default.containers.college.icon = "chill";
+  programs.zen-browser.profiles.Default.containers.college.id = 1;
+  programs.zen-browser.profiles.Default.containers.college.name = "Work";
+  programs.zen-browser.profiles.Default.containers.college.color = "green";
+  programs.zen-browser.profiles.Default.containers.college.icon = "chill";
 
-  programs.zen-browser.profiles.default.containers.work.id = 2;
-  programs.zen-browser.profiles.default.containers.work.name = "Other";
-  programs.zen-browser.profiles.default.containers.work.color = "yellow";
-  programs.zen-browser.profiles.default.containers.work.icon = "briefcase";
+  programs.zen-browser.profiles.Default.containers.work.id = 2;
+  programs.zen-browser.profiles.Default.containers.work.name = "Other";
+  programs.zen-browser.profiles.Default.containers.work.color = "yellow";
+  programs.zen-browser.profiles.Default.containers.work.icon = "briefcase";
 
-  programs.zen-browser.profiles.default.containersForce = true;
+  programs.zen-browser.profiles.Default.containersForce = true;
 
   # Spaces
-  # programs.zen-browser.profiles.default.spaces.personal.id = "47e66c69-815b-40cb-8b41-be4fcf7a2c59";
-  # programs.zen-browser.profiles.default.spaces.personal.container = 0;
-  # programs.zen-browser.profiles.default.spaces.personal.name = "Personal";
-  # programs.zen-browser.profiles.default.spaces.personal.position = 0;
+  # programs.zen-browser.profiles.Default.spaces.personal.id = "47e66c69-815b-40cb-8b41-be4fcf7a2c59";
+  # programs.zen-browser.profiles.Default.spaces.personal.container = 0;
+  # programs.zen-browser.profiles.Default.spaces.personal.name = "Personal";
+  # programs.zen-browser.profiles.Default.spaces.personal.position = 0;
 
-  # programs.zen-browser.profiles.default.spaces.college.id = "26214a33-e220-4695-8730-e28722d0a60a";
-  # programs.zen-browser.profiles.default.spaces.college.container = 1;
-  # programs.zen-browser.profiles.default.spaces.college.name = "UFABC";
-  # programs.zen-browser.profiles.default.spaces.college.position = 1;
+  # programs.zen-browser.profiles.Default.spaces.college.id = "26214a33-e220-4695-8730-e28722d0a60a";
+  # programs.zen-browser.profiles.Default.spaces.college.container = 1;
+  # programs.zen-browser.profiles.Default.spaces.college.name = "UFABC";
+  # programs.zen-browser.profiles.Default.spaces.college.position = 1;
 
-  # programs.zen-browser.profiles.default.spaces.work.id = "f700d4a8-e760-4aa5-9ada-ddc57a73454b";
-  # programs.zen-browser.profiles.default.spaces.work.container = 2;
-  # programs.zen-browser.profiles.default.spaces.work.name = "Intelipost";
-  # programs.zen-browser.profiles.default.spaces.work.position = 2;
+  # programs.zen-browser.profiles.Default.spaces.work.id = "f700d4a8-e760-4aa5-9ada-ddc57a73454b";
+  # programs.zen-browser.profiles.Default.spaces.work.container = 2;
+  # programs.zen-browser.profiles.Default.spaces.work.name = "Intelipost";
+  # programs.zen-browser.profiles.Default.spaces.work.position = 2;
 
-  programs.zen-browser.profiles.default.spacesForce = true;
+  programs.zen-browser.profiles.Default.spacesForce = true;
   programs.zen-browser.package = libPkg inputs.zen-browser;
   # Policies
   programs.zen-browser.policies =
@@ -142,5 +142,5 @@
   xdg.desktopEntries.zen-beta.actions."profile-manager-window".exec = "zen-beta --ProfileManager";
 
   # Set zen browser profile name to Stylix
-  # programs.stylix.targets.zen-browser.profileNames = [ "default" ];
+  stylix.targets.zen-browser.profileNames = [ "Default" ];
 }

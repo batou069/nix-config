@@ -14,7 +14,7 @@
       alias = [
         {
           name = "ng";
-          valie = "cd {{ .Home }}/nix && gemini --include-directories '{{ .Home
+          value = "cd {{ .Home }}/nix && gemini --include-directories '{{ .Home
           }}/.config/hypr/' --extensions '' --allowed-mcp-server-names 'nixos'";
         }
         # --- ALIASES (Simple) ---
@@ -29,6 +29,7 @@
         {
           name = "ls";
           value = "lsd";
+          "if" = "match .Shell \"(fish|zsh|bash)\"";
         }
         {
           name = "man";
@@ -36,12 +37,12 @@
         }
         {
           name = "nhs";
-          value = "nh os switch $N";
+          value = "nh os switch --flake $N";
           "if" = "match .Shell \"(zsh|bash|fish)\"";
         }
         {
           name = "nhs";
-          value = "nh os switch $env.N";
+          value = "nh os switch --flake $env.N";
           "if" = "match .Shell \"nushell\"";
         }
         {
@@ -157,18 +158,22 @@
         {
           name = "22";
           value = "cd ../..";
+          "if" = "match .Shell \"(zsh|nushell|bash)\"";
         }
         {
           name = "33";
           value = "cd ../../..";
+          "if" = "match .Shell \"(zsh|nushell|bash)\"";
         }
         {
           name = "44";
           value = "cd ../../../..";
+          "if" = "match .Shell \"(zsh|nushell|bash)\"";
         }
         {
           name = "55";
           value = "cd ../../../../..";
+          "if" = "match .Shell \"(zsh|nushell|bash)\"";
         }
         {
           name = "add_secret";
@@ -680,12 +685,12 @@
 
         # --- Directory Navigation & Base Configs ---
         # Transforming your Nix 'cdpath' to a standard env var
-        {
-          name = "CDPATH";
-          value = ". {{ .Home }}/git {{ .Home }}/nix";
-          delimiter = " ";
-          # Automatically joins the array with spaces
-        }
+        # {
+        #   name = "CDPATH";
+        #   value = ". {{ .Home }}/git {{ .Home }}/nix";
+        #   delimiter = " ";
+        #   # Automatically joins the array with spaces
+        # }
         # Dynamic LS_COLORS (executed by the shell at runtime)
         # {
         #   name = "LS_COLORS";
@@ -759,6 +764,8 @@
             # hash -d nh={{ .Home }}/nix/home
             # hash -d n={{ .Home }}/nix
 
+            export TESTKEY_ZSH="$(cat ${config.sops.secrets."api_keys/openai".path} 2>/dev/null)"
+
 
             # zprof
           '';
@@ -766,14 +773,14 @@
         {
           "if" = "match .Shell \"fish\"";
           value = ''
-                # Set theme (Fish specific)
+            # Set theme (Fish specific)
             fish_config theme choose "Gruvbox"
 
             # Directory abbreviations
-            abbr --add 22 "cd ../.."
-            abbr --add 33 "cd ../../.."
-            abbr --add 44 "cd ../../../.."
-            abbr --add 55 "cd ../../../../.."
+            # abbr --add 22 "cd ../.."
+            # abbr --add 33 "cd ../../.."
+            # abbr --add 44 "cd ../../../.."
+            # abbr --add 55 "cd ../../../../.."
 
             # Command abbreviations (Expands when you type space!)
             abbr --add g git
@@ -788,6 +795,8 @@
             abbr --add --position anywhere C "| wl-copy"
             abbr --add --position anywhere G "| rg"
             abbr --add --position anywhere L "| less -R"
+
+            set -gx TESTKEY_FISH (cat ${config.sops.secrets."api_keys/openai".path} 2>/dev/null)
           '';
         }
         {
@@ -799,9 +808,14 @@
             abbrevs['t'] = 'tmux'
             abbrevs['dc'] = 'docker compose'
             abbrevs['nhs'] = 'nh os switch'
-
-            # Xonsh doesn't support global abbrevs identically,
-            # but supports python logic.
+          '';
+        }
+        {
+          "if" = "match .Shell \"nushell\"";
+          value = ''
+            # Correct Nushell syntax to read files and strip whitespace
+            # We use 'try' so the shell doesn't crash if secrets aren't provisioned yet
+            $env.TESTKEY_NU = (try { open ${config.sops.secrets."api_keys/openai".path} | str trim } catch { "" })
           '';
         }
       ];

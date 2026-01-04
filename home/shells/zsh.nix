@@ -14,8 +14,8 @@
     enableCompletion = true;
     initExtraFirst = ''
     '';
-    # NOTE: DO NOT RENAME initContent TO initExtra.
-    # initContent is the correct attribute for this configuration.
+    # NEW NOTE December 2025: DO NOT RENAME initContent TO initExtra.
+    # initExtra is deprecated, initContent is the correct attribute for this configuration.
     initContent = ''
       # Starship Manual Init (to fix path issues)
       eval "$(${pkgs.starship}/bin/starship init zsh)"
@@ -45,7 +45,7 @@
       }
 
       _export_secret "${config.sops.secrets."api_keys/openai".path}" "OPENAI_API_KEY"
-      # _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GEMINI_API_KEY"
+      _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GEMINI_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GOOGLE_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/openrouter".path}" "OPENROUTER_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/openai".path}" "ZSH_AI_COMMANDS_OPENAI_API_KEY"
