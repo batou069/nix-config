@@ -43,7 +43,7 @@
 
       selection-invert-fg-bg = false;
       cursor-click-to-move = true;
-      cursor-color = "#ffee00ff";
+      # cursor-color = "#ffee00ff";
       cursor-text = "#cdd6f4";
       cursor-style = "block_hollow";
       cursor-style-blink = false;

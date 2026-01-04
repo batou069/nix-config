@@ -55,12 +55,6 @@
           preview-fg = "#f5e0dc";
         };
       };
-      keybindings = {
-        quit = [
-          "esc"
-          "ctrl-c"
-        ];
-      };
     };
   };
 }

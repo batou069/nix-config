@@ -44,7 +44,10 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  home-manager.sharedModules = [ inputs.zen-browser.homeModules.default ];
+  home-manager = {
+    backupFileExtension = "backup";
+    sharedModules = [ inputs.zen-browser.homeModules.default ];
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

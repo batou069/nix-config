@@ -32,7 +32,6 @@
       # };
       # telegraf.extraGroups = [ "disk" "storage" "network" ];
     };
-    defaultUserShell = pkgs.zsh;
   };
 
   # systemd.services."telegraf" = {
@@ -71,13 +70,17 @@
   systemd.user.services.install-pre-commit = {
     description = "Install pre-commit hooks for dotfiles";
     wantedBy = [ "default.target" ];
-    script = ''
-      ${pkgs.pre-commit}/bin/pre-commit install
-    '';
+    script =
+      let
+        preCommit = pkgs.pre-commit;
+      in
+      ''
+        PRE_COMMIT="${pkgs.pre-commit}/bin/pre-commit"
+        "${preCommit}/bin/pre-commit" install --install-dir "$HOME/nix"
+      '';
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      WorkingDirectory = "%h/nix";
       PrivateTmp = false;
       ProtectHome = false;
     };
