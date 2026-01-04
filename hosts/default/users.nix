@@ -70,17 +70,13 @@
   systemd.user.services.install-pre-commit = {
     description = "Install pre-commit hooks for dotfiles";
     wantedBy = [ "default.target" ];
-    script =
-      let
-        preCommit = pkgs.pre-commit;
-      in
-      ''
-        PRE_COMMIT="${pkgs.pre-commit}/bin/pre-commit"
-        "${preCommit}/bin/pre-commit" install --install-dir "$HOME/nix"
-      '';
+    script = ''
+      ${pkgs.pre-commit}/bin/pre-commit install
+    '';
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
+      WorkingDirectory = "%h/nix";
       PrivateTmp = false;
       ProtectHome = false;
     };
