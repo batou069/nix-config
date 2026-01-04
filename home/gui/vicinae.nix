@@ -6,9 +6,12 @@
     inputs.vicinae.homeManagerModules.default
   ];
 
-  services.vicinae = {
+  programs.vicinae = {
     enable = true;
-    autoStart = true;
+    systemd = {
+      enable = true;
+      autoStart = true;
+    };
     settings = {
       misc.focus_on_activate = true;
       popToRootOnClose = true;

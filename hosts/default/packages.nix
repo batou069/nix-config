@@ -254,7 +254,7 @@ in
       enable = true;
       # thunar.
       plugins = with pkgs.xfce; [
-        exo
+        pkgs.xfce4-exo
         mousepad
         thunar-archive-plugin
         thunar-volman

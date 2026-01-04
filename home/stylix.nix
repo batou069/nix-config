@@ -19,7 +19,7 @@
           signColumn = true;
         };
       };
-      starship.enable = false;
+      starship.enable = true;
       wofi.enable = false;
       fzf.enable = false;
       hyprland.enable = false;

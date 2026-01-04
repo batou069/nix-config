@@ -5,7 +5,7 @@
   programs.quickshell = {
     # activeConfig = ;
     # configs = ;
-    enable = true;
+    enable = false;
     package = (libPkgs inputs.quickshell).quickshell;
     systemd = {
       enable = true;

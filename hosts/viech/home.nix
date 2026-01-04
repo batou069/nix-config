@@ -6,7 +6,6 @@
     # This is where we import all the modules for this user's Home Manager configuration.
     imports = [
       ../../home/_common.nix
-      ../../home/_local-ai.nix
     ];
   };
 }

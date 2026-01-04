@@ -12,7 +12,7 @@
       flavour = [ "macchiato" ];
       accents = [ "lavender" ];
     })
-    gnome-text-editor
+    # gnome-text-editor
     kde-rounded-corners
     kdePackages.kcalc
     kdePackages.krohnkite
