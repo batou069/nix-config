@@ -1,0 +1,4 @@
+{ ... } :
+{
+  programs.hyprlauncher.enable = true;
+}
