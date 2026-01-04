@@ -1,5 +1,7 @@
 { lib, ... }: {
-  imports = (import ../modules/import-tree.nix lib ./.) ++ [
-    ./_editors
-  ];
+  imports =
+    (import ../modules/import-tree.nix lib ./.)
+    ++ [
+      ./_editors
+    ];
 }

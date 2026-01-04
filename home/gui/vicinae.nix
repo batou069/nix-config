@@ -10,7 +10,7 @@
     enable = true;
     systemd = {
       enable = true;
-      autoStart = true;
+      autoStart = false;
     };
     settings = {
       misc.focus_on_activate = true;
