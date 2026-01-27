@@ -43,7 +43,7 @@
     activation = {
       updateVSCodePythonPath = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         set -e # Exit immediately if a command exits with a non-zero status.
-        python_path="${pkgs.python312}/bin/python3"
+        python_path="${pkgs.python314}/bin/python3"
         settings_file="$HOME/.config/Code/User/settings.json"
         tmp_file="$settings_file.tmp"
 

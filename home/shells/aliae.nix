@@ -1,7 +1,8 @@
-{ pkgs
-, config
-, lib
-, ...
+{
+  pkgs,
+  config,
+  lib,
+  ...
 }: {
   programs.aliae = {
     enable = true;
@@ -16,6 +17,13 @@
           name = "ng";
           value = "cd {{ .Home }}/nix && gemini --include-directories '{{ .Home
           }}/.config/hypr/' --extensions '' --allowed-mcp-server-names 'nixos'";
+          "if" = "match .Shell \"(fish|zsh|bash)\"";
+        }
+        {
+          name = "ng";
+          value = "cd {{ .Home }}/nix ; gemini --include-directories '{{ .Home
+          }}/.config/hypr/' --extensions '' --allowed-mcp-server-names 'nixos'";
+          "if" = "match .Shell \"(nushell|xonsh)\"";
         }
         # --- ALIASES (Simple) ---
         {
@@ -31,6 +39,36 @@
           value = "lsd";
           "if" = "match .Shell \"(fish|zsh|bash)\"";
         }
+
+        {
+          name = "eza";
+          value = " eza --icons auto --color always --git '--color=always' '--level=1' --classify --color-scale --git --group-directories-first --dereference '--time-style=+%Y/%m/%d %H:%M'";
+        }
+        {
+          name = "fd";
+          value = " fd --hidden '--color=auto'";
+        }
+        {
+          name = "la";
+          value = " eza -a";
+        }
+        {
+          name = "ll";
+          value = " eza -l";
+        }
+        {
+          name = "lla";
+          value = " eza -la";
+        }
+        {
+          name = "ls";
+          value = " eza";
+        }
+        {
+          name = "lt";
+          value = " eza --tree";
+        }
+
         {
           name = "man";
           value = "batman";
@@ -68,6 +106,12 @@
         {
           name = "nxg";
           value = "cd $N && gemini";
+          "if" = "match .Shell \"(zsh|bash|fish)\"";
+        }
+        {
+          name = "nxg";
+          value = "cd $N ; gemini";
+          "if" = "match .Shell \"(nushell|xonsh)\"";
         }
         {
           name = "g";
@@ -189,6 +233,7 @@
           name = "mkcd";
           type = "function";
           value = "mkdir -p \"$1\" && cd \"$1\"";
+          "if" = "match .Shell \"(zsh|bash)\"";
         }
         {
           name = "drfa";

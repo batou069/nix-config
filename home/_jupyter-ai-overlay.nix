@@ -1,12 +1,12 @@
 { lib
-, python312Packages
+, python314Packages
 , fetchurl
 , nodejs
 , git
 ,
 }:
-python312Packages.buildPythonPackage {
-  # removed `rec`, was: `python312Packages.buildPythonPackage rec {`
+python314Packages.buildPythonPackage {
+  # removed `rec`, was: `python314Packages.buildPythonPackage rec {`
   pname = "jupyter-ai";
   version = "2.31.6";
   format = "pyproject";
@@ -15,7 +15,7 @@ python312Packages.buildPythonPackage {
     sha256 = "1s98s9a9w7nvnspl47dy2ahfg29vznqy11ayddkgx0hwq3j0haah";
   };
   # Dependencies needed to BUILD the package
-  nativeBuildInputs = with python312Packages; [
+  nativeBuildInputs = with python314Packages; [
     hatchling
     hatch-jupyter-builder
     hatch-nodejs-version
@@ -23,7 +23,7 @@ python312Packages.buildPythonPackage {
     git
   ];
   # Dependencies needed to RUN the package
-  propagatedBuildInputs = with python312Packages; [
+  propagatedBuildInputs = with python314Packages; [
     jupyterlab
     jupyter-server
     deepmerge

@@ -16,7 +16,7 @@
     kde-rounded-corners
     kdePackages.kcalc
     kdePackages.krohnkite
-    kdotool
+    # kdotool
     libnotify
     # tela-circle-icon-theme
   ];

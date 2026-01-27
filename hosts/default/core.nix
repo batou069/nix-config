@@ -59,9 +59,12 @@ in
       "nowatchdog"
       # "modprobe.blacklist=sp5100_tco" #watchdog for AMD
       "modprobe.blacklist=iTCO_wdt" # watchdog for Intel
-      "vt.default_red=36,237,166,238,138,245,139,184,91,237,166,238,138,245,139,165"
-      "vt.default_grn=39,135,218,212,173,189,213,192,96,135,218,212,173,189,213,173"
-      "vt.default_blu=58,150,149,159,244,230,202,224,120,150,149,159,244,230,202,203"
+      # "vt.default_red=36,237,166,238,138,245,139,184,91,237,166,238,138,245,139,165"
+      # "vt.default_grn=39,135,218,212,173,189,213,192,96,135,218,212,173,189,213,173"
+      # "vt.default_blu=58,150,149,159,244,230,202,224,120,150,149,159,244,230,202,203"
+      "vt.default_red=48,231,166,229,140,244,129,181,98,231,166,229,140,244,129,165"
+      "vt.default_grn=52,130,209,200,170,184,200,191,104,130,209,200,170,184,200,173"
+      "vt.default_blu=70,132,137,144,238,228,190,226,128,132,137,144,238,228,190,206"
     ];
 
     extraModprobeConfig = ''
@@ -172,9 +175,9 @@ in
     # -----------------------------------------------------------
 
     # 4. /usr/bin/env (Crucial for the #!/usr/bin/env shebang style)
-    "L+ /usr/bin/python - - - - ${pkgs.python312}/bin/python"
-    "L+ /usr/bin/python3 - - - - ${pkgs.python312}/bin/python3"
-    "L+ /usr/bin/python3.12 - - - - ${pkgs.python312}/bin/python3.12" # Optional, but safer
+    "L+ /usr/bin/python - - - - ${pkgs.python314}/bin/python"
+    "L+ /usr/bin/python3 - - - - ${pkgs.python314}/bin/python3"
+    "L+ /usr/bin/python3.14 - - - - ${pkgs.python314}/bin/python3.14" # Optional, but safer
   ];
   programs.localsend.enable = true;
 
@@ -186,8 +189,8 @@ in
     };
     logind = {
       settings.Login = {
-        HandleLidSwitch = "sleep";
-        HandleLidSwitchExternalPower = "ignore";
+        HandleLidSwitch = "hybernate";
+        HandleLidSwitchExternalPower = "sleep";
         HandleLidSwitchDocked = "ignore";
       };
     };
@@ -409,12 +412,16 @@ in
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
       substituters = [ "https://hyprland.cachix.org" "https://numtide.cachix.org" ];
-      extra-substituters = [ "https://vicinae.cachix.org" ];
+      extra-substituters = [ "https://vicinae.cachix.org" "https://cache.numtide.com" ];
       trusted-substituters = [ "https://hyprland.cachix.org" ];
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       ];
-      extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc=" ];
+      extra-trusted-public-keys = [
+        "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
+        "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
+        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      ];
     };
 
     extraOptions = ''

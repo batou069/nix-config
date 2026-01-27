@@ -36,16 +36,23 @@
       };
   })
   # (_final: prev: {
-  #   python312 = prev.python312.override {
+  #   python314 = prev.python314.override {
   #     packageOverrides = self: super: {
   #       scann = self.callPackage ../pkgs/scann.nix { };
   #       opencv4 = super.opencv4.override { enableGtk2 = true; };
   #     };
   #   };
   # })
+
+  (final: prev: {
+    gtksourceview5 = prev.gtksourceview5.overrideAttrs (old: {
+      doCheck = false;
+    });
+  })
+
   (_final: prev: {
     faiss = prev.faiss.override { cudaSupport = false; };
-    python311 = prev.python311.override {
+    python314 = prev.python314.override {
       packageOverrides = pfinal: pprev: {
         gensim = pprev.gensim.overrideAttrs (oldAttrs: {
           nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ pfinal.cython ];

@@ -1,3 +1,3 @@
 { ... }: {
-  programs.hyprlauncher.enable = true;
+  services.hyprlauncher.enable = true;
 }

@@ -1,6 +1,7 @@
 { ... }: {
   imports = [
-    ./_emacs
-    ./_nixvim
+    ./emacs
+    ./nixvim
+    ./zed.nix
   ];
 }

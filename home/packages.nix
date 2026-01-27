@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-stable, ... }:
 let
   # customWaybar = pkgs.waybar.overrideAttrs (oldAttrs: {
   #   mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];
@@ -20,7 +20,7 @@ in
     # customWaybar
     # pkgs.blender # 3D creation suite
     pkgs.fpp
-    pkgs.igrep # Improved grep with context and file filtering
+    pkgs-stable.igrep # Improved grep with context and file filtering
     # pkgs.base16-shell-preview # Set of shell scripts to change terminal colors using
     # pkgs.base16-schemes # Collection of base16 color schemes
     pkgs.manix
@@ -40,7 +40,7 @@ in
     # xonsh # Python-ish, BASHwards-compatible shell
     pkgs.vimPluginsUpdater
     pkgs.vimgolf # Interactive Vim golf game, train you vim skills
-    pkgs.rofi-obsidian # Rofi plugin to quickly open Obsidian notes
+    # pkgs.rofi-obsidian # Rofi plugin to quickly open Obsidian notes
     # pkgs.rofi-rbw-wayland # Rofi-frontend for Bitwarden
     pkgs.wtype
     # pkgs.rbw
@@ -48,7 +48,7 @@ in
     # pkgs.tradingview
     # pkgs.neovide
     pkgs.appimage-run
-    pkgs.codex # Claude Assistant CLI
+    # pkgs.codex # Claude Assistant CLI
     pkgs.claudia
     pkgs.tealdeer
     pkgs.statix # Lints and suggestions for the Nix programming language

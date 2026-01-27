@@ -1,7 +1,8 @@
-{ inputs
-, lib
-, pkgs
-, ...
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
 }: {
   imports = [
     ./hardware.nix
@@ -17,13 +18,17 @@
     ../../modules/local-hardware-clock.nix
 
     # ./clickcapital-parser.nix
-
-    "${inputs.nix-mineral}/nix-mineral.nix"
+    inputs.nix-mineral.nixosModules.nix-mineral
+    # "${inputs.nix-mineral}/nix-mineral.nix"
     ./packages.nix
   ];
 
   networking.hostName = "lf-nix";
   users.defaultUserShell = pkgs.nushell;
+  nix-mineral = {
+    enable = true;
+    preset = "maximum";
+  };
   stylix = {
     enable = true;
     autoEnable = true;

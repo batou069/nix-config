@@ -40,8 +40,8 @@
     };
 
     nix-mineral = {
-      url = "git+https://github.com/cynicsketch/nix-mineral";
-      flake = false;
+      url = "github:cynicsketch/nix-mineral/";
+      # flake = false;
     };
 
     disko.url = "git+https://github.com/nix-community/disko";
@@ -141,10 +141,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-ai-tools = {
-      url = "github:numtide/nix-ai-tools";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.treefmt-nix.follows = "treefmt-nix";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      # url = "github:numtide/nix-ai-tools";
+      # inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     mcp-hub.url = "github:ravitemer/mcp-hub";

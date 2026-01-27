@@ -3,7 +3,7 @@
     enable = true;
     package = pkgs.eza;
     enableFishIntegration = true;
-    enableNushellIntegration = true;
+    # enableNushellIntegration = true;
     enableZshIntegration = true;
     enableBashIntegration = true;
     colors = "always";

@@ -1,85 +1,163 @@
 { pkgs, ... }:
 let
-  pythonEnv312 = pkgs.python312.withPackages (ps:
+  pythonEnv314 = pkgs.python314.withPackages (ps:
     with ps; [
-      tkinter
-      pnglatex
-      plotly
-      kaleido
-      pyperclip
-      flask
-      black
-      isort
-      alive-progress
+      #     scann
+      # beautifulsoup4
+      # chromadb
+      # deepface
+      # facenet-pytorch
+      # google-api-python-client
+      # google-auth-httplib2
+      # google-auth-oauthlib
+      # imageio
+      # imageio
+      # imageio-ffmpeg
+      # ipykernel
+      # isort
+      # jupyterlab
+      # kaleido
+      # llama-index
+      # opencv-python
+      # pillow
+      # pip
+      # plotline
+      # pnglatex
+      # pygame
+      # pymilvus
+      # scikit-image
       # spacy
       # spacy-models.en_core_web_sm
-      nltk
-      huggingface-hub
-      torchvision
-      torchaudio
-      diffusers
-      transformers
-      tokenizers
-      accelerate
-      imageio
-      imageio-ffmpeg
-      easydict
-      ftfy
-      addict
-      beautifulsoup4
-      tensorboard
-      torchvision
-      deepface
-      facenet-pytorch
-      torch
-      tsfresh
-      optuna
-      pyquery
+      # sqlalchemy
+      # tensorboard
+      # tkinter
+      # torchaudio
+      # torchvision
+      # transformers
+      # accelerate
+      # addict
+      # aiofiles
+      # alive-progress
+      # black
+      # debugpy
+      # diffusers
+      # easydict
+      # fastmcp
+      # flask
+      # ftfy
+      # httpx
+      # huggingface-hub
       imbalanced-learn
-      scipy
-      requests
-      rich
-      polars
-      pandas
-      numpy
+      # jupyter
+      # kaleido
       matplotlib
-      pymilvus
-      #     scann
-      pygame
-      jupyterlab
-      jupyter
-      pillow
-      # opencv-python
-      tqdm
-      pytest
-      imageio
+      # mcp
+      # nltk
+      numpy
+      # optuna
+      pandas
+      pandas-ta
+      # # pkgs.pyprland
+      plotly
+      polars
+      # pyperclip
+      # pyquery
+      # pytest
+      # python-dotenv
+      regex
+      # requests
+      # rich
+      scikit-learn
+      scipy
       seaborn
+      # siuba
+      # tabulate
+      # tokenizers
+      # torch
+      # tqdm
+      # tsfresh
+    ]);
+  pythonEnv313 = pkgs.python313.withPackages (ps:
+    with ps; [
+#     scann
+      # beautifulsoup4
+      # chromadb
+      # deepface
+      # facenet-pytorch
+      # google-api-python-client
+      # google-auth-httplib2
+      # google-auth-oauthlib
+      # imageio
+      # imageio
+      # imageio-ffmpeg
+      # ipykernel
+      # isort
+      # jupyterlab
+      # kaleido
+      # llama-index
+      # opencv-python
+      # pillow
+      # pip
+      # plotline
+      # pnglatex
+      # pygame
+      # pymilvus
+      # scikit-image
+      # spacy
+      # spacy-models.en_core_web_sm
+      # sqlalchemy
+      # tensorboard
+      # tkinter
+      # torchaudio
+      # torchvision
+      # transformers
+      accelerate
+      addict
+      aiofiles
+      alive-progress
+      black
+      debugpy
+      diffusers
+      easydict
+      fastmcp
+      flask
+      ftfy
+      httpx
+      huggingface-hub
+      imbalanced-learn
+      jupyter
+      kaleido
+      matplotlib
+      mcp
+      nltk
+      numpy
+      optuna
+      pandas
+      pandas-ta
+      # pkgs.pyprland
+      plotly
+      polars
+      pyperclip
+      pyquery
+      pytest
       python-dotenv
       regex
-      tabulate
-      ipykernel
-      aiofiles
-      pip
+      requests
+      rich
       scikit-learn
-      scikit-image
-      debugpy
-      sqlalchemy
-      pkgs.pyprland
-      google-auth-oauthlib
-      google-auth-httplib2
-      google-api-python-client
-      # llama-index
-      # chromadb
-      mcp
-      httpx
-      fastmcp
-      pnglatex
-      kaleido
-      pyperclip
+      scipy
+      seaborn
+      siuba
+      tabulate
+      tokenizers
+      torch
+      tqdm
+      tsfresh
     ]);
 in
 {
   home.packages = [
-    pythonEnv312
+    pythonEnv314
+    (pkgs.lib.lowPrio pythonEnv313)
   ];
 }

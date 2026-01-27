@@ -59,9 +59,8 @@ lib
             ;
           pkgs-stable = import inputs.nixpkgs-stable {
             inherit system;
-            inherit (pkgs) config overlays;
-            # config = pkgs.config;
-            # overlays = pkgs.overlays;
+            inherit (pkgs) overlays;
+            config.allowUnfree = true;
           };
           inherit (inputs) dotfiles-src;
           inherit (helpers) libOverlay libPkg libPkgs;
@@ -108,8 +107,8 @@ lib
             ;
           pkgs-stable = import inputs.nixpkgs-stable {
             inherit system;
-            config = pkgs.config;
-            overlays = pkgs.overlays;
+            inherit (pkgs) overlays;
+            config.allowUnfree = true;
           };
           dotfiles = inputs.dotfiles-src;
           inherit (helpers) libOverlay libPkg libPkgs;
