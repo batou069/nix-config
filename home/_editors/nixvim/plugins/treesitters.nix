@@ -106,7 +106,7 @@
           # (can be combined with grammarPackages from Nixpkgs)
           # https://nix-community.github.io/nixvim/plugins/treesitter/index.html#installing-tree-sitter-grammars-from-nvim-treesitter
           auto_install = false;
-          ensureInstalled = "all";
+          ensure_installed = [ ];
 
           highlight = {
             enable = true;
@@ -131,9 +131,6 @@
             };
           };
 
-          parser_install_dir = {
-            __raw = "vim.fs.joinpath(vim.fn.stdpath('data'), 'treesitter')";
-          };
           sync_install = false;
           indent = {
             enable = true;
