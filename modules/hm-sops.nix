@@ -19,6 +19,7 @@
       "api_keys/github_mcp" = { };
       "influxdb" = { };
       "email/password" = { };
+      "api_keys/claude" = { };
     };
   };
 }

@@ -96,7 +96,7 @@ let
       xorg.libX11
       xorg.libXScrnSaver
       xorg.libXcomposite
-      xorg.libXcursor
+      libxcursor
       xorg.libXdamage
       xorg.libXext
       xorg.libXfixes
@@ -104,7 +104,7 @@ let
       xorg.libXrandr
       xorg.libXrender
       xorg.libXtst
-      xorg.libxcb
+      libxcb
       xorg.libxshmfence
       zlib
     ]);

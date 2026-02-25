@@ -32,7 +32,7 @@
       # };
       # telegraf.extraGroups = [ "disk" "storage" "network" ];
     };
-    defaultUserShell = pkgs.zsh;
+    # defaultUserShell = pkgs.zsh;
   };
 
   # systemd.services."telegraf" = {

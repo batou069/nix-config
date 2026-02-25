@@ -253,6 +253,7 @@
         {
           name = "fzf-man-widget";
           type = "function";
+          "if" = "match .Shell \"(zsh|bash)\"";
           # Note: Zsh-specific function logic is wrapped here.
           value = ''
             man -k . | sort \

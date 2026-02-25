@@ -1,13 +1,16 @@
-{ pkgs
-, username
-, ...
+{
+  pkgs,
+  username,
+  ...
 }:
 # users.nix
 {
   users = {
-    groups.influxdb = { };
+    defaultUserShell = pkgs.zsh;
+    groups.influxdb = {};
     mutableUsers = true;
     users = {
+      root.ignoreShellProgramCheck = true;
       "${username}" = {
         homeMode = "755";
         isNormalUser = true;
@@ -24,7 +27,9 @@
           "docker"
           "nix-users"
           "mpd"
+          "adbusers"
         ];
+        ignoreShellProgramCheck = true;
       };
       # influxdb = {
       #   isSystemUser = true;
@@ -69,7 +74,7 @@
 
   systemd.user.services.install-pre-commit = {
     description = "Install pre-commit hooks for dotfiles";
-    wantedBy = [ "default.target" ];
+    wantedBy = ["default.target"];
     script = ''
       ${pkgs.pre-commit}/bin/pre-commit install
     '';

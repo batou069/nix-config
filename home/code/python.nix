@@ -13,9 +13,9 @@ let
       # imageio
       # imageio
       # imageio-ffmpeg
-      # ipykernel
+      ipykernel
       # isort
-      # jupyterlab
+      jupyterlab
       # kaleido
       # llama-index
       # opencv-python
@@ -48,7 +48,7 @@ let
       # httpx
       # huggingface-hub
       imbalanced-learn
-      # jupyter
+      jupyter
       # kaleido
       matplotlib
       # mcp
@@ -90,9 +90,9 @@ let
       # imageio
       # imageio
       # imageio-ffmpeg
-      # ipykernel
+      ipykernel
       # isort
-      # jupyterlab
+      jupyterlab
       # kaleido
       # llama-index
       # opencv-python

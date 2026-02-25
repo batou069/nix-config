@@ -1,42 +1,59 @@
-{ pkgs
-, lib
-, libPkgs
-, username
-, config
-, options
-, inputs
-, ...
-}:
-let
-  inherit (import ./variables.nix) keyboardLayout;
-in
 {
+  pkgs,
+  lib,
+  libPkgs,
+  username,
+  config,
+  options,
+  inputs,
+  ...
+}: let
+  inherit (import ./variables.nix) keyboardLayout;
+in {
   # Register flake inputs for nix commands
   nix.registry =
-    lib.mapAttrs (_: flake: { inherit flake; })
-      (lib.filterAttrs (_: lib.isType "flake") inputs)
+    lib.mapAttrs (_: flake: {inherit flake;})
+    (lib.filterAttrs (_: lib.isType "flake") inputs)
     // {
       # Add nixpkgs to the registry
-      nixpkgs = { flake = inputs.nixpkgs; };
+      nixpkgs = {flake = inputs.nixpkgs;};
     };
 
   # Add inputs to legacy channels
-  nix.nixPath = [ "/etc/nix/path" ];
+  nix.nixPath = ["/etc/nix/path"];
   environment.etc =
     lib.mapAttrs'
-      (name: value: {
-        name = "nix/path/${name}";
-        value.source = value.flake;
-      })
-      config.nix.registry;
+    (name: value: {
+      name = "nix/path/${name}";
+      value.source = value.flake;
+    })
+    config.nix.registry;
 
   drivers.intel.enable = true;
 
   # nixpkgs.pkgs is set via readOnlyPkgs in lib/default.nix
   # The pkgs is pre-configured with allowUnfree and overlays there
 
-  security.sudo.wheelNeedsPassword =
-    false; # Allow sudo without password for wheel group
+  security = {
+    sudo = {
+      wheelNeedsPassword = false; # Allow sudo w/o pwd for wheel group
+      extraConfig = ''
+        Defaults lecture="never"                        # no lectures
+        Defaults insults                                # insult when wrong pwd
+        Defaults env_keep += "PATH PYTHONPATH TERMINFO" # if certain commands don't work under sudo because they can't find the Nix profile
+      '';
+    };
+    doas = {
+      enable = true;
+      wheelNeedsPassword = false; # allow doas w/o pwd for wheel group
+      extraConfig = ''
+
+        permit keepenv :wheel         # fix for doas kitty env var conflict
+        permit persist keepenv :wheel # keep pwd once typed
+      '';
+    };
+  };
+
   boot = {
     # kernelPackages = pkgs.linuxPackages_zen; # Performance geared
     kernelPackages = pkgs.linuxPackages_latest; # Best Balance
@@ -72,7 +89,10 @@ in
       options btusb rtk_enable=1
       options rtw88_core disable_lps_deep=Y
       options rtw88_pci disable_aspm=Y
-    '';
+
+      # claude suggestion to fix trackpad/bt issues
+      options hid_magicmouse scroll_acceleration=1 scroll_speed=25
+        '';
 
     initrd = {
       availableKernelModules = [
@@ -85,13 +105,14 @@ in
         "sd_mod"
         "sdhci_pci"
       ];
-      kernelModules = [ "kvm-intel" ];
+      kernelModules = ["kvm-intel" "v4l2loopback" "hid-magicmouse" "hid-apple" "btusb" "uhid"];
     };
+    extraModulePackages = [config.boot.kernelPackages.v4l2loopback];
     # extraModulePackages = [config.boot.kernelPackages.cpufreqtools];
     # Needed For Some Steam Games
-    # kernel.sysctl = {
-    #   "vm.max_map_count" = 2147483642; # try 262144, 1048576 or disable block
-    # };
+    kernel.sysctl = {
+      "vm.max_map_count" = 2147483642; # try 262144, 1048576 or disable block
+    };
 
     ## BOOT LOADERS: NOTE USE ONLY 1. either systemd or grub
     # Bootloader SystemD
@@ -116,7 +137,7 @@ in
       magicOrExtension = "\\x7fELF....AI\\x02";
     };
 
-    plymouth = { enable = true; };
+    plymouth = {enable = true;};
   };
 
   time.hardwareClockInLocalTime = true;
@@ -126,7 +147,7 @@ in
   # networking
   networking = {
     networkmanager.enable = true;
-    timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
+    timeServers = options.networking.timeServers.default ++ ["pool.ntp.org"];
   };
 
   # Set your time zone.
@@ -185,8 +206,9 @@ in
   services = {
     openssh = {
       enable = true;
-      authorizedKeysFiles = [ config.sops.secrets."ssh_keys/github".path ];
+      authorizedKeysFiles = [config.sops.secrets."ssh_keys/github".path];
     };
+
     logind = {
       settings.Login = {
         HandleLidSwitch = "hybernate";
@@ -194,6 +216,7 @@ in
         HandleLidSwitchDocked = "ignore";
       };
     };
+
     power-profiles-daemon.enable = false;
     fprintd.enable = false;
 
@@ -220,7 +243,7 @@ in
         AMDGPU_ABM_LEVEL_ON_AC = 0;
         AMDGPU_ABM_LEVEL_ON_BAT = 3;
 
-        DISK_IOSCHED = [ "none" ];
+        DISK_IOSCHED = ["none"];
         DISK_APM_LEVEL_ON_BAT = "1 1";
 
         SATA_LINKPWR_ON_BAT = "min_power";
@@ -290,7 +313,12 @@ in
     };
 
     pulseaudio.enable = false; # unstable
-    udev.enable = true;
+    udev = {
+      enable = true;
+      extraRules = ''
+        SUBSYSTEM=="usb", ATTR{idVendor}=="17e", MODE="0666", GROUP="adbusers"
+      '';
+    };
 
     dbus.enable = true;
 
@@ -379,7 +407,6 @@ in
   #   enable = false;
   #   cpuFreqGovernor = "powersave"; # or "performance" or "schedutil";
   # };
-
   # Security / Polkit
   security = {
     rtkit.enable = true;
@@ -402,40 +429,90 @@ in
         })
       '';
     };
-    pam.services.hyprlock = { };
+    pam.services.hyprlock = {};
   };
 
   # Cachix, Optimization settings and garbage collection automation
   nix = {
     settings = {
+      # --- Performance & UI Responsiveness ---
+      max-jobs = 3; # Build 3 things at once
+      cores = 0; # Let each job use all cores (throttled by priority)
+      # daemon-build-users-priority = 10; # "Nice" level: Stay out of the way of my browser
+      connect-timeout = 5;
+
+      # --- Hygiene ---
       warn-dirty = false;
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" ];
-      substituters = [ "https://hyprland.cachix.org" "https://numtide.cachix.org" ];
-      extra-substituters = [ "https://vicinae.cachix.org" "https://cache.numtide.com" ];
-      trusted-substituters = [ "https://hyprland.cachix.org" ];
+      experimental-features = ["nix-command" "flakes"];
+
+      # --- Binary Caches (Consolidated) ---
+      # substituters = ["https://hyprland.cachix.org" "https://numtide.cachix.org"];
+      substituters = [
+        "https://cache.nixos.org" # Always keep the default
+        "https://hyprland.cachix.org"
+        "https://numtide.cachix.org"
+        "https://vicinae.cachix.org"
+        "https://cache.numtide.com"
+
+        "https://cachix.cachix.org"
+        "https://fencer.cachix.org"
+        "https://ghcide-nix.cachix.org/"
+        "https://hercules-ci.cachix.org/"
+        "https://mpickering.cachix.org/"
+        "https://nix-community.cachix.org"
+        "https://nix-linter.cachix.org"
+        "https://nixfmt.cachix.org"
+        "https://pre-commit-hooks.cachix.org"
+        "https://static-haskell-nix.cachix.org"
+        "https://iammrinal0.cachix.org"
+
+
+      ];
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      ];
-      extra-trusted-public-keys = [
         "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
         "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
         "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+
+        "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
+        "fencer.cachix.org-1:Uc3oXF1AHnhrc7kwEAY+NHNH7BvkngdBiFLHPDCUVwA="
+        "ghcide-nix.cachix.org-1:ibAY5FD+XWLzbLr8fxK6n8fL9zZe7jS+gYeyxyWYK5c="
+        "hercules-ci.cachix.org-1:ZZeDl9Va+xe9j+KqdzoBZMFJHVQ42Uu/c/1/KMC5Lw0="
+        "mpickering.cachix.org-1:COxPsDJqqrggZgvKG6JeH9baHPue8/pcpYkmcBPUbeg="
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "nix-linter.cachix.org-1:BdTne5LEHQfIoJh4RsoVdgvqfObpyHO5L0SCjXFShlE="
+        "nixfmt.cachix.org-1:uyEQg16IhCFeDpFV07aL+Dbmh18XHVUqpkk/35WAgJI="
+        "pre-commit-hooks.cachix.org-1:Pkk3Panw5AW24TOv6kz3PvLhlH8puAsJTBbOPmBo7Rc="
+        "static-haskell-nix.cachix.org-1:Q17HawmAwaM1/BfIxaEDKAxwTOyRVhPG5Ji9K3+FvUU="
+        "iammrinal0.cachix.org-1:uWCwkRYptDrFnr4qxYyYFJZb4+e/QebcODAe8Of/ngc="
+
+
+
       ];
+      # extra-substituters = ["https://vicinae.cachix.org" "https://cache.numtide.com"];
+      # trusted-substituters = ["https://hyprland.cachix.org"];
+      # trusted-public-keys = [
+      #   "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      # ];
+      # extra-trusted-public-keys = [
+      #   "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
+      #   "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
+      #   "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      # ];
     };
 
+    # extraOptions had that line before but doesnt work: access-tokens = github.com=${config.sops.secrets."api_keys/github_mcp".path}
     extraOptions = ''
-      # access-tokens = github.com=${
-        config.sops.secrets."api_keys/github_mcp".path
-      }
       !include ${config.sops.secrets."github_pat".path}
     '';
+
     gc = {
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
-    optimise.automatic = true;
+    # optimise.automatic = true; # may be redundant having auto-optimise-store in nix.settings
   };
 
   # Virtualization / Containers
@@ -452,7 +529,7 @@ in
       rootless.enable = false;
       autoPrune.enable = true;
       enableOnBoot = true;
-      extraPackages = [ pkgs.docker-buildx ];
+      extraPackages = [pkgs.docker-buildx];
     };
   };
 
@@ -468,7 +545,7 @@ in
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       # QT_QPA_PLATFORM_THEME = "qt6ct";
       # ELECTRON_ENABLE_WAYLAND = "1";
-      NH_FLAKE = "${config.users.users.lf.home}/nix";
+      NH_FLAKE = "${config.users.users.${username}.home}/nix";
       INFLUX_TOKEN = config.sops.secrets."influxdb".path;
     };
     variables = {
@@ -494,7 +571,7 @@ in
       enable = true;
       # enableCompletion = true;
       ohMyZsh.enable = false;
-      setOptions = [ "nonomatch" "zle" ];
+      setOptions = ["nonomatch" "zle"];
 
       # autosuggestions.enable = true;
       # syntaxHighlighting.enable = true;

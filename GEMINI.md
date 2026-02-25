@@ -14,7 +14,7 @@
 
 Flake: ./flake.nix
 Flake Output: ./lib/default.nix
-Flakle Hosts: ./lib/hosts.nix
+Flake Hosts: ./lib/hosts.nix
 Laptop config: ./hosts/lf-nix/config.nix
 Desktop config: ./hosts/viech/config.nix
 Shared config files in: ./hosts/default/

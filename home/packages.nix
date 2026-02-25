@@ -40,7 +40,7 @@ in
     # xonsh # Python-ish, BASHwards-compatible shell
     pkgs.vimPluginsUpdater
     pkgs.vimgolf # Interactive Vim golf game, train you vim skills
-    # pkgs.rofi-obsidian # Rofi plugin to quickly open Obsidian notes
+    pkgs.rofi-obsidian # Rofi plugin to quickly open Obsidian notes
     # pkgs.rofi-rbw-wayland # Rofi-frontend for Bitwarden
     pkgs.wtype
     # pkgs.rbw
@@ -53,7 +53,7 @@ in
     pkgs.tealdeer
     pkgs.statix # Lints and suggestions for the Nix programming language
     # nur.repos.novel2430.zen-browser-bin # Zen Browser
-    # nur.repos."7mind".ibkr-tws     # Interactive Brokers TWS
+    pkgs.nur.repos."7mind".ibkr-tws     # Interactive Brokers TWS
     # pkgs.nur.repos.k3a.ib-tws
     # pkgs.nur.repos.clefru.ib-tws
     pkgs.nixdoc

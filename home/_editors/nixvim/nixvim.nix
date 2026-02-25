@@ -1,10 +1,12 @@
 { libPkg
 , inputs
+, pkgs
 , ...
 }: {
   programs.nixvim = {
     enable = true;
-    package = libPkg inputs.neovim-nightly;
+    package = pkgs.neovim-unwrapped;
+    # package = libPkg inputs.neovim-nightly;
 
     defaultEditor = true;
 

@@ -150,12 +150,12 @@ in
       gedit # Editor Gui
       vlc # Video Player
       obsidian
-      rofi-obsidian
+      # rofi-obsidian
       foot # terminal
       calibre # ebooks manager
       # nyxt
       # qutebrowser
-
+      tradingview
       nix-init # create pkg from url
       vulnix # vulnerability scanner
 
@@ -178,6 +178,8 @@ in
       # gcr
       # Dev Stuff
       # nh
+
+      androidenv.androidPkgs.platform-tools
       meowpdf
 
       file-roller
@@ -216,7 +218,7 @@ in
     ]
     ++ (with libPkgs inputs.llm-agents; [
 
-      
+
 
       # AI Coding Agents
       amp           # CLI for Amp, an agentic coding tool in research preview from Sourcegraph
@@ -244,12 +246,12 @@ in
       # Claude Code Ecosystem
       catnip              # Developer environment that's like catnip for agentic programming
       ccstatusline        # A highly customizable status line formatter for Claude Code CLI
-      claude-code-npm     # Agentic coding tool (Node.js/npm build for claudebox compatibility)
+      # claude-code-npm     # Agentic coding tool (Node.js/npm build for claudebox compatibility)
       claude-code-router  # Use Claude Code without an Anthropics account and route it to another LLM provider
       claude-plugins      # CLI tool for managing Claude Code plugins
       claudebox           # Sandboxed environment for Claude Code
       sandbox-runtime     # Lightweight sandboxing tool for enforcing filesystem and network restrictions
-
+      skills-installer # Install agent skills across multiple AI coding clients
       # ACP Ecosystem
       claude-code-acp # An ACP-compatible coding agent powered by the Claude Code SDK (TypeScript)
       codex-acp       # An ACP-compatible coding agent powered by Codex
@@ -268,6 +270,12 @@ in
       chainlink   # Simple, lean issue tracker CLI designed for AI-assisted development
       openspec    # Spec-driven development for AI coding assistants
       spec-kit    # Specify CLI, part of GitHub Spec Kit. A tool to bootstrap your projects for Spec-Driven Development (SDD)
+      agent-deck # Your AI agent command center
+      vibe-kanban # Kanban board to orchestrate AI coding agents like Claude Code, Codex, and Gemini CLI
+      workmux # Git worktrees + tmux windows for zero-friction parallel dev
+
+
+
 
       # Code Review
       coderabbit-cli  # AI-powered code review CLI tool
@@ -275,15 +283,19 @@ in
 
       # Utilities
       agent-browser             # Headless browser automation CLI for AI agents
-      clawdbot                  # Personal AI assistant with WhatsApp, Telegram, Discord integration
+      ck                        # Local first semantic and hybrid BM25 grep / search tool for use by AI and humans!
+      openclaw               # Personal AI assistant with WhatsApp, Telegram, Discord integration
       coding-agent-search       # Unified, high-performance TUI to index and search your local coding agent history
       copilot-language-server   # GitHub Copilot Language Server # AI pair programmer LSP
       handy                     # Fast and accurate local transcription app using AI models
       happy-coder               # Happy Coder CLI to connect your local Claude Code to mobile device
       openskills                # Universal skills loader for AI coding agents # install and load Anthropic SKILL.md format skills in any agent
+      qmd                       # mini cli search engine for your docs, knowledge bases, meeting notes, whatever. Tracking current sota approaches while being all local
     ]);
 
   programs = {
+
+#    adb.enable = true;
     dms-shell = {
       systemd.restartIfChanged = true;
       enableSystemMonitoring = true;
