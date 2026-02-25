@@ -11,7 +11,10 @@ in
     pkgs.tree-sitter
     (pkgs.writeShellApplication {
       name = "ns";
-      runtimeInputs = with pkgs; [ fzf nix-search-tv ];
+      runtimeInputs = with pkgs; [
+        fzf
+        nix-search-tv
+      ];
       text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
       excludeShellChecks = [ "SC2016" ];
     })
@@ -53,9 +56,9 @@ in
     pkgs.tealdeer
     pkgs.statix # Lints and suggestions for the Nix programming language
     # nur.repos.novel2430.zen-browser-bin # Zen Browser
-    pkgs.nur.repos."7mind".ibkr-tws     # Interactive Brokers TWS
+    # pkgs.nur.repos."7mind".ibkr-tws     # Interactive Brokers TWS
     # pkgs.nur.repos.k3a.ib-tws
-    # pkgs.nur.repos.clefru.ib-tws
+    pkgs.ib-tws
     pkgs.nixdoc
     pkgs.glow # Beautiful terminal markdown viewer
     pkgs.gum # Terminal-based GUI toolkit

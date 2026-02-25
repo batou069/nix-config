@@ -18,6 +18,7 @@
     # Packages from flake inputs using helpers
     claudia = libPkg inputs.claudia;
     firefox-addons = libPkgs inputs.firefox-addons;
+    ib-tws = prev.callPackage ../pkgs/ib-tws { };
 
     # Fix missing tclint in unstable
     tclint = prev.writeShellScriptBin "tclint" "exit 0";
