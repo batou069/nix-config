@@ -25,9 +25,8 @@
         continuation_prompt = "[▶▶ ](Subtext1) ";
 
         format = ''
-          [ ╭──── $username @ $directory ─── 󰇘 ](peach)
-          [ │ $battery ](red) $git_branch $git_state $git_status
-          [ ╰─$character ](peach)'';
+          [╭ ](${peach})$directory $git_branch$git_status$battery
+          [╰](${peach})$character'';
 
         directory = {
           format = "[$path]($style)[$read_only]($read_only_style)";
@@ -73,19 +72,18 @@
         };
 
         git_status = {
-          ahead = " ";
-          behind = " ";
-          deleted = "󰛌 ";
-          diverged = " ";
-          style = "text";
-          format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted )](218)($ahead_behind$stashed)]($style) ";
-          conflicted = "󱚠 ";
-          untracked = " ";
-          modified = " ";
-          staged = "󰆨 ";
-          renamed = " ";
-          stashed = "󰈚 ";
-          # *  x
+          style = "${teal}";
+          format = "[$all_status$ahead_behind]($style)";
+          conflicted = "~";
+          untracked = "?";
+          modified = "*";
+          staged = "+";
+          renamed = "»";
+          deleted = "✘";
+          stashed = "≡";
+          ahead = "⇡";
+          behind = "⇣";
+          diverged = "⇕";
         };
 
         git_state = {
@@ -284,7 +282,6 @@
         perl = { symbol = " "; };
         php = { symbol = " "; };
         pijul_channel = { symbol = " "; };
-        python = { symbol = " "; };
         rlang = { symbol = "󰟔 "; };
         ruby = { symbol = " "; };
         rust = { symbol = "󱘗 "; };

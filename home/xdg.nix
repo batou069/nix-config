@@ -45,12 +45,28 @@
         pkgs.xdg-desktop-portal-gtk
         pkgs.gnome-keyring
       ];
-      config.hyprland = {
-        default = [ "hyprland" "gtk" ];
-        "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
-        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
-        "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+      config = {
+        hyprland = {
+          default = [ "hyprland" "gtk" ];
+          "org.freedesktop.impl.portal.ScreenCast" = "hyprland";
+          "org.freedesktop.impl.portal.Screenshot" = "hyprland";
+          "org.freedesktop.impl.portal.FileChooser" = "gtk";
+          "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+        };
+        niri = {
+          default = [
+            "gnome"
+            "gtk"
+          ];
+          "org.freedesktop.impl.portal.FileChooser" = "gtk";
+          "org.freedesktop.impl.portal.ScreenCast" = "gnome";
+          "org.freedesktop.impl.portal.Screenshot" = "gnome";
+        };
       };
+      configPackages = [
+        pkgs.hyprland
+        pkgs.niri
+      ];
     };
   };
 }

@@ -20,6 +20,8 @@ in
         libvdpau-va-gl
         libva
         libva-utils
+
+        libva-vdpau-driver
       ];
     };
     hardware.firmware = with pkgs; [

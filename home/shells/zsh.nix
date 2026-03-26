@@ -49,16 +49,18 @@
       _export_secret "${config.sops.secrets."api_keys/gemini".path}" "GOOGLE_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/openrouter".path}" "OPENROUTER_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/openai".path}" "ZSH_AI_COMMANDS_OPENAI_API_KEY"
-      _export_secret "${config.sops.secrets."api_keys/anthropic".path}" "ANTHROPIC_API_KEY"
       _export_secret "${config.sops.secrets.bitwarden.path}" "BW_SESSION"
       _export_secret "${config.sops.secrets.influxdb.path}" "INFLUX_TOKEN"
       _export_secret "${config.sops.secrets."api_keys/tavily".path}" "TAVILY_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/brave_search".path}" "BRAVE_API_KEY"
       _export_secret "${config.sops.secrets."api_keys/github_mcp".path}" "GITHUB_TOKEN"
       _export_secret "${config.sops.secrets.github_pat.path}" "GITHUB_PERSONAL_ACCESS_TOKEN"
+      _export_secret "${config.sops.secrets."api_keys/claude".path}" "CLAUDE_CODE_OAUTH_TOKEN"
 
-      GOOGLE_GENAI_USE_VERTEXAI=true
-      GEMINI_DEFAULT_AUTH_TYPE="vertex-ai"
+      GOOGLE_GENAI_USE_VERTEXAI=false
+      # GEMINI_DEFAULT_AUTH_TYPE="vertex-ai"
+
+      export ENABLE_LSP_TOOL="1"
 
       unset -f _export_secret
     '';
@@ -121,7 +123,7 @@
         # "casonadams/bitwarden.zsh" # Bitwarden 1 (?)
         # "kalsowerus/zsh-bitwarden" # Bitwarden 2 (?)
         # "zshzoo/cd-ls"                      # Auto LS after cd
-        # "muepatrick/zsh-ai-commands" # "/home/lf/nix/tmp/zsh-ai-commands"    # CTRL+O to send prompt to LLM
+        "muepatrick/zsh-ai-commands" # "/home/lf/nix/tmp/zsh-ai-commands"    # CTRL+O to send prompt to LLM
         "wfxr/forgit" # Git aliases with fzf-like menus
       ];
     };

@@ -13,9 +13,10 @@ let
       # imageio
       # imageio
       # imageio-ffmpeg
-      # ipykernel
+      ipykernel
       # isort
-      # jupyterlab
+      jupyterlab
+      sklearn-compat
       # kaleido
       # llama-index
       # opencv-python
@@ -48,7 +49,7 @@ let
       # httpx
       # huggingface-hub
       imbalanced-learn
-      # jupyter
+      jupyter
       # kaleido
       matplotlib
       # mcp
@@ -79,7 +80,7 @@ let
     ]);
   pythonEnv313 = pkgs.python313.withPackages (ps:
     with ps; [
-#     scann
+      #     scann
       # beautifulsoup4
       # chromadb
       # deepface
@@ -90,9 +91,9 @@ let
       # imageio
       # imageio
       # imageio-ffmpeg
-      # ipykernel
+      ipykernel
       # isort
-      # jupyterlab
+      jupyterlab
       # kaleido
       # llama-index
       # opencv-python
@@ -145,6 +146,7 @@ let
       requests
       rich
       scikit-learn
+      sklearn-compat
       scipy
       seaborn
       siuba
@@ -152,7 +154,7 @@ let
       tokenizers
       torch
       tqdm
-      tsfresh
+      # tsfresh
     ]);
 in
 {

@@ -1,8 +1,7 @@
-{
-  inputs,
-  lib,
-  pkgs,
-  ...
+{ inputs
+, lib
+, pkgs
+, ...
 }: {
   imports = [
     ./hardware.nix
@@ -19,15 +18,16 @@
 
     # ./clickcapital-parser.nix
     inputs.nix-mineral.nixosModules.nix-mineral
+    ../../modules/nix-mineral-bt-usb.nix
     # "${inputs.nix-mineral}/nix-mineral.nix"
     ./packages.nix
   ];
 
   networking.hostName = "lf-nix";
-  users.defaultUserShell = pkgs.nushell;
+  users.defaultUserShell = pkgs.zsh;
   nix-mineral = {
     enable = true;
-    preset = "maximum";
+    preset = "compatibility";
   };
   stylix = {
     enable = true;

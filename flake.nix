@@ -62,9 +62,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    claudia = {
-      url = "github:getAsterisk/claudia/218ecfb8b2069b69e4c40734e178e2a6af9fced7";
-    };
+    claude-desktop.url = "github:aaddrick/claude-desktop-debian";
 
     # --- HYPRLAND stuff ---
 

@@ -5,9 +5,11 @@
 # users.nix
 {
   users = {
+    defaultUserShell = pkgs.zsh;
     groups.influxdb = { };
     mutableUsers = true;
     users = {
+      root.ignoreShellProgramCheck = true;
       "${username}" = {
         homeMode = "755";
         isNormalUser = true;
@@ -24,7 +26,9 @@
           "docker"
           "nix-users"
           "mpd"
+          "adbusers"
         ];
+        ignoreShellProgramCheck = true;
       };
       # influxdb = {
       #   isSystemUser = true;
