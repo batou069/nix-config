@@ -8,7 +8,7 @@
     package = pkgs.gemini-cli;
 
     # Set the default model
-    defaultModel = "gemini-3-pro-preview";
+    defaultModel = "gemini-3.1-pro-preview";
 
     # Declaratively manage context files in ~/.gemini/
     # context = {

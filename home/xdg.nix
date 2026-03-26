@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   xdg = {
     mimeApps = {
       enable = true;
@@ -13,7 +13,7 @@
         "x-scheme-handler/https" = "firefox.desktop";
         "x-scheme-handler/vscode" = "vscode.desktop";
         "image/jpeg" = "loupe.desktop";
-        "image/png" = ["satty.desktop" "loupe.desktop"];
+        "image/png" = [ "satty.desktop" "loupe.desktop" ];
         "image/gif" = "loupe.desktop";
         "image/bmp" = "loupe.desktop";
         "image/svg+xml" = "loupe.desktop";
@@ -22,10 +22,10 @@
         "application/x-yaml" = "code.desktop";
         "application/json" = "code.desktop";
         "image/avif" = "loupe.desktop";
-        "audio/*" = ["vlc.desktop"];
-        "video/*" = ["vlc.desktop"];
+        "audio/*" = [ "vlc.desktop" ];
+        "video/*" = [ "vlc.desktop" ];
       };
-      defaultApplicationPackages = [pkgs.gnome-text-editor pkgs.loupe pkgs.totem pkgs.vscode-fhs];
+      defaultApplicationPackages = [ pkgs.gnome-text-editor pkgs.loupe pkgs.totem pkgs.vscode-fhs ];
     };
     userDirs = {
       enable = true;
@@ -47,7 +47,7 @@
       ];
       config = {
         hyprland = {
-          default = ["hyprland" "gtk"];
+          default = [ "hyprland" "gtk" ];
           "org.freedesktop.impl.portal.ScreenCast" = "hyprland";
           "org.freedesktop.impl.portal.Screenshot" = "hyprland";
           "org.freedesktop.impl.portal.FileChooser" = "gtk";

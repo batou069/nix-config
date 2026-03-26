@@ -13,7 +13,7 @@
       accents = [ "lavender" ];
     })
     # gnome-text-editor
-# kde-rounded-corners
+    # kde-rounded-corners
     kdePackages.kcalc
     kdePackages.krohnkite
     # kdotool

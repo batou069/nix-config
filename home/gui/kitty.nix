@@ -37,6 +37,7 @@
       # background_image = "/home/lf/Pictures/wallpapers/Minimal_Squares.png";
       # background_image_layout = "centered";
       scrollback_lines = 10000;
+      scrollback_pager = ''sh -c "sed 's/\x1b\[[0-9;]*[mGKHFJ]//g; s/\x1b(B//g' | nvim -c \"set nolist showtabline=0 foldcolumn=0 laststatus=0 signcolumn=no\" -c \"map q :qa!<CR>\" -"'';
       scrollbar = "scrolled-and-hovered";
     };
     quickAccessTerminalConfig = {

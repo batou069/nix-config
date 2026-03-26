@@ -10,6 +10,15 @@
 - We are on the `lf-nix` host
 - you do not have sudo privileges
 
+## Project Instructions
+
+- **Styling:** indent with 2 spaces
+- **Tone:** Be concise. Don't explain basic concepts.
+- **Making Changes:** Never delete files, instead backup and create new file
+  (command to use: `bak filename.nix`). Also Never delete rows, instead comment and add new rows.
+- **Executing Commands:** Always explain why you want to run a certain command.
+- **Thkining Style:** Think step-by-step while explaining your reasoning
+
 ## Main Files
 
 Flake: ./flake.nix
@@ -29,22 +38,3 @@ SOPS HomeManager: ./modules/hm-sops.nix
 Custom functions: ./modules/lib-helpers.nix
 
 ## Instructionsserena\_\_read_file`
-
-- Always double check assumptions and use nix mpc or web searches for double-checking
-- Backup files prior to editing and deleting (`bak file.ext`)
-- Ignore `.nox`-files (disabled nix files)
-- Make heavy use of SERENA MCP:
-  1. Start with `initial_instructions`
-  2. Continue with `check_onboarding_performed` and if necessary `onboarding`
-  3. Activate with `activate_project`
-  4. Use `think_about_task_adherence`, this tool should ALWAYS be called before you insert, replace, or delete code.
-  5. File tools (read-only):
-     - `serena__read_file`
-     - `create_text_file`
-     - `find_file`
-     - DO NOT EDIT FILES WITH SERENA like`replace_content`
-     - ...
-  6. Memory related:
-     - `write_memory`
-     - `read_memory`
-  7. Use `switch_modes` to activates the desired modes, like ["editing", "interactive"] or ["planning", "one-shot"]

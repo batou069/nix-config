@@ -5,11 +5,17 @@
 # can prevent USB controllers from properly initializing on some Intel chipsets.
 # Since internal bluetooth adapters are USB-attached, this breaks both BT and
 # USB HID devices like the Apple Magic Trackpad.
-{ config, lib, ... }:
-
+{ config
+, lib
+, ...
+}:
 lib.mkIf config.nix-mineral.enable {
   nix-mineral = {
     # --- Bluetooth ---
+
+    # Re-enable bluetooth kernel modules.
+    # nix-mineral disables these by default in maximum preset via network extras.
+    extras.network.bluetooth-kmodules = true;
 
     # Disable Kicksecure's /etc/bluetooth/main.conf override.
     # It sets AutoEnable=false, PairableTimeout=30, MaxControllers=1,
@@ -27,6 +33,6 @@ lib.mkIf config.nix-mineral.enable {
     # Keep intel-iommu enabled (intel_iommu=on) — this is generally safe
     # and provides DMA protection. Only strict mode causes issues.
     # Uncomment the line below if bluetooth/USB still fails after rebuild:
-    # settings.kernel.intel-iommu = false;
+    settings.kernel.intel-iommu = false;
   };
 }

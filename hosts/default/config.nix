@@ -20,11 +20,12 @@
       powerOnBoot = true;
       settings = {
         General = {
-          Enable = "Source,Sink,Media,Socket";
           Experimental = true;
         };
         Policy = {
           AutoEnable = true;
+          ReconnectAttempts = "7";
+          ReconnectIntervals = "1,2,4,8,16,32,64";
         };
       };
     };
@@ -48,7 +49,7 @@
   # networking.firewall.enable = false;
 
   home-manager = {
-    backupFileExtension = "backup";
+    backupFileExtension = "hm-backup";
     sharedModules = [ inputs.zen-browser.homeModules.default ];
   };
 

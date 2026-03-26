@@ -1,33 +1,34 @@
-{
-  pkgs,
-  lib,
-  libPkgs,
-  username,
-  config,
-  options,
-  inputs,
-  ...
-}: let
+{ pkgs
+, lib
+, libPkgs
+, username
+, config
+, options
+, inputs
+, ...
+}:
+let
   inherit (import ./variables.nix) keyboardLayout;
-in {
+in
+{
   # Register flake inputs for nix commands
   nix.registry =
-    lib.mapAttrs (_: flake: {inherit flake;})
-    (lib.filterAttrs (_: lib.isType "flake") inputs)
+    lib.mapAttrs (_: flake: { inherit flake; })
+      (lib.filterAttrs (_: lib.isType "flake") inputs)
     // {
       # Add nixpkgs to the registry
-      nixpkgs = {flake = inputs.nixpkgs;};
+      nixpkgs = { flake = inputs.nixpkgs; };
     };
 
   # Add inputs to legacy channels
-  nix.nixPath = ["/etc/nix/path"];
+  nix.nixPath = [ "/etc/nix/path" ];
   environment.etc =
     lib.mapAttrs'
-    (name: value: {
-      name = "nix/path/${name}";
-      value.source = value.flake;
-    })
-    config.nix.registry;
+      (name: value: {
+        name = "nix/path/${name}";
+        value.source = value.flake;
+      })
+      config.nix.registry;
 
   drivers.intel.enable = true;
 
@@ -90,9 +91,9 @@ in {
       options rtw88_core disable_lps_deep=Y
       options rtw88_pci disable_aspm=Y
 
-      # claude suggestion to fix trackpad/bt issues
-      options hid_magicmouse scroll_acceleration=1 scroll_speed=25
-        '';
+      # hid_magicmouse: report_undeciphered=1 needed for BT mode on Magic Trackpad 2
+      options hid_magicmouse scroll_acceleration=1 scroll_speed=25 report_undeciphered=1
+    '';
 
     initrd = {
       availableKernelModules = [
@@ -105,9 +106,10 @@ in {
         "sd_mod"
         "sdhci_pci"
       ];
-      kernelModules = ["kvm-intel" "v4l2loopback" "hid-magicmouse" "hid-apple" "btusb" "uhid"];
+      kernelModules = [ "kvm-intel" "v4l2loopback" "hid-apple" "btusb" "uhid" ];
     };
-    extraModulePackages = [config.boot.kernelPackages.v4l2loopback];
+    kernelModules = [ "hid-magicmouse" "hidp" ]; # load after BT stack, not in initrd; hidp required for BR/EDR HID sockets
+    extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
     # extraModulePackages = [config.boot.kernelPackages.cpufreqtools];
     # Needed For Some Steam Games
     kernel.sysctl = {
@@ -137,7 +139,7 @@ in {
       magicOrExtension = "\\x7fELF....AI\\x02";
     };
 
-    plymouth = {enable = true;};
+    plymouth = { enable = true; };
   };
 
   time.hardwareClockInLocalTime = true;
@@ -147,7 +149,7 @@ in {
   # networking
   networking = {
     networkmanager.enable = true;
-    timeServers = options.networking.timeServers.default ++ ["pool.ntp.org"];
+    timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
   };
 
   # Set your time zone.
@@ -206,7 +208,7 @@ in {
   services = {
     openssh = {
       enable = true;
-      authorizedKeysFiles = [config.sops.secrets."ssh_keys/github".path];
+      authorizedKeysFiles = [ config.sops.secrets."ssh_keys/github".path ];
     };
 
     logind = {
@@ -223,17 +225,17 @@ in {
     tlp = {
       enable = true;
       settings = {
-        CPU_SCALING_GOVERNOR_ON_AC = "schedutil";
+        CPU_SCALING_GOVERNOR_ON_AC = "performance";
         CPU_SCALING_GOVERNOR_ON_BAT = "schedutil";
         CPU_BOOST_ON_AC = 1;
         CPU_BOOST_ON_BAT = 0;
         CPU_SCALING_MIN_FREQ_ON_BAT = 400000;
         CPU_SCALING_MAX_FREQ_ON_BAT = 3000000;
 
-        CPU_ENERGY_PERF_POLICY_ON_AC = "balance_power";
+        CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
         CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
 
-        PLATFORM_PROFILE_ON_AC = "low-power";
+        PLATFORM_PROFILE_ON_AC = "performance";
         PLATFORM_PROFILE_ON_BAT = "low-power";
 
         USB_EXCLUDE_BTUSB = 1;
@@ -243,7 +245,7 @@ in {
         AMDGPU_ABM_LEVEL_ON_AC = 0;
         AMDGPU_ABM_LEVEL_ON_BAT = 3;
 
-        DISK_IOSCHED = ["none"];
+        DISK_IOSCHED = [ "none" ];
         DISK_APM_LEVEL_ON_BAT = "1 1";
 
         SATA_LINKPWR_ON_BAT = "min_power";
@@ -403,10 +405,10 @@ in {
     algorithm = "zstd";
   };
 
-  # powerManagement = {
-  #   enable = false;
-  #   cpuFreqGovernor = "powersave"; # or "performance" or "schedutil";
-  # };
+  powerManagement = {
+    enable = false;
+    cpuFreqGovernor = "performance"; # "powersave"; # or "performance" or "schedutil";
+  };
   # Security / Polkit
   security = {
     rtkit.enable = true;
@@ -429,7 +431,7 @@ in {
         })
       '';
     };
-    pam.services.hyprlock = {};
+    pam.services.hyprlock = { };
   };
 
   # Cachix, Optimization settings and garbage collection automation
@@ -444,7 +446,7 @@ in {
       # --- Hygiene ---
       warn-dirty = false;
       auto-optimise-store = true;
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [ "nix-command" "flakes" ];
 
       # --- Binary Caches (Consolidated) ---
       # substituters = ["https://hyprland.cachix.org" "https://numtide.cachix.org"];
@@ -453,7 +455,6 @@ in {
         "https://hyprland.cachix.org"
         "https://numtide.cachix.org"
         "https://vicinae.cachix.org"
-        "https://cache.numtide.com"
 
         "https://cachix.cachix.org"
         "https://fencer.cachix.org"
@@ -466,19 +467,16 @@ in {
         "https://pre-commit-hooks.cachix.org"
         "https://static-haskell-nix.cachix.org"
         "https://iammrinal0.cachix.org"
-
-
       ];
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
         "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
-        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-
         "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
         "fencer.cachix.org-1:Uc3oXF1AHnhrc7kwEAY+NHNH7BvkngdBiFLHPDCUVwA="
         "ghcide-nix.cachix.org-1:ibAY5FD+XWLzbLr8fxK6n8fL9zZe7jS+gYeyxyWYK5c="
         "hercules-ci.cachix.org-1:ZZeDl9Va+xe9j+KqdzoBZMFJHVQ42Uu/c/1/KMC5Lw0="
+        niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=
         "mpickering.cachix.org-1:COxPsDJqqrggZgvKG6JeH9baHPue8/pcpYkmcBPUbeg="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "nix-linter.cachix.org-1:BdTne5LEHQfIoJh4RsoVdgvqfObpyHO5L0SCjXFShlE="
@@ -486,10 +484,10 @@ in {
         "pre-commit-hooks.cachix.org-1:Pkk3Panw5AW24TOv6kz3PvLhlH8puAsJTBbOPmBo7Rc="
         "static-haskell-nix.cachix.org-1:Q17HawmAwaM1/BfIxaEDKAxwTOyRVhPG5Ji9K3+FvUU="
         "iammrinal0.cachix.org-1:uWCwkRYptDrFnr4qxYyYFJZb4+e/QebcODAe8Of/ngc="
-
-
-
       ];
+
+      extra-substituters = [ "https://cache.numtide.com" ];
+      extra-trusted-public-keys = [ "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" ];
       # extra-substituters = ["https://vicinae.cachix.org" "https://cache.numtide.com"];
       # trusted-substituters = ["https://hyprland.cachix.org"];
       # trusted-public-keys = [
@@ -529,7 +527,7 @@ in {
       rootless.enable = false;
       autoPrune.enable = true;
       enableOnBoot = true;
-      extraPackages = [pkgs.docker-buildx];
+      extraPackages = [ pkgs.docker-buildx ];
     };
   };
 
@@ -571,7 +569,7 @@ in {
       enable = true;
       # enableCompletion = true;
       ohMyZsh.enable = false;
-      setOptions = ["nonomatch" "zle"];
+      setOptions = [ "nonomatch" "zle" ];
 
       # autosuggestions.enable = true;
       # syntaxHighlighting.enable = true;

@@ -16,6 +16,7 @@ let
       ipykernel
       # isort
       jupyterlab
+      sklearn-compat
       # kaleido
       # llama-index
       # opencv-python
@@ -79,7 +80,7 @@ let
     ]);
   pythonEnv313 = pkgs.python313.withPackages (ps:
     with ps; [
-#     scann
+      #     scann
       # beautifulsoup4
       # chromadb
       # deepface
@@ -145,6 +146,7 @@ let
       requests
       rich
       scikit-learn
+      sklearn-compat
       scipy
       seaborn
       siuba
@@ -152,7 +154,7 @@ let
       tokenizers
       torch
       tqdm
-      tsfresh
+      # tsfresh
     ]);
 in
 {

@@ -1,8 +1,7 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
+{ pkgs
+, config
+, lib
+, ...
 }: {
   programs.aliae = {
     enable = true;
@@ -43,6 +42,7 @@
         {
           name = "eza";
           value = " eza --icons auto --color always --git '--color=always' '--level=1' --classify --color-scale --git --group-directories-first --dereference '--time-style=+%Y/%m/%d %H:%M'";
+          "if" = "match .Shell \"(fish|zsh|bash)\"";
         }
         {
           name = "fd";

@@ -1,4 +1,7 @@
-{ pkgs, pkgs-stable, ... }:
+{ pkgs
+, pkgs-stable
+, ...
+}:
 let
   # customWaybar = pkgs.waybar.overrideAttrs (oldAttrs: {
   #   mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];
@@ -52,7 +55,7 @@ in
     # pkgs.neovide
     pkgs.appimage-run
     # pkgs.codex # Claude Assistant CLI
-    pkgs.claudia
+    pkgs.claude-desktop-fhs
     pkgs.tealdeer
     pkgs.statix # Lints and suggestions for the Nix programming language
     # nur.repos.novel2430.zen-browser-bin # Zen Browser

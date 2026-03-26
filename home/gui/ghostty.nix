@@ -1,5 +1,4 @@
-{ pkgs, 
-... }: {
+{ pkgs, ... }: {
   programs.ghostty = {
     enable = true;
     systemd.enable = true;
@@ -16,27 +15,27 @@
       font-thicken = true;
       bold-is-bright = true;
       font-style = "medium italic";
-    #   font-feature = "cv02,cv38,cv42,cv43,cv62,cv66,ss03,ss07,zero";
-    #   window-title-font-family = "JetBrains Mono";
-    #   keybind = [
-    #     "ctrl+s>left=new_split:left"
-    #     "ctrl+s>down=new_split:down"
-    #     "ctrl+s>up=new_split:up"
-    #     "ctrl+s>right=new_split:right"
-    #     "ctrl+s>a=new_split:auto"
-    #     "ctrl+s>c=close_surface"
-    #     "alt+left=goto_split:left"
-    #     "alt+right=goto_split:right"
-    #     "alt+up=goto_split:top"
-    #     "alt+down=goto_split:bottom"
-    #   ];
+      #   font-feature = "cv02,cv38,cv42,cv43,cv62,cv66,ss03,ss07,zero";
+      #   window-title-font-family = "JetBrains Mono";
+      #   keybind = [
+      #     "ctrl+s>left=new_split:left"
+      #     "ctrl+s>down=new_split:down"
+      #     "ctrl+s>up=new_split:up"
+      #     "ctrl+s>right=new_split:right"
+      #     "ctrl+s>a=new_split:auto"
+      #     "ctrl+s>c=close_surface"
+      #     "alt+left=goto_split:left"
+      #     "alt+right=goto_split:right"
+      #     "alt+up=goto_split:top"
+      #     "alt+down=goto_split:bottom"
+      #   ];
       font-size = 10;
       font-thicken-strength = 127;
 
       link-url = true;
-    #   minimum-contrast = 1;
+      #   minimum-contrast = 1;
 
-    #   # mouse
+      #   # mouse
       mouse-scroll-multiplier = 10;
       # mouse-hide-while-typing = true;
       mouse-shift-capture = true;
@@ -44,30 +43,30 @@
       quick-terminal-position = "top";
       quick-terminal-screen = "main";
 
-    #   selection-invert-fg-bg = false;
+      #   selection-invert-fg-bg = false;
       cursor-click-to-move = true;
-    #   # cursor-color = "#ffee00ff";
-    #   cursor-text = "#cdd6f4";
-    #   cursor-style = "block_hollow";
-    #   cursor-style-blink = false;
-    #   quick-terminal-animation-duration = 0.08;
-    #   auto-update = "check";
-    #   auto-update-channel = "stable";
-    #   quit-after-last-window-closed = true;
-    #   shell-integration-features = true;
+      #   # cursor-color = "#ffee00ff";
+      #   cursor-text = "#cdd6f4";
+      #   cursor-style = "block_hollow";
+      #   cursor-style-blink = false;
+      #   quick-terminal-animation-duration = 0.08;
+      #   auto-update = "check";
+      #   auto-update-channel = "stable";
+      #   quit-after-last-window-closed = true;
+      #   shell-integration-features = true;
 
-    #   # window
-    #   initial-window = true;
-    #   resize-overlay = "never";
-    #   background-opacity = 0.8;
-    #   unfocused-split-opacity = 0.9;
-    #   # unfocused-split-fill = ffc0cb
-    #   window-save-state = "always";
-    #   window-step-resize = false;
-    #   background-blur-radius = 20;
-    #   window-padding-balance = true;
-    #   confirm-close-surface = false;
-    #   theme = "maple";
+      #   # window
+      #   initial-window = true;
+      #   resize-overlay = "never";
+      #   background-opacity = 0.8;
+      #   unfocused-split-opacity = 0.9;
+      #   # unfocused-split-fill = ffc0cb
+      #   window-save-state = "always";
+      #   window-step-resize = false;
+      #   background-blur-radius = 20;
+      #   window-padding-balance = true;
+      #   confirm-close-surface = false;
+      #   theme = "maple";
     };
     # themes = {
     #   catppuccin-mocha = {
